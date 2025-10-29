@@ -1,4 +1,9 @@
 <Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
   <Folder Name="/.github-workflows/">
     <File Path=".github/workflows/build.yml" />
     <File Path=".github/workflows/BuildAndDeployStart.yml" />
@@ -7,13 +12,27 @@
     <File Path=".github/workflows/store-upload.yml" />
   </Folder>
   <Folder Name="/submodules/">
-    <Project Path="submodules/LCTWorks.Common/LCTWorks.Common/LCTWorks.Common.csproj" />
-    <Project Path="submodules/LCTWorks.Common/LCTWorks.Services/LCTWorks.Services.csproj" />
-    <Project Path="submodules/LCTWorks.Common/LCTWorks.WinUI/LCTWorks.WinUI.csproj" />
+    <Project Path="submodules/LCTWorks.Common/LCTWorks.Common/LCTWorks.Common.csproj">
+      <Platform Solution="Debug|x64" Project="x64" />
+      <Platform Solution="Debug|x86" Project="x86" />
+    </Project>
+    <Project Path="submodules/LCTWorks.Common/LCTWorks.Services/LCTWorks.Services.csproj">
+      <Platform Solution="Debug|x64" Project="x64" />
+      <Platform Solution="Debug|x86" Project="x86" />
+    </Project>
+    <Project Path="submodules/LCTWorks.Common/LCTWorks.WinUI/LCTWorks.WinUI.csproj">
+      <Platform Solution="Debug|x64" Project="x64" />
+      <Platform Solution="Debug|x86" Project="x86" />
+    </Project>
   </Folder>
-  <Project Path="Ascendia.Core/Ascendia.Core.csproj" />
+  <Project Path="Ascendia.Core/Ascendia.Core.csproj">
+    <Platform Solution="*|x64" Project="x64" />
+    <Platform Solution="*|x86" Project="x86" />
+  </Project>
   <Project Path="AscendiaApp/AscendiaApp.csproj" Id="5cddceb3-14f1-4570-bc84-088bcbaa6cf8">
-    <Platform Project="x64" />
+    <Platform Solution="*|Any CPU" Project="x64" />
+    <Platform Solution="*|x64" Project="x64" />
+    <Platform Solution="*|x86" Project="x86" />
     <Deploy />
   </Project>
 </Solution>
