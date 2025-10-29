@@ -1,50 +1,147 @@
-﻿using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using Microsoft.UI.Xaml.Shapes;
+﻿using Ascendia.Core.Services;
+using AscendiaApp.ViewModels;
+using AscendiaApp.ViewModels.Dialogs;
+using AscendiaApp.Views;
+using LCTWorks.Services.Cache;
+using LCTWorks.Services.Logging;
+using LCTWorks.Services.Telemetry;
+using LCTWorks.WinUI;
+using LCTWorks.WinUI.Activation;
+using LCTWorks.WinUI.Dialogs;
+using LCTWorks.WinUI.Helpers;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.UI.Xaml;
+using Microsoft.Windows.Storage;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
+using System.Security;
+using System.Threading.Tasks;
 using Windows.ApplicationModel;
-using Windows.ApplicationModel.Activation;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+using WinUIEx;
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
+namespace AscendiaApp;
 
-namespace AscendiaApp
+public partial class App : Application, IAppExtended
 {
-    /// <summary>
-    /// Provides application-specific behavior to supplement the default Application class.
-    /// </summary>
-    public partial class App : Application
+    private readonly ITelemetryService? _telemetryService;
+
+    public App()
     {
-        private Window? _window;
+        InitializeComponent();
 
-        /// <summary>
-        /// Initializes the singleton application object.  This is the first line of authored code
-        /// executed, and as such is the logical equivalent of main() or WinMain().
-        /// </summary>
-        public App()
-        {
-            InitializeComponent();
-        }
+        var configuration = ReadConfigurations();
 
-        /// <summary>
-        /// Invoked when the application is launched.
-        /// </summary>
-        /// <param name="args">Details about the launch request and process.</param>
-        protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
+        Host = Microsoft.Extensions.Hosting.Host
+            .CreateDefaultBuilder()
+            .UseContentRoot(AppContext.BaseDirectory)
+            .ConfigureServices((context, services) =>
+            {
+                // Default Activation Handler
+                services
+                .AddTransient<ActivationHandler<LaunchActivatedEventArgs>, DefaultActivationHandler>()
+                .AddSingleton<ActivationService>()
+                .AddSingleton(new CacheService(ApplicationData.GetDefault().LocalCachePath))
+                .AddSingleton<LadderService>()
+                .AddSingleton(sp => new AirtableHttpService(configuration["AirBaseSettings:token"], configuration["AirBaseSettings:baseId"]))
+                .AddSingleton<CommunityService>()
+                .AddSingleton<DialogService>()
+                //ViewModels:
+                .AddTransient<MembersViewModel>()
+                .AddTransient<EditMemberViewModel>()
+                //Discord bot
+                .AddLogging(config =>
+                {
+                    config.AddConsole();
+                    config.AddProvider(new ConsoleSimpleLoggerProvider());
+                })
+                .AddSentry(configuration["Telemetry:key"], RuntimePackageHelper.Environment, RuntimePackageHelper.IsDebug(), RuntimePackageHelper.GetTelemetryContextData());
+            })
+            .Build();
+
+        _telemetryService = GetService<ITelemetryService>();
+
+        UnhandledException += App_UnhandledException;
+        AppDomain.CurrentDomain.UnhandledException += AppDomainUnhandledException;
+        TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
+    }
+
+    public static WindowEx MainWindow { get; } = new MainWindow();
+
+    public IHost Host
+    {
+        get;
+    }
+
+    Window IAppExtended.MainWindow => MainWindow;
+
+    public static T? GetService<T>()
+                    where T : class
+    {
+        try
         {
-            _window = new MainWindow();
-            _window.Activate();
+            if ((Current as App)!.Host.Services.GetService(typeof(T)) is not T service)
+            {
+                throw new ArgumentException($"{typeof(T)} needs to be registered in ConfigureServices within App.xaml.cs.");
+            }
+            return service;
         }
+        catch
+        {
+            return default;
+        }
+    }
+
+    public void AppDomainUnhandledException(object sender, System.UnhandledExceptionEventArgs e)
+    {
+        if (e.ExceptionObject is Exception exception && _telemetryService != null)
+        {
+            exception.Data["AppExType"] = "AppDomainUnhandledException";
+            _telemetryService.ReportUnhandledException(exception);
+        }
+    }
+
+    /// <summary>
+    /// Invoked when the application is launched.
+    /// </summary>
+    /// <param name="args">Details about the launch request and process.</param>
+    protected override async void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
+    {
+        base.OnLaunched(args);
+        var shellPage = new ShellPage();
+        var activationService = GetService<ActivationService>();
+        if (activationService != null)
+        {
+            await activationService.ActivateAsync(args, shellPage);
+        }
+    }
+
+    private static IConfiguration ReadConfigurations()
+    {
+        return new ConfigurationBuilder()
+            .SetBasePath(Package.Current.InstalledLocation.Path)
+            .AddJsonFile("assets\\Config\\appsettings.json", false)
+            .Build();
+    }
+
+    [SecurityCritical]
+    private void App_UnhandledException(object _, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
+    {
+        _telemetryService?.ReportUnhandledException(e.Exception);
+    }
+
+    private void OnUnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs? e)
+    {
+        if (e?.Exception == null)
+        {
+            return;
+        }
+        var flattenedExceptions = e.Exception.Flatten().InnerExceptions;
+        foreach (var exception in flattenedExceptions)
+        {
+            _telemetryService?.TrackError(exception);
+        }
+        e.SetObserved();
     }
 }

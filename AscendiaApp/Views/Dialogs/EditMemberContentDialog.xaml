@@ -1,0 +1,181 @@
+<ContentDialog x:Class="AscendiaApp.Views.Dialogs.EditMemberContentDialog"
+               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+               xmlns:local="using:AscendiaApp.Views.Dialogs"
+               xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+               xmlns:tkc="using:CommunityToolkit.WinUI.Controls"
+               Style="{StaticResource DefaultContentDialogStyle}"
+               mc:Ignorable="d">
+    <ContentDialog.Resources>
+        <Thickness x:Key="ContentDialogPadding">0</Thickness>
+    </ContentDialog.Resources>
+
+    <Grid Width="380"
+          Height="500">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <StackPanel Margin="32"
+                    Orientation="Vertical"
+                    Spacing="8">
+
+            <TextBlock HorizontalAlignment="Center"
+                       Style="{ThemeResource AppItemMainTextStyle}"
+                       Text="Nuevo miembro"
+                       TextAlignment="Center"
+                       TextWrapping="WrapWholeWords" />
+
+            <Rectangle Height="2"
+                       Fill="{ThemeResource SystemChromeGrayColor}"
+                       Opacity=".2" />
+        </StackPanel>
+        <ScrollViewer Grid.Row="1"
+                      Padding="32,0"
+                      HorizontalScrollBarVisibility="Disabled"
+                      HorizontalScrollMode="Disabled"
+                      IsVerticalScrollChainingEnabled="False">
+            <StackPanel Orientation="Vertical"
+                        Spacing="8">
+                <NumberBox x:Uid="Members-AddIdBox"
+                           AcceptsExpression="False"
+                           Value="{x:Bind ViewModel.Id, Mode=TwoWay}" />
+                <TextBox x:Uid="Members-AddNameBox"
+                         Text="{x:Bind ViewModel.Name, Mode=TwoWay}" />
+                <Grid ColumnSpacing="8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Uid="Members-AddTeamBox"
+                             Text="{x:Bind ViewModel.Team, Mode=TwoWay}" />
+                    <CheckBox x:Uid="Members-IsCaptain"
+                              Grid.Column="1"
+                              VerticalAlignment="Bottom"
+                              IsChecked="{x:Bind ViewModel.IsCaptain, Mode=TwoWay}" />
+                </Grid>
+
+                <tkc:HeaderedContentControl x:Uid="Members-PositionsHeader"
+                                            HorizontalContentAlignment="Stretch"
+                                            VerticalContentAlignment="Stretch">
+                    <tkc:Segmented Margin="0,8"
+                                   HorizontalAlignment="Stretch"
+                                   IsEnabled="False">
+                        <tkc:SegmentedItem Content="1" />
+                        <tkc:SegmentedItem Content="2" />
+                        <tkc:SegmentedItem Content="3" />
+                        <tkc:SegmentedItem Content="4" />
+                        <tkc:SegmentedItem Content="5" />
+                    </tkc:Segmented>
+                </tkc:HeaderedContentControl>
+
+                <TextBox x:Uid="Members-AddPhoneBox"
+                         Text="{x:Bind ViewModel.Phone, Mode=TwoWay}" />
+                <TextBox x:Uid="Members-AddEmailBox"
+                         Text="{x:Bind ViewModel.EMail, Mode=TwoWay}" />
+                <TextBox x:Uid="Members-AddCountryBox"
+                         Text="{x:Bind ViewModel.Country, Mode=TwoWay}" />
+
+                <Rectangle Width="Auto"
+                           Height="1"
+                           Margin="0,8"
+                           Fill="{StaticResource AppColor4}" />
+                <ToggleSwitch x:Name="UpdateLadderSwitch"
+                              x:Uid="Members-CheckLadder"
+                              IsOn="{x:Bind ViewModel.CheckLadder, Mode=TwoWay}" />
+                <CheckBox x:Uid="Members-UpdatePlayer"
+                          IsChecked="{x:Bind ViewModel.UpdateBeforeChecking, Mode=TwoWay}"
+                          IsEnabled="{x:Bind UpdateLadderSwitch.IsOn, Mode=OneWay}" />
+                <CheckBox x:Uid="Members-CheckWinLose"
+                          IsChecked="{x:Bind ViewModel.CheckWinLose, Mode=TwoWay}"
+                          IsEnabled="{x:Bind UpdateLadderSwitch.IsOn, Mode=OneWay}" />
+            </StackPanel>
+        </ScrollViewer>
+        <StackPanel Grid.Row="2"
+                    Margin="16,32"
+                    HorizontalAlignment="Center"
+                    Orientation="Horizontal"
+                    Spacing="16">
+            <Button x:Uid="Dialog-OkButton"
+                    Grid.Row="2"
+                    MinWidth="120"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Command="{x:Bind ViewModel.StartAddingCommand, Mode=OneWay}"
+                    Style="{StaticResource AppAccentRoundedButtonStyle}" />
+            <Button x:Uid="Dialog-CancelButton"
+                    Grid.Row="2"
+                    MinWidth="120"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Command="{x:Bind ViewModel.CancelCommand, Mode=OneWay}"
+                    Style="{StaticResource AppRoundedButtonStyle}" />
+        </StackPanel>
+        <Grid Grid.RowSpan="3"
+              Background="{ThemeResource ContentDialogBackground}"
+              CornerRadius="{ThemeResource OverlayCornerRadius}"
+              Visibility="{x:Bind ViewModel.IsNotifying, Mode=OneWay}">
+            <StackPanel HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Orientation="Vertical"
+                        Spacing="12"
+                        Visibility="{x:Bind ViewModel.IsBusy, Mode=OneWay}">
+                <ProgressRing />
+                <TextBlock Text="{x:Bind ViewModel.ProgressNotificationMessage, Mode=OneWay}" />
+            </StackPanel>
+            <Grid HorizontalAlignment="Center"
+                  VerticalAlignment="Stretch"
+                  RowSpacing="32"
+                  Visibility="{x:Bind ViewModel.IsFinished, Mode=OneWay}">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <StackPanel Margin="0,32"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Bottom"
+                            Orientation="Vertical"
+                            Spacing="12"
+                            Visibility="{x:Bind ViewModel.IsSuccess, Mode=OneWay}">
+                    <TextBlock HorizontalAlignment="Center"
+                               FontFamily="{StaticResource MaterialSymbolsFontFamily}"
+                               FontSize="32"
+                               Foreground="{StaticResource SuccessColor}"
+                               Text="check_circle" />
+                    <TextBlock x:Uid="AddMember-SuccessBox"
+                               MaxWidth="200"
+                               Style="{StaticResource AppSubheaderTextStyle}"
+                               TextAlignment="Center"
+                               TextWrapping="WrapWholeWords" />
+                </StackPanel>
+                <StackPanel HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Orientation="Vertical"
+                            Spacing="12"
+                            Visibility="{x:Bind ViewModel.IsFailure, Mode=OneWay}">
+                    <TextBlock HorizontalAlignment="Center"
+                               FontFamily="{StaticResource MaterialSymbolsFontFamily}"
+                               FontSize="32"
+                               Foreground="{StaticResource ErrorColor}"
+                               Text="brightness_alert" />
+                    <TextBlock MaxWidth="200"
+                               Style="{StaticResource AppSubheaderTextStyle}"
+                               Text="{x:Bind ViewModel.ErrorMessage, Mode=OneWay}"
+                               TextAlignment="Center"
+                               TextWrapping="WrapWholeWords" />
+                </StackPanel>
+                <Button x:Uid="Dialog-OkButton"
+                        Grid.Row="1"
+                        MinWidth="120"
+                        Margin="0,32"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Bottom"
+                        Command="{x:Bind ViewModel.AcceptFinishedCommand}"
+                        Style="{StaticResource AppAccentRoundedButtonStyle}" />
+            </Grid>
+        </Grid>
+    </Grid>
+</ContentDialog>
