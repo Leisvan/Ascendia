@@ -10,22 +10,24 @@
                mc:Ignorable="d">
     <ContentDialog.Resources>
         <Thickness x:Key="ContentDialogPadding">0</Thickness>
+        <x:Double x:Key="ContentDialogMaxWidth">480</x:Double>
+        <x:Double x:Key="ContentDialogMaxHeight">620</x:Double>
     </ContentDialog.Resources>
 
-    <Grid Width="380"
-          Height="500">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <StackPanel Margin="32"
+        <StackPanel Margin="24,32"
                     Orientation="Vertical"
                     Spacing="8">
 
-            <TextBlock HorizontalAlignment="Center"
+            <TextBlock x:Uid="Members-NewTitleBlock"
+                       HorizontalAlignment="Center"
                        Style="{ThemeResource SmoothTitleTextBlockStyle}"
-                       Text="Nuevo miembro"
                        TextAlignment="Center"
                        TextWrapping="WrapWholeWords" />
 
@@ -34,7 +36,7 @@
                        Opacity=".2" />
         </StackPanel>
         <ScrollViewer Grid.Row="1"
-                      Padding="32,0"
+                      Padding="24,0,24,24"
                       HorizontalScrollBarVisibility="Disabled"
                       HorizontalScrollMode="Disabled"
                       IsVerticalScrollChainingEnabled="False">
@@ -94,26 +96,34 @@
                           IsEnabled="{x:Bind UpdateLadderSwitch.IsOn, Mode=OneWay}" />
             </StackPanel>
         </ScrollViewer>
-        <StackPanel Grid.Row="2"
-                    Margin="16,32"
-                    HorizontalAlignment="Center"
-                    Orientation="Horizontal"
-                    Spacing="16">
+        <Rectangle Grid.Row="2"
+                   Height="2"
+                   Margin="24,0"
+                   Fill="{ThemeResource SystemChromeGrayColor}"
+                   Opacity=".2" />
+        <Grid Grid.Row="3"
+              Margin="16,32"
+              HorizontalAlignment="Stretch"
+              ColumnSpacing="16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
             <lctworks:ThemedButton x:Uid="Dialog-OkButton"
-                                   Grid.Row="2"
                                    MinWidth="120"
-                                   HorizontalAlignment="Center"
+                                   HorizontalAlignment="Stretch"
                                    VerticalAlignment="Center"
                                    Command="{x:Bind ViewModel.StartAddingCommand, Mode=OneWay}"
                                    Style="{StaticResource AccentThemedButtonStyle}" />
             <lctworks:ThemedButton x:Uid="Dialog-CancelButton"
-                                   Grid.Row="2"
+                                   Grid.Column="1"
                                    MinWidth="120"
-                                   HorizontalAlignment="Center"
+                                   HorizontalAlignment="Stretch"
                                    VerticalAlignment="Center"
                                    VerticalContentAlignment="Center"
                                    Command="{x:Bind ViewModel.CancelCommand, Mode=OneWay}" />
-        </StackPanel>
+        </Grid>
+
         <Grid Grid.RowSpan="3"
               Background="{ThemeResource ContentDialogBackground}"
               CornerRadius="{ThemeResource OverlayCornerRadius}"

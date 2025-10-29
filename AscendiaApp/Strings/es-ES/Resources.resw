@@ -183,4 +183,7 @@
   <data name="ShellPivotItem-Members.Header" xml:space="preserve">
     <value>Perfiles</value>
   </data>
+  <data name="Members-NewTitleBlock.Text" xml:space="preserve">
+    <value>Nuevo miembro</value>
+  </data>
 </root>
