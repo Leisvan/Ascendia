@@ -1,0 +1,26 @@
+﻿namespace Ascendia.Core.Records;
+
+public record class MemberRecord(
+    string Id,
+    int Number = 0,
+    string? DisplayName = null,
+    string? AccountName = null,
+    string? AccountId = null,
+    bool IsEnabled = true,
+    string? Phone = null,
+    string? Email = null,
+    string? Country = null,
+    bool? IsCaptain = null,
+    string? Position = null,
+    string? AvatarUrl = null,
+    string? ProfileUrl = null,
+    int? LeaderboardRank = null,
+    int? RankTier = null,
+    int? PreviousLeaderboardRank = null,
+    int? PreviousRankTier = null,
+    int? Win = null,
+    int? Lose = null,
+    DateTime? LastUpdated = null,
+    DateTime? LastChange = null,
+    string? Team = null,
+    string? Notes = null);

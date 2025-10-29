@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "AscendiaApp (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "AscendiaApp (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

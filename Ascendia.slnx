@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/submodules/">
+    <Project Path="submodules/LCTWorks.Common/LCTWorks.Common/LCTWorks.Common.csproj" />
+    <Project Path="submodules/LCTWorks.Common/LCTWorks.Services/LCTWorks.Services.csproj" />
+    <Project Path="submodules/LCTWorks.Common/LCTWorks.WinUI/LCTWorks.WinUI.csproj" />
+  </Folder>
+  <Project Path="Ascendia.Core/Ascendia.Core.csproj" />
+  <Project Path="AscendiaApp/AscendiaApp.csproj" Id="5cddceb3-14f1-4570-bc84-088bcbaa6cf8">
+    <Platform Project="x64" />
+    <Deploy />
+  </Project>
+</Solution>
