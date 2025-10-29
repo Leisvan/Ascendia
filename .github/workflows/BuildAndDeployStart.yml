@@ -1,0 +1,36 @@
+﻿name: Build and Deploy to Store
+
+on:
+  push:
+    branches:
+      - release/*
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Branch or tag to build'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  build:
+    uses: ./.github/workflows/build.yml
+    secrets: inherit
+  # upload:
+  #   needs: build
+  #   uses: ./.github/workflows/store-upload.yml
+  #   secrets: inherit
+  # tag:
+  #   needs: upload
+  #   uses: ./.github/workflows/gittag.yml
+  # log:
+  #   needs: upload
+  #   uses: ./.github/workflows/log.yml
+  #   with:
+  #     username: 'Henrietta the Whale'
+  #     avatar_url: 'https://github.com/Leisvan/LCSC/blob/master/.assets/AvatarLogo.png?raw=true'
+  #     thumbnail_url: ''
+  #   secrets: inherit

@@ -1,4 +1,11 @@
 <Solution>
+  <Folder Name="/.github-workflows/">
+    <File Path=".github/workflows/build.yml" />
+    <File Path=".github/workflows/BuildAndDeployStart.yml" />
+    <File Path=".github/workflows/gittag.yml" />
+    <File Path=".github/workflows/log.yml" />
+    <File Path=".github/workflows/store-upload.yml" />
+  </Folder>
   <Folder Name="/submodules/">
     <Project Path="submodules/LCTWorks.Common/LCTWorks.Common/LCTWorks.Common.csproj" />
     <Project Path="submodules/LCTWorks.Common/LCTWorks.Services/LCTWorks.Services.csproj" />

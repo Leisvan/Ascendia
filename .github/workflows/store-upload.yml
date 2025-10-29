@@ -1,0 +1,52 @@
+name: Upload
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_run_id:
+        description: 'Build workflow run id (optional when called by orchestrator)'
+        required: false
+        default: ''
+  workflow_call:
+    inputs:
+      build_run_id:
+        description: 'Build workflow run id (not needed when called in same run)'
+        required: false
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+env:
+  PACKAGE_DIRECTORY: packages
+
+jobs:
+  publish:
+    runs-on: windows-latest
+    steps:
+      - name: Download MSIX artifacts
+        if: ${{ (inputs.build_run_id == '' || inputs.build_run_id == null) && (github.event.inputs.build_run_id == '' || github.event.inputs.build_run_id == null) }}
+        uses: actions/download-artifact@v4
+        with:
+          pattern: Msix-*
+          merge-multiple: true
+          path: ${{ env.PACKAGE_DIRECTORY }}
+
+      # - name: Download MSIX artifacts (using run-id)
+      #   if: ${{ (inputs.build_run_id != '' && inputs.build_run_id != null) || (github.event.inputs.build_run_id != '' && github.event.inputs.build_run_id != null) }}
+      #   uses: actions/download-artifact@v4
+      #   with:
+      #     pattern: Msix-*
+      #     merge-multiple: true
+      #     path: ${{ env.PACKAGE_DIRECTORY }}
+      #     run-id: ${{ inputs.build_run_id != '' && inputs.build_run_id || github.event.inputs.build_run_id }}
+
+      - name: Publish to Store
+        uses: isaacrlevin/windows-store-action@1.0
+        with:
+          tenant-id: ${{ secrets.ENTRA_TENANT_ID }}
+          client-id: ${{ secrets.ENTRA_APPLICATION_CLIENT_ID }}
+          client-secret: ${{ secrets.ENTRA_APPLICATION_SECRET }}
+          app-id: ${{ secrets.STORE_APP_ID }}
+          package-path: "${{ env.PACKAGE_DIRECTORY }}"
