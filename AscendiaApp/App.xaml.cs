@@ -9,6 +9,7 @@ using LCTWorks.WinUI;
 using LCTWorks.WinUI.Activation;
 using LCTWorks.WinUI.Dialogs;
 using LCTWorks.WinUI.Helpers;
+using LCTWorks.WinUI.Navigation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -38,10 +39,11 @@ public partial class App : Application, IAppExtended
             .UseContentRoot(AppContext.BaseDirectory)
             .ConfigureServices((context, services) =>
             {
-                // Default Activation Handler
                 services
+                // Default Activation Handler
                 .AddTransient<ActivationHandler<LaunchActivatedEventArgs>, DefaultActivationHandler>()
                 .AddSingleton<ActivationService>()
+                .AddSingleton<FrameNavigationService>()
                 .AddSingleton(new CacheService(ApplicationData.GetDefault().LocalCachePath))
                 .AddSingleton<LadderService>()
                 .AddSingleton(sp => new AirtableHttpService(configuration["AirBaseSettings:token"], configuration["AirBaseSettings:baseId"]))
@@ -56,9 +58,9 @@ public partial class App : Application, IAppExtended
                     config.AddConsole();
                     config.AddProvider(new ConsoleSimpleLoggerProvider());
                 })
-                .AddSentry(configuration["Telemetry:key"], RuntimePackageHelper.Environment, RuntimePackageHelper.IsDebug(), RuntimePackageHelper.GetTelemetryContextData());
-            })
-            .Build();
+                .AddSentry(configuration["Telemetry:key"], RuntimePackageHelper.Environment, RuntimePackageHelper.IsDebug(), RuntimePackageHelper.GetTelemetryContextData())
+                ;
+            }).Build();
 
         _telemetryService = GetService<ITelemetryService>();
 
@@ -106,7 +108,7 @@ public partial class App : Application, IAppExtended
     /// Invoked when the application is launched.
     /// </summary>
     /// <param name="args">Details about the launch request and process.</param>
-    protected override async void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
+    protected override async void OnLaunched(LaunchActivatedEventArgs args)
     {
         base.OnLaunched(args);
         var shellPage = new ShellPage();

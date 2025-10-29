@@ -6,7 +6,9 @@
                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                    xmlns:media="using:Microsoft.UI.Xaml.Media"
                    xmlns:windowex="using:WinUIEx"
-                   Title="AscendiaApp"
+                   MinWidth="920"
+                   MinHeight="600"
+                   PersistenceId="MainWindow"
                    mc:Ignorable="d">
     <windowex:WindowEx.SystemBackdrop>
         <media:MicaBackdrop Kind="BaseAlt" />

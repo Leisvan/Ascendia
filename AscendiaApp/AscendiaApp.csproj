@@ -15,6 +15,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <Content Remove="Assets\WindowIcon.ico" />
+  </ItemGroup>
+  <ItemGroup>
     <None Remove="Assets\App\DefaultProfile.png" />
     <None Remove="Assets\Config\appsettings.json" />
     <None Remove="Styles\Colors.xaml" />
@@ -55,7 +58,7 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.10" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.6901" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.251003001" />
-    <PackageReference Include="WinUIEx" Version="2.9.0" />
+    <PackageReference Include="WinUIEx" Version="2.5.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Ascendia.Core\Ascendia.Core.csproj" />
