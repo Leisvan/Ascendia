@@ -13,19 +13,14 @@
   </Folder>
   <Folder Name="/submodules/">
     <Project Path="submodules/LCTWorks.Common/LCTWorks.Common/LCTWorks.Common.csproj">
-      <Platform Solution="Debug|x64" Project="x64" />
-      <Platform Solution="Debug|x86" Project="x86" />
     </Project>
     <Project Path="submodules/LCTWorks.Common/LCTWorks.Services/LCTWorks.Services.csproj">
-      <Platform Solution="Debug|x64" Project="x64" />
-      <Platform Solution="Debug|x86" Project="x86" />
     </Project>
     <Project Path="submodules/LCTWorks.Common/LCTWorks.WinUI/LCTWorks.WinUI.csproj">
-      <Platform Solution="Debug|x64" Project="x64" />
-      <Platform Solution="Debug|x86" Project="x86" />
     </Project>
   </Folder>
   <Project Path="Ascendia.Core/Ascendia.Core.csproj">
+    <Platform Solution="*|Any CPU" Project="x64" />
     <Platform Solution="*|x64" Project="x64" />
     <Platform Solution="*|x86" Project="x86" />
   </Project>
