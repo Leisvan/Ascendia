@@ -10,7 +10,7 @@
   <Identity
     Name="864LCTWorks.AscendiaApp"
     Publisher="CN=5977B261-AAFE-4B70-9EC9-92AACD7DD5BD"
-    Version="1.0.1.0" />
+    Version="1.0.2.0" />
 
   <mp:PhoneIdentity PhoneProductId="417ff176-6416-4dc0-b836-0ed47570e1b9" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 

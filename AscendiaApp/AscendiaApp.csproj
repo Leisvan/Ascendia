@@ -109,18 +109,21 @@
 
   <!-- Publish Properties -->
   <PropertyGroup>
-	  <PublishReadyToRun>false</PublishReadyToRun>
-	  <PublishTrimmed>false</PublishTrimmed>
+	<PublishReadyToRun>false</PublishReadyToRun>
+	<PublishTrimmed>false</PublishTrimmed>
 	<DefaultLanguage>es-ES</DefaultLanguage>
-	<AppxBundle>Always</AppxBundle>
+	<PackageId>Ascendia</PackageId>
+	<Product>Ascendia</Product>
+	<AssemblyName>Ascendia</AssemblyName>
 	<GenerateAppInstallerFile>False</GenerateAppInstallerFile>
 	<AppxPackageSigningEnabled>False</AppxPackageSigningEnabled>
 	<AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
 	<AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
 	<AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
 	<GenerateTestArtifacts>True</GenerateTestArtifacts>
+	<AppxBundle>Always</AppxBundle>
 	<AppxBundlePlatforms>x64</AppxBundlePlatforms>
-	<GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
+	<GenerateTemporaryStoreCertificate>False</GenerateTemporaryStoreCertificate>
 	<HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
   </PropertyGroup>
 </Project>
