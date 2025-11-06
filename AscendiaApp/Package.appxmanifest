@@ -8,15 +8,15 @@
   IgnorableNamespaces="uap rescap">
 
   <Identity
-    Name="72429471-4156-407b-960b-284e2ddfcf42"
-    Publisher="CN=rathm"
-    Version="1.0.0.0" />
+    Name="864LCTWorks.AscendiaApp"
+    Publisher="CN=5977B261-AAFE-4B70-9EC9-92AACD7DD5BD"
+    Version="1.0.1.0" />
 
-  <mp:PhoneIdentity PhoneProductId="72429471-4156-407b-960b-284e2ddfcf42" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="417ff176-6416-4dc0-b836-0ed47570e1b9" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>AscendiaApp</DisplayName>
-    <PublisherDisplayName>rathm</PublisherDisplayName>
+    <DisplayName>Ascendia Dota 2</DisplayName>
+    <PublisherDisplayName>LCT Works</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
@@ -34,7 +34,7 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="$targetentrypoint$">
       <uap:VisualElements
-        DisplayName="AscendiaApp"
+        DisplayName="Ascendia Dota 2"
         Description="AscendiaApp"
         BackgroundColor="transparent"
         Square150x150Logo="Assets\Square150x150Logo.png"
