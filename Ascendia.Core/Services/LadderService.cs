@@ -1,6 +1,5 @@
 ﻿using Ascendia.Core.Models;
-using LCTWorks.Common.Helpers;
-using System.Text;
+using LCTWorks.Core.Helpers;
 
 namespace Ascendia.Core.Services;
 

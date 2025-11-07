@@ -74,8 +74,8 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Ascendia.Core\Ascendia.Core.csproj" />
-    <ProjectReference Include="..\submodules\LCTWorks.Common\LCTWorks.Common\LCTWorks.Common.csproj" />
-    <ProjectReference Include="..\submodules\LCTWorks.Common\LCTWorks.Services\LCTWorks.Services.csproj" />
+    <ProjectReference Include="..\submodules\LCTWorks.Common\LCTWorks.Core\LCTWorks.Core.csproj" />
+    <ProjectReference Include="..\submodules\LCTWorks.Common\LCTWorks.Telemetry\LCTWorks.Telemetry.csproj" />
     <ProjectReference Include="..\submodules\LCTWorks.Common\LCTWorks.WinUI\LCTWorks.WinUI.csproj" />
   </ItemGroup>
   <ItemGroup>

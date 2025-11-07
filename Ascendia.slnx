@@ -12,12 +12,9 @@
     <File Path=".github/workflows/store-upload.yml" />
   </Folder>
   <Folder Name="/submodules/">
-    <Project Path="submodules/LCTWorks.Common/LCTWorks.Common/LCTWorks.Common.csproj">
-    </Project>
-    <Project Path="submodules/LCTWorks.Common/LCTWorks.Services/LCTWorks.Services.csproj">
-    </Project>
-    <Project Path="submodules/LCTWorks.Common/LCTWorks.WinUI/LCTWorks.WinUI.csproj">
-    </Project>
+    <Project Path="submodules/LCTWorks.Common/LCTWorks.Core/LCTWorks.Core.csproj" />
+    <Project Path="submodules/LCTWorks.Common/LCTWorks.Telemetry/LCTWorks.Telemetry.csproj" />
+    <Project Path="submodules/LCTWorks.Common/LCTWorks.WinUI/LCTWorks.WinUI.csproj" />
   </Folder>
   <Project Path="Ascendia.Core/Ascendia.Core.csproj">
     <Platform Solution="*|Any CPU" Project="x64" />

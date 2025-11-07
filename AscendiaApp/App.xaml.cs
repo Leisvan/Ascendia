@@ -2,9 +2,9 @@
 using AscendiaApp.ViewModels;
 using AscendiaApp.ViewModels.Dialogs;
 using AscendiaApp.Views;
-using LCTWorks.Services.Cache;
-using LCTWorks.Services.Logging;
-using LCTWorks.Services.Telemetry;
+using LCTWorks.Core.Services;
+using LCTWorks.Telemetry;
+using LCTWorks.Telemetry.Logging;
 using LCTWorks.WinUI;
 using LCTWorks.WinUI.Activation;
 using LCTWorks.WinUI.Dialogs;
