@@ -19,6 +19,8 @@ public partial class MemberObservable(MemberRecord record) : ObservableObject
 
     public string DisplayName => _record.DisplayName ?? string.Empty;
 
+    public MemberRecord Record => _record;
+
     public string Team => _record.Team ?? string.Empty;
 
     public override string ToString()

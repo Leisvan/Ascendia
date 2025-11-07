@@ -45,6 +45,15 @@ public class AirtableHttpService(string? airtableToken, string? baseId)
         return records.Select(r => r.ToMemberRecord());
     }
 
+    public async Task<bool> RemoveMemberAsync(string id)
+    {
+        if (!IsConfigured)
+        {
+            return default;
+        }
+        return await RemoveRecordAsync(MembersTableName, id);
+    }
+
     public async Task<bool> UpdateMultipleMemberAsync(MemberRecord[]? records)
     {
         if (!IsConfigured || records == null || records.Length == 0)
@@ -147,6 +156,17 @@ public class AirtableHttpService(string? airtableToken, string? baseId)
             errorMessage = "Unknown error";
         }
         return null;
+    }
+
+    private async Task<bool> RemoveRecordAsync(string tableName, string id)
+    {
+        if (!IsConfigured)
+        {
+            return false;
+        }
+        using var airtableBase = new AirtableBase(_airtableToken, _baseId);
+        var response = await airtableBase.DeleteRecord(tableName, id);
+        return response.Success;
     }
 
     private async Task<int> UpdateRecordsAsync(string tableName, AirtableRecord[] airTableRecords)

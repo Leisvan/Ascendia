@@ -1,12 +1,11 @@
 ﻿using Ascendia.Core.Services;
 using AscendiaApp.Models;
+using AscendiaApp.Observable;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LCTWorks.WinUI.Extensions;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
 using System.Threading.Tasks;
 
 namespace AscendiaApp.ViewModels.Dialogs;
@@ -27,6 +26,11 @@ public partial class EditMemberViewModel(CommunityService communityService) : Ob
     public partial string? Country { get; set; }
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsEditing))]
+    [NotifyPropertyChangedFor(nameof(IsNew))]
+    public partial MemberObservable? EditMember { get; set; }
+
+    [ObservableProperty]
     public partial string? EMail { get; set; }
 
     public string? ErrorMessage
@@ -44,12 +48,16 @@ public partial class EditMemberViewModel(CommunityService communityService) : Ob
     [ObservableProperty]
     public partial bool IsCaptain { get; set; } = false;
 
+    public bool IsEditing => EditMember != null;
+
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsNotifying))]
     [NotifyPropertyChangedFor(nameof(IsFinished))]
     public partial bool IsFailure { get; set; } = false;
 
     public bool IsFinished => IsSuccess || IsFailure;
+
+    public bool IsNew => !IsEditing;
 
     public bool IsNotifying => IsBusy || IsSuccess || IsFailure;
 
@@ -79,6 +87,34 @@ public partial class EditMemberViewModel(CommunityService communityService) : Ob
 
     [ObservableProperty]
     public partial bool UpdateBeforeChecking { get; set; } = true;
+
+    public void SetEditProperties(MemberObservable member)
+    {
+        if (member is null)
+        {
+            return;
+        }
+
+        EditMember = member;
+
+        if (!double.TryParse(member.Record.AccountId, out var accId))
+        {
+            return;
+        }
+
+        CheckLadder = false;
+        UpdateBeforeChecking = false;
+        CheckWinLose = false;
+
+        Name = member.Record.DisplayName;
+        Id = accId;
+        Team = member.Record.Team;
+        Phone = member.Record.Phone;
+        EMail = member.Record.Email;
+        Country = member.Record.Country;
+        IsCaptain = member.Record.IsCaptain ?? false;
+        Position = member.Record.Position;
+    }
 
     [RelayCommand]
     private void AcceptFinished()
@@ -123,12 +159,28 @@ public partial class EditMemberViewModel(CommunityService communityService) : Ob
 
         try
         {
-            var result = await _communityService.AddNewMemberAsync(Name, idStr, Team, Phone, EMail, Country, IsCaptain, Position, CheckLadder, UpdateBeforeChecking, CheckWinLose ?? false, (s, e) =>
+            bool success = false;
+            if (IsEditing)
             {
-                ProgressNotificationMessage = e;
-            });
+                if (string.IsNullOrWhiteSpace(Name))
+                {
+                    Name = EditMember!.Record.DisplayName ?? string.Empty;
+                }
+                success = await _communityService.EditMemberAsync(EditMember!.Record.Id, Name, idStr, Team, Phone, EMail, Country, IsCaptain, Position, (s, e) =>
+                {
+                    ProgressNotificationMessage = e;
+                });
+            }
+            else
+            {
+                success = await _communityService.AddNewMemberAsync(Name, idStr, Team, Phone, EMail, Country, IsCaptain, Position, CheckLadder, UpdateBeforeChecking, CheckWinLose ?? false, (s, e) =>
+                {
+                    ProgressNotificationMessage = e;
+                });
+            }
+
             ProgressNotificationMessage = null;
-            if (result)
+            if (success)
             {
                 IsSuccess = true;
                 InvokeFinished(EditOperationResult.Success);

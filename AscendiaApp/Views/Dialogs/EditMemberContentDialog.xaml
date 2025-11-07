@@ -41,9 +41,11 @@
                       HorizontalScrollMode="Disabled"
                       IsVerticalScrollChainingEnabled="False">
             <StackPanel Orientation="Vertical"
-                        Spacing="8">
+                        Spacing="8"
+                        Visibility="{x:Bind ViewModel.IsNew, Mode=OneWay}">
                 <NumberBox x:Uid="Members-AddIdBox"
                            AcceptsExpression="False"
+                           IsEnabled="{x:Bind ViewModel.IsNew, Mode=OneWay}"
                            Value="{x:Bind ViewModel.Id, Mode=TwoWay}" />
                 <TextBox x:Uid="Members-AddNameBox"
                          Text="{x:Bind ViewModel.Name, Mode=TwoWay}" />
@@ -65,12 +67,12 @@
                                             VerticalContentAlignment="Stretch">
                     <tkc:Segmented Margin="0,8"
                                    HorizontalAlignment="Stretch"
-                                   IsEnabled="False">
-                        <tkc:SegmentedItem Content="1" />
-                        <tkc:SegmentedItem Content="2" />
-                        <tkc:SegmentedItem Content="3" />
-                        <tkc:SegmentedItem Content="4" />
-                        <tkc:SegmentedItem Content="5" />
+                                   SelectedItem="{x:Bind ViewModel.Position, Mode=TwoWay}">
+                        <x:String>1</x:String>
+                        <x:String>2</x:String>
+                        <x:String>3</x:String>
+                        <x:String>4</x:String>
+                        <x:String>5</x:String>
                     </tkc:Segmented>
                 </tkc:HeaderedContentControl>
 

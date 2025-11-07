@@ -56,6 +56,12 @@
                                   Glyph="Add" />
                     </Button>
                     <Button VerticalAlignment="Stretch"
+                            Command="{x:Bind ViewModel.EditSelectedMemberCommand}"
+                            IsEnabled="{x:Bind ViewModel.NotLoading, Mode=OneWay}">
+                        <FontIcon FontFamily="{StaticResource MaterialSymbolsFontFamily}"
+                                  Glyph="edit" />
+                    </Button>
+                    <Button VerticalAlignment="Stretch"
                             Command="{x:Bind ViewModel.RemoveSelectedMemberCommand}"
                             IsEnabled="{x:Bind ViewModel.NotLoading, Mode=OneWay}">
                         <FontIcon FontFamily="{StaticResource MaterialSymbolsFontFamily}"
@@ -115,21 +121,18 @@
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition />
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Style="{StaticResource AppItemMainTextStyle}"
-                                               Text="{x:Bind DisplayName, Mode=OneWay}" />
+                                    <!--  Style="{StaticResource AppItemMainTextStyle}"  -->
+                                    <TextBlock Text="{x:Bind DisplayName, Mode=OneWay}" />
                                     <TextBlock Grid.Column="1"
                                                VerticalAlignment="Center"
                                                Opacity=".4"
-                                               Style="{StaticResource AppItemMainTextStyle}"
                                                Text="" />
                                     <TextBlock Grid.Row="1"
                                                Grid.ColumnSpan="2"
                                                FontSize="14"
-                                               Style="{StaticResource AppItemSecondaryTextStyle}"
                                                Text="{x:Bind Caption, Mode=OneWay}" />
                                     <TextBlock Grid.Row="2"
                                                Grid.ColumnSpan="2"
-                                               Style="{StaticResource AppItemSecondaryTextStyle}"
                                                Text="{x:Bind Team, Mode=OneWay}" />
                                 </Grid>
                             </Grid>

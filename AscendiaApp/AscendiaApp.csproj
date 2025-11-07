@@ -16,6 +16,17 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="AppPackages\**" />
+    <Compile Remove="BundleArtifacts\**" />
+    <EmbeddedResource Remove="AppPackages\**" />
+    <EmbeddedResource Remove="BundleArtifacts\**" />
+    <None Remove="AppPackages\**" />
+    <None Remove="BundleArtifacts\**" />
+    <Page Remove="AppPackages\**" />
+    <Page Remove="BundleArtifacts\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove="Assets\Config\appsettings_demo.json" />
     <Content Remove="Assets\WindowIcon.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -126,4 +137,10 @@
 	<GenerateTemporaryStoreCertificate>False</GenerateTemporaryStoreCertificate>
 	<HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
   </PropertyGroup>
+  <ItemGroup>
+    <PRIResource Remove="BundleArtifacts\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Remove="AppPackages\**" />
+  </ItemGroup>
 </Project>

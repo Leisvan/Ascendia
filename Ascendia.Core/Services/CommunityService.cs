@@ -27,7 +27,7 @@ public class CommunityService(CacheService cacheService, AirtableHttpService air
         string? email = null,
         string? country = null,
         bool? isCaptain = false,
-       string? position = null,
+        string? position = null,
         bool checkLadder = true,
         bool refreshPlayer = true,
         bool checkWinLose = true,
@@ -90,8 +90,30 @@ public class CommunityService(CacheService cacheService, AirtableHttpService air
         return await AddOrUpdateMemberAsync(record);
     }
 
-    public Task<bool> AddOrUpdateMemberAsync(MemberRecord? record)
-            => _airtableService.CreateOrEditMemberAsync(record);
+    public async Task<bool> EditMemberAsync(
+        string id,
+        string name,
+        string accountId,
+        string? team = null,
+        string? phone = null,
+        string? email = null,
+        string? country = null,
+        bool? isCaptain = false,
+        string? position = null,
+        EventHandler<string>? notifications = null)
+    {
+        if (IsBusy)
+        {
+            return false;
+        }
+        IsBusy = true;
+
+        notifications?.Invoke(this, Messages.ProgressAddToDb);
+
+        MemberRecord record = CreateMemberRecord(id, name, accountId, team, phone, email, country, isCaptain, position);
+        IsBusy = false;
+        return await AddOrUpdateMemberAsync(record);
+    }
 
     public async Task<List<MemberRecord>> GetAllMembersAsync(bool forceRefresh = false)
     {
@@ -110,16 +132,35 @@ public class CommunityService(CacheService cacheService, AirtableHttpService air
             if (records != null)
             {
                 _members.Clear();
-                _members.AddRange(records);
+                _members.AddRange(records.OrderBy(x => x.DisplayName));
                 await SaveMembersToCacheAsync();
             }
         }
+
         IsBusy = false;
         return _members;
     }
 
     public bool MemberExists(string accountId)
         => _members.Any(m => m.AccountId == accountId);
+
+    public async Task<bool> RemoveMemberAsync(string id)
+    {
+        if (IsBusy)
+        {
+            return false;
+        }
+        IsBusy = true;
+        var first = _members.FirstOrDefault(m => m.Id == id);
+        var results = await _airtableService.RemoveMemberAsync(id);
+        if (results && first != null)
+        {
+            _members.Remove(first);
+            await SaveMembersToCacheAsync();
+        }
+        IsBusy = false;
+        return results;
+    }
 
     public async Task<int> UpdateLadderAsync(bool incudeWL = true, EventHandler<string>? notifications = null, int messageDelayInMilliseconds = MessageDelayInMilliseconds, CancellationToken? cancellationToken = null)
     {
@@ -236,6 +277,11 @@ public class CommunityService(CacheService cacheService, AirtableHttpService air
             RankTier = rankTier,
             PreviousLeaderboardRank = previousLeaderboardRank,
             PreviousRankTier = previousRankTier,
+            Phone = phone ?? string.Empty,
+            Email = email ?? string.Empty,
+            Country = country ?? string.Empty,
+            IsCaptain = isCaptain,
+            Position = position ?? 0.ToString(),
             Win = winLose?.Win ?? 0,
             Lose = winLose?.Lose ?? 0,
             LastUpdated = DateTimeOffset.UtcNow.DateTime,
@@ -245,12 +291,16 @@ public class CommunityService(CacheService cacheService, AirtableHttpService air
         };
     }
 
+    private Task<bool> AddOrUpdateMemberAsync(MemberRecord? record)
+        => _airtableService.CreateOrEditMemberAsync(record);
+
     private async Task LoadMembersFromCacheAsync()
     {
         var cachedMembers = await _cacheService.GetCachedTextAsync(MembersCacheFileName);
         if (!string.IsNullOrEmpty(cachedMembers))
         {
-            _members = Json.ToObject<List<MemberRecord>>(cachedMembers) ?? [];
+            var ordered = (Json.ToObject<List<MemberRecord>>(cachedMembers) ?? []).OrderBy(x => x.DisplayName);
+            _members.AddRange(ordered);
         }
     }
 

@@ -5,18 +5,10 @@ using AscendiaApp.ViewModels.Dialogs;
 using AscendiaApp.Views.Dialogs;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using LCTWorks.Common.Helpers;
 using LCTWorks.WinUI.Dialogs;
-using Microsoft.Windows.Storage.Pickers;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.Storage;
-using WinRT.Interop;
 
 namespace AscendiaApp.ViewModels;
 
@@ -95,32 +87,22 @@ public partial class MembersViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void Refresh()
-        => RefreshInternal(true);
-
-    private async void RefreshInternal(bool forceRefresh)
-        => await RefreshInternalAsync(forceRefresh);
-
-    private async Task RefreshInternalAsync(bool forceRefresh)
+    private async Task EditSelectedMemberAsync()
     {
-        LoadingNotification = null;
-        IsLoading = true;
-
-        var members = await _communityService.GetAllMembersAsync(forceRefresh);
-        if (members != null)
+        if (SelectedMember == null)
         {
-            _members.Clear();
-            foreach (var item in members)
-            {
-                _members.Add(new MemberObservable(item));
-            }
+            return;
         }
-
-        IsLoading = false;
+        var dialog = new EditMemberContentDialog();
+        if (dialog.ViewModel != null)
+        {
+            dialog.ViewModel.Finished += EditMemberDialogFinished;
+            dialog.ViewModel.SetEditProperties(SelectedMember);
+            await _dialogService.ShowDialogAsync(dialog, true, App.MainWindow?.Content?.XamlRoot);
+        }
     }
 
-    [RelayCommand]
-    private async Task RemoveSelectedMemberAsync()
+    private void LoadFromFile()
     {
         //var picker = new FileOpenPicker
         //{
@@ -157,6 +139,47 @@ public partial class MembersViewModel : ObservableObject
 
         //    IsLoading = false;
         //}
+    }
+
+    [RelayCommand]
+    private void Refresh()
+        => RefreshInternal(true);
+
+    private async void RefreshInternal(bool forceRefresh)
+        => await RefreshInternalAsync(forceRefresh);
+
+    private async Task RefreshInternalAsync(bool forceRefresh)
+    {
+        LoadingNotification = null;
+        IsLoading = true;
+
+        var members = await _communityService.GetAllMembersAsync(forceRefresh);
+        if (members != null)
+        {
+            _members.Clear();
+            foreach (var item in members)
+            {
+                _members.Add(new MemberObservable(item));
+            }
+        }
+
+        IsLoading = false;
+    }
+
+    [RelayCommand]
+    private async Task RemoveSelectedMemberAsync()
+    {
+        if (SelectedMember == null)
+        {
+            return;
+        }
+        IsLoading = true;
+        var success = await _communityService.RemoveMemberAsync(SelectedMember.Record.Id!);
+        if (success)
+        {
+            _members.Remove(SelectedMember);
+        }
+        IsLoading = false;
     }
 
     [RelayCommand]
