@@ -42,7 +42,6 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <AutoSuggestBox x:Uid="Members-SearchBox"
-                                IsEnabled="False"
                                 QueryIcon="Find"
                                 Text="{x:Bind ViewModel.SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <StackPanel Grid.Column="1"

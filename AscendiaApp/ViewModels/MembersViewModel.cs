@@ -1,4 +1,5 @@
-﻿using Ascendia.Core.Services;
+﻿using Ascendia.Core.Records;
+using Ascendia.Core.Services;
 using AscendiaApp.Models;
 using AscendiaApp.Observable;
 using AscendiaApp.ViewModels.Dialogs;
@@ -7,7 +8,11 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LCTWorks.Telemetry;
 using LCTWorks.WinUI.Dialogs;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,15 +22,19 @@ public partial class MembersViewModel : ObservableObject
 {
     private readonly CommunityService _communityService;
     private readonly DialogService _dialogService;
+    private readonly ILogger<object> _logger;
     private readonly ObservableCollection<MemberObservable> _members = [];
     private readonly ITelemetryService _telemetryService;
     private CancellationTokenSource _cts = new();
+    private string? _searchTerm = string.Empty;
 
-    public MembersViewModel(CommunityService communityService, DialogService dialogService, ITelemetryService telemetryService)
+    public MembersViewModel(CommunityService communityService, DialogService dialogService, ITelemetryService telemetryService, ILogger<object> logger)
     {
         _communityService = communityService;
         _dialogService = dialogService;
         _telemetryService = telemetryService;
+        _logger = logger;
+
         RefreshInternal(false);
     }
 
@@ -45,8 +54,17 @@ public partial class MembersViewModel : ObservableObject
 
     public bool NotLoading => !IsLoading;
 
-    [ObservableProperty]
-    public partial string? SearchTerm { get; set; }
+    public string? SearchTerm
+    {
+        get => _searchTerm;
+        set
+        {
+            if (SetProperty(ref _searchTerm, value))
+            {
+                RefreshInternal(false);
+            }
+        }
+    }
 
     [ObservableProperty]
     public partial MemberObservable? SelectedMember { get; set; }
@@ -105,58 +123,30 @@ public partial class MembersViewModel : ObservableObject
         }
     }
 
-    private void LoadFromFile()
-    {
-        //var picker = new FileOpenPicker
-        //{
-        //    SuggestedStartLocation = PickerLocationId.DocumentsLibrary,
-        //    ViewMode = PickerViewMode.List
-        //};
-
-        //// WinUI 3 requires initializing pickers with the app window handle.
-        //var hwnd = WindowNative.GetWindowHandle(App.MainWindow);
-        //InitializeWithWindow.Initialize(picker, hwnd);
-
-        //picker.FileTypeFilter.Add(".json");
-
-        //var file = await picker.PickSingleFileAsync();
-        //if (file is not null)
-        //{
-        //    IsLoading = true;
-        //    var json = await FileIO.ReadTextAsync(file.);
-        //    var root = Json.ToObject<Root[]>(json);
-        //    int failureCount = 0;
-        //    for (int i = 0; i < root?.Length; i++)
-        //    {
-        //        var item = root[i];
-        //        LoadingNotification = $"Adding member {i + 1} of {root.Length}";
-        //        if (item == null || item?.id_dota == null)
-        //        {
-        //            continue;
-        //        }
-        //        if (!await _communityService.AddNewMemberAsync(item?.nickname, item!.id_dota, item?.team, null, null, null, false, null, false, false, false, null, 0))
-        //        {
-        //            failureCount++;
-        //        }
-        //    }
-
-        //    IsLoading = false;
-        //}
-    }
-
     [RelayCommand]
     private void Refresh()
-        => RefreshInternal(true);
+    {
+        SearchTerm = null;
+        RefreshInternal(true);
+    }
 
     private async void RefreshInternal(bool forceRefresh)
         => await RefreshInternalAsync(forceRefresh);
 
     private async Task RefreshInternalAsync(bool forceRefresh)
     {
+        await Task.Delay(120);
+
         LoadingNotification = null;
         IsLoading = true;
 
-        var members = await _communityService.GetAllMembersAsync(forceRefresh);
+        IEnumerable<MemberRecord> members = await _communityService.GetAllMembersAsync(forceRefresh);
+        if (!string.IsNullOrWhiteSpace(_searchTerm))
+        {
+            members = members.Where(m => m.DisplayName?
+            .Contains(_searchTerm, StringComparison.InvariantCultureIgnoreCase) == true ||
+            m.AccountName?.Contains(_searchTerm, StringComparison.InvariantCultureIgnoreCase) == true);
+        }
         if (members != null)
         {
             _members.Clear();
@@ -197,7 +187,7 @@ public partial class MembersViewModel : ObservableObject
         var result = await _communityService.UpdateLadderAsync(true, (s, e) =>
         {
             LoadingNotification = e;
-        }, 100, _cts.Token);
+        }, cancellationToken: _cts.Token);
 
         IsLoading = false;
 
@@ -205,18 +195,5 @@ public partial class MembersViewModel : ObservableObject
         {
             await RefreshInternalAsync(true);
         }
-    }
-
-    private class Root
-    {
-        public string? id { get; set; }
-
-        public string? id_dota { get; set; }
-
-        public string? leaderboard_rank { get; set; }
-
-        public string? nickname { get; set; }
-
-        public string? team { get; set; }
     }
 }

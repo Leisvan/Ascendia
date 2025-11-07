@@ -59,7 +59,7 @@ public partial class App : Application, IAppExtended
                     config.AddProvider(new ConsoleSimpleLoggerProvider());
                 })
                 .AddSentry(configuration["Telemetry:key"], RuntimePackageHelper.Environment, RuntimePackageHelper.IsDebug(), RuntimePackageHelper.GetTelemetryContextData())
-                .AddSerilog(AppStorageHelper.GetLocalFolder("Log").Path, RuntimePackageHelper.IsDebug() ? Serilog.Events.LogEventLevel.Debug : Serilog.Events.LogEventLevel.Information, RuntimePackageHelper.IsDebug(), includeConsole: true);
+                .AddSerilog(AppStorageHelper.GetLocalFolder("Log").Path, RuntimePackageHelper.IsDebug() ? Serilog.Events.LogEventLevel.Debug : Serilog.Events.LogEventLevel.Information, RuntimePackageHelper.IsDebug(), RuntimePackageHelper.IsDebug());
             }).Build();
 
         _telemetryService = GetService<ITelemetryService>();
@@ -101,6 +101,7 @@ public partial class App : Application, IAppExtended
         {
             exception.Data["AppExType"] = "AppDomainUnhandledException";
             _telemetryService.ReportUnhandledException(exception);
+            Serilog.Log.CloseAndFlush();
         }
     }
 
@@ -131,6 +132,7 @@ public partial class App : Application, IAppExtended
     private void App_UnhandledException(object _, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
     {
         _telemetryService?.ReportUnhandledException(e.Exception);
+        Serilog.Log.CloseAndFlush();
     }
 
     private void OnUnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs? e)
