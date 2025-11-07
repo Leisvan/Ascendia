@@ -29,7 +29,14 @@
                        HorizontalAlignment="Center"
                        Style="{ThemeResource SmoothTitleTextBlockStyle}"
                        TextAlignment="Center"
-                       TextWrapping="WrapWholeWords" />
+                       TextWrapping="WrapWholeWords"
+                       Visibility="{x:Bind ViewModel.IsNew, Mode=OneWay}" />
+            <TextBlock x:Uid="Members-EditTitleBlock"
+                       HorizontalAlignment="Center"
+                       Style="{ThemeResource SmoothTitleTextBlockStyle}"
+                       TextAlignment="Center"
+                       TextWrapping="WrapWholeWords"
+                       Visibility="{x:Bind ViewModel.IsEditing, Mode=OneWay}" />
 
             <Rectangle Height="2"
                        Fill="{ThemeResource SystemChromeGrayColor}"
@@ -41,11 +48,11 @@
                       HorizontalScrollMode="Disabled"
                       IsVerticalScrollChainingEnabled="False">
             <StackPanel Orientation="Vertical"
-                        Spacing="8"
-                        Visibility="{x:Bind ViewModel.IsNew, Mode=OneWay}">
+                        Spacing="8">
                 <NumberBox x:Uid="Members-AddIdBox"
                            AcceptsExpression="False"
                            IsEnabled="{x:Bind ViewModel.IsNew, Mode=OneWay}"
+                           Visibility="{x:Bind ViewModel.IsNew, Mode=OneWay}"
                            Value="{x:Bind ViewModel.Id, Mode=TwoWay}" />
                 <TextBox x:Uid="Members-AddNameBox"
                          Text="{x:Bind ViewModel.Name, Mode=TwoWay}" />
@@ -86,16 +93,20 @@
                 <Rectangle Width="Auto"
                            Height="1"
                            Margin="0,8"
-                           Fill="{StaticResource AppColor4}" />
+                           Fill="{StaticResource AppColor4}"
+                           Visibility="{x:Bind ViewModel.IsNew, Mode=OneWay}" />
                 <ToggleSwitch x:Name="UpdateLadderSwitch"
                               x:Uid="Members-CheckLadder"
-                              IsOn="{x:Bind ViewModel.CheckLadder, Mode=TwoWay}" />
+                              IsOn="{x:Bind ViewModel.CheckLadder, Mode=TwoWay}"
+                              Visibility="{x:Bind ViewModel.IsNew, Mode=OneWay}" />
                 <CheckBox x:Uid="Members-UpdatePlayer"
                           IsChecked="{x:Bind ViewModel.UpdateBeforeChecking, Mode=TwoWay}"
-                          IsEnabled="{x:Bind UpdateLadderSwitch.IsOn, Mode=OneWay}" />
+                          IsEnabled="{x:Bind UpdateLadderSwitch.IsOn, Mode=OneWay}"
+                          Visibility="{x:Bind ViewModel.IsNew, Mode=OneWay}" />
                 <CheckBox x:Uid="Members-CheckWinLose"
                           IsChecked="{x:Bind ViewModel.CheckWinLose, Mode=TwoWay}"
-                          IsEnabled="{x:Bind UpdateLadderSwitch.IsOn, Mode=OneWay}" />
+                          IsEnabled="{x:Bind UpdateLadderSwitch.IsOn, Mode=OneWay}"
+                          Visibility="{x:Bind ViewModel.IsNew, Mode=OneWay}" />
             </StackPanel>
         </ScrollViewer>
         <Rectangle Grid.Row="2"

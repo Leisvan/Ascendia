@@ -5,6 +5,7 @@ using AscendiaApp.ViewModels.Dialogs;
 using AscendiaApp.Views.Dialogs;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using LCTWorks.Telemetry;
 using LCTWorks.WinUI.Dialogs;
 using System.Collections.ObjectModel;
 using System.Threading;
@@ -17,12 +18,14 @@ public partial class MembersViewModel : ObservableObject
     private readonly CommunityService _communityService;
     private readonly DialogService _dialogService;
     private readonly ObservableCollection<MemberObservable> _members = [];
+    private readonly ITelemetryService _telemetryService;
     private CancellationTokenSource _cts = new();
 
-    public MembersViewModel(CommunityService communityService, DialogService dialogService)
+    public MembersViewModel(CommunityService communityService, DialogService dialogService, ITelemetryService telemetryService)
     {
         _communityService = communityService;
         _dialogService = dialogService;
+        _telemetryService = telemetryService;
         RefreshInternal(false);
     }
 

@@ -75,7 +75,7 @@ public partial class EditMemberViewModel(CommunityService communityService) : Ob
     public partial string? Phone { get; set; }
 
     [ObservableProperty]
-    public partial string? Position { get; set; }
+    public partial string? Position { get; set; } = 1.ToString();
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsBusy))]

@@ -3,10 +3,16 @@ using Ascendia.Core.Records;
 using Ascendia.Core.Strings;
 using LCTWorks.Core.Helpers;
 using LCTWorks.Core.Services;
+using LCTWorks.Telemetry;
+using Microsoft.Extensions.Logging;
 
 namespace Ascendia.Core.Services;
 
-public class CommunityService(CacheService cacheService, AirtableHttpService airtableService, LadderService ladderService)
+public class CommunityService(
+    CacheService cacheService,
+    AirtableHttpService airtableService,
+    LadderService ladderService,
+    ILogger<object> logger)
 {
     private const string MembersCacheFileName = "members.json";
     private const int MessageDelayInMilliseconds = 2000;
@@ -15,6 +21,7 @@ public class CommunityService(CacheService cacheService, AirtableHttpService air
     private readonly AirtableHttpService _airtableService = airtableService;
     private readonly CacheService _cacheService = cacheService;
     private readonly LadderService _ladderService = ladderService;
+    private readonly ILogger<object> _logger = logger;
     private List<MemberRecord> _members = [];
 
     public bool IsBusy { get; private set; } = false;
@@ -183,6 +190,7 @@ public class CommunityService(CacheService cacheService, AirtableHttpService air
             }
             notifications?.Invoke(this, string.Format(Messages.UpdateMemberProgressFormat, ++index, count));
             await Task.Delay(messageDelayInMilliseconds);
+            _logger.LogInformation($"Updating user {index} of {count}: {member.DisplayName} ({member.AccountId})");
 
             if (member.DisplayName == null || member.AccountId == null)
             {
@@ -191,12 +199,13 @@ public class CommunityService(CacheService cacheService, AirtableHttpService air
             WinLoseOpenDotaModel? winLoseData = null;
             PlayerOpenDotaModel? playerData = null;
             int attempts = 1;
-            while (playerData == null || winLoseData == null && attempts <= RequestRetryLimit)
+            while ((playerData == null || winLoseData == null) && attempts <= RequestRetryLimit)
             {
                 if (attempts > 1)
                 {
                     //previous attempt failed. Notify the user and wait before retrying
                     notifications?.Invoke(this, string.Format(Messages.ProgressRequestLimitReached, index, count));
+                    _logger.LogInformation($"Request limit reached. Waiting {RequestLimitWaitTimeInMilliseconds}ms.");
                     if (cancellationToken == null)
                     {
                         await Task.Delay(RequestLimitWaitTimeInMilliseconds);
@@ -207,15 +216,17 @@ public class CommunityService(CacheService cacheService, AirtableHttpService air
                         {
                             await Task.Delay(RequestLimitWaitTimeInMilliseconds, cancellationToken.Value);
                         }
-                        catch (Exception)
+                        catch (Exception e)
                         {
                             if (cancellationToken?.IsCancellationRequested == true)
                             {
                                 notifications?.Invoke(this, Messages.ProgressCancelling);
                                 break;
                             }
+                            _logger.LogInformation($"Error: {e.Message}");
                         }
                     }
+                    _logger.LogInformation("Waiting finished.");
                 }
                 var refresh = await _ladderService.RefreshPlayerAsync(member.AccountId);
                 if (refresh)

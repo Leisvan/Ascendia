@@ -186,4 +186,7 @@
   <data name="Members-NewTitleBlock.Text" xml:space="preserve">
     <value>Nuevo miembro</value>
   </data>
+  <data name="Members-EditTitleBlock.Text" xml:space="preserve">
+    <value>Editar miembro</value>
+  </data>
 </root>

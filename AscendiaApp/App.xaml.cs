@@ -59,7 +59,7 @@ public partial class App : Application, IAppExtended
                     config.AddProvider(new ConsoleSimpleLoggerProvider());
                 })
                 .AddSentry(configuration["Telemetry:key"], RuntimePackageHelper.Environment, RuntimePackageHelper.IsDebug(), RuntimePackageHelper.GetTelemetryContextData())
-                ;
+                .AddSerilog(AppStorageHelper.GetLocalFolder("Log").Path, RuntimePackageHelper.IsDebug() ? Serilog.Events.LogEventLevel.Debug : Serilog.Events.LogEventLevel.Information, RuntimePackageHelper.IsDebug(), includeConsole: true);
             }).Build();
 
         _telemetryService = GetService<ITelemetryService>();
