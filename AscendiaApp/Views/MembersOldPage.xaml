@@ -1,4 +1,5 @@
-<Page x:Class="AscendiaApp.Views.MembersPage"
+<?xml version="1.0" encoding="utf-8" ?>
+<Page x:Class="AscendiaApp.Views.MembersOldPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:adapters="using:LCTWorks.WinUI.Xaml.Adapters"
@@ -10,15 +11,22 @@
       mc:Ignorable="d">
 
     <Page.Resources>
-        <Style BasedOn="{StaticResource DefaultGridViewItemStyle}"
-               TargetType="GridViewItem">
+        <Style BasedOn="{StaticResource DefaultListViewItemStyle}"
+               TargetType="ListViewItem">
+            <Setter Property="Padding"
+                    Value="5,5,0,5" />
             <Setter Property="HorizontalContentAlignment"
                     Value="Stretch" />
         </Style>
     </Page.Resources>
 
     <Grid>
-
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="500"
+                              MinWidth="340"
+                              MaxWidth="600" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
         <Grid Margin="0,8"
               RowSpacing="8">
             <Grid.RowDefinitions>
@@ -76,63 +84,60 @@
             <Grid Grid.Row="1"
                   Background="{StaticResource AppColor3}"
                   CornerRadius="8">
-                <GridView Padding="8"
+                <ListView Padding="4,8"
                           ItemsSource="{x:Bind ViewModel.Members, Mode=OneWay}"
                           SelectedItem="{x:Bind ViewModel.SelectedMember, Mode=TwoWay}">
-                    <GridView.ItemTemplate>
+                    <ListView.ItemTemplate>
                         <DataTemplate x:DataType="observable:MemberObservable">
-                            <Grid Width="180"
-                                  Height="280"
-                                  Margin="8"
-                                  Background="{ThemeResource AppColor2}"
+                            <Grid Margin="8,0"
+                                  Padding="8"
+                                  Background="{StaticResource AppColor4}"
                                   CornerRadius="8">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-                                <Rectangle Height="56"
-                                           VerticalAlignment="Top"
-                                           Fill="{ThemeResource AppColor1}" />
-                                <Grid HorizontalAlignment="Center"
-                                      VerticalAlignment="Center">
-                                    <Ellipse Width="72"
-                                             Height="72"
-                                             Margin="8"
-                                             Stroke="{StaticResource AppColor4}"
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <Grid Width="56"
+                                      Height="56">
+                                    <Ellipse Stroke="{StaticResource AppColor2}"
                                              StrokeThickness="2">
                                         <Ellipse.Fill>
                                             <ImageBrush ImageSource="{x:Bind AvatarUrl, Mode=OneWay}" />
                                         </Ellipse.Fill>
                                     </Ellipse>
-                                    <Border Padding="6,4"
-                                            HorizontalAlignment="Right"
-                                            VerticalAlignment="Top"
-                                            Background="LightGoldenrodYellow"
-                                            CornerRadius="16"
-                                            Visibility="{x:Bind IsCaptain, Mode=OneWay}">
-                                        <TextBlock Foreground="{StaticResource TextColorDark1}"
-                                                   Style="{StaticResource MaterialSymbolsTextBlockStyle}"
-                                                   Text="crown" />
-                                    </Border>
-
                                 </Grid>
-
-                                <TextBlock Grid.Row="1"
-                                           HorizontalAlignment="Center"
-                                           HorizontalTextAlignment="Center"
-                                           Style="{StaticResource SmoothItemTitleTextBlockStyle}"
-                                           Text="{x:Bind DisplayName, Mode=OneWay}" />
-                                <TextBlock Grid.Row="2"
-                                           HorizontalAlignment="Center"
-                                           HorizontalTextAlignment="Center"
-                                           Opacity=".4"
-                                           Style="{StaticResource SmoothItemCaptionTextBlockStyle}"
-                                           Text="{x:Bind AccountName, Mode=OneWay}" />
+                                <Grid Grid.Column="1"
+                                      Margin="16,0,0,8"
+                                      VerticalAlignment="Center"
+                                      ColumnSpacing="8">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <!--  Style="{StaticResource AppItemMainTextStyle}"  -->
+                                    <TextBlock Text="{x:Bind DisplayName, Mode=OneWay}" />
+                                    <TextBlock Grid.Column="1"
+                                               VerticalAlignment="Center"
+                                               Opacity=".4"
+                                               Text="" />
+                                    <TextBlock Grid.Row="1"
+                                               Grid.ColumnSpan="2"
+                                               FontSize="14"
+                                               Text="{x:Bind Caption, Mode=OneWay}" />
+                                    <TextBlock Grid.Row="2"
+                                               Grid.ColumnSpan="2"
+                                               Text="{x:Bind Team, Mode=OneWay}" />
+                                </Grid>
                             </Grid>
                         </DataTemplate>
-                    </GridView.ItemTemplate>
-                </GridView>
+                    </ListView.ItemTemplate>
+                </ListView>
 
                 <Border VerticalAlignment="Stretch"
                         Background="{StaticResource AppColor3}"
@@ -155,5 +160,15 @@
                 </Border>
             </Grid>
         </Grid>
+        <toolkit:GridSplitter Grid.Column="1"
+                              Height="32"
+                              HorizontalAlignment="Left"
+                              VerticalAlignment="Center"
+                              ResizeBehavior="BasedOnAlignment"
+                              ResizeDirection="Auto">
+            <toolkit:GridSplitter.RenderTransform>
+                <TranslateTransform Y="-7" />
+            </toolkit:GridSplitter.RenderTransform>
+        </toolkit:GridSplitter>
     </Grid>
 </Page>

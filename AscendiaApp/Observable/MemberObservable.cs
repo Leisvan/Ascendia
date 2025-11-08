@@ -19,6 +19,10 @@ public partial class MemberObservable(MemberRecord record) : ObservableObject
 
     public string DisplayName => _record.DisplayName ?? string.Empty;
 
+    public bool IsCaptain => _record.IsCaptain ?? false;
+
+    public string AccountName => _record.AccountName ?? string.Empty;
+
     public MemberRecord Record => _record;
 
     public string Team => _record.Team ?? string.Empty;

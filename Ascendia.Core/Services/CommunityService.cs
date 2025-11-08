@@ -188,7 +188,9 @@ public class CommunityService(
             {
                 break;
             }
-            notifications?.Invoke(this, string.Format(Messages.UpdateMemberProgressFormat, ++index, count));
+            var displayName = $"{member.DisplayName ?? "?"} ({member.AccountId ?? "?"})";
+
+            notifications?.Invoke(this, string.Format(Messages.UpdateMemberProgressFormat, ++index, count, displayName));
             await Task.Delay(messageDelayInMilliseconds);
             _telemetryService.LogInformation(GetType(), message: $"Updating user {index} of {count}: {member.DisplayName} ({member.AccountId})");
 
@@ -204,7 +206,7 @@ public class CommunityService(
                 if (attempts > 1)
                 {
                     //previous attempt failed. Notify the user and wait before retrying
-                    notifications?.Invoke(this, string.Format(Messages.ProgressRequestLimitReached, index, count));
+                    notifications?.Invoke(this, string.Format(Messages.ProgressRequestLimitReached, index, count));                   
                     _telemetryService.LogInformation(GetType(), message: $"Request limit reached. Waiting {RequestLimitWaitTimeInMilliseconds}ms.");
                     if (cancellationToken == null)
                     {

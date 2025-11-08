@@ -189,4 +189,16 @@
   <data name="Members-EditTitleBlock.Text" xml:space="preserve">
     <value>Editar miembro</value>
   </data>
+  <data name="Dialog-RemoveMemberTitle" xml:space="preserve">
+    <value>Eliminar perfil</value>
+  </data>
+  <data name="Dialog-RemoveMemberMessage" xml:space="preserve">
+    <value>¿Está seguro de que quiere eliminar este perfil?</value>
+  </data>
+  <data name="Dialog-RemoveMemberPrimaryButtonText" xml:space="preserve">
+    <value>Eliminar</value>
+  </data>
+  <data name="Dialog-RemoveMemberSecondaryButtonText" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
 </root>

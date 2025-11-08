@@ -8,7 +8,9 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LCTWorks.Telemetry;
 using LCTWorks.WinUI.Dialogs;
+using LCTWorks.WinUI.Extensions;
 using Microsoft.Extensions.Logging;
+using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -166,7 +168,19 @@ public partial class MembersViewModel : ObservableObject
         {
             return;
         }
+        var results = await _dialogService.ShowDialogAsync(new ContentDialog
+        {
+            Title = "Dialog-RemoveMemberTitle".GetTextLocalized(),
+            Content = "Dialog-RemoveMemberMessage".GetTextLocalized(),
+            PrimaryButtonText = "Dialog-RemoveMemberPrimaryButtonText".GetTextLocalized(),
+            SecondaryButtonText = "Dialog-RemoveMemberSecondaryButtonText".GetTextLocalized(),
+        });
+        if (results != ContentDialogResult.Primary)
+        {
+            return;
+        }
         IsLoading = true;
+
         var success = await _communityService.RemoveMemberAsync(SelectedMember.Record.Id!);
         if (success)
         {
