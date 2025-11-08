@@ -88,11 +88,11 @@ jobs:
             AirBaseSettings = @{
               token = "${{ secrets.AIRBASE_TOKEN }}"
               baseId = "${{ secrets.AIRBASE_BASEID }}"
-            },
+            }
             DiscordSettings = @{
               token = "${{ secrets.DISCORD_TOKEN }}"
               clientSecret = "${{ secrets.DISCORD_CLIENT_SECRET }}"
-            },
+            }
             TelemetryKey = @{
               key = "${{ secrets.TELEMETRY_KEY }}"
             }
