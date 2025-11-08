@@ -46,8 +46,18 @@ public static class AirtableExtensions
         return newRecord;
     }
 
+    public static DiscordBotGuildSettingsRecord ToDiscordBotSettings(this AirtableRecord record)
+       => new(record.Id,
+           Number: record.GetField<int>(nameof(DiscordBotGuildSettingsRecord.Number)),
+           GuildId: record.GetField<string>(nameof(DiscordBotGuildSettingsRecord.GuildId)),
+           GuildName: record.GetField<string>(nameof(DiscordBotGuildSettingsRecord.GuildName)),
+           RankingChannelId: record.GetField<string>(nameof(DiscordBotGuildSettingsRecord.RankingChannelId)),
+           IsDebugGuild: record.GetField<bool>(nameof(DiscordBotGuildSettingsRecord.IsDebugGuild)),
+           RegionUpdateThresholdInMinutes: record.GetField<int>(nameof(DiscordBotGuildSettingsRecord.RegionUpdateThresholdInMinutes)),
+           Description: record.GetField<string>(nameof(DiscordBotGuildSettingsRecord.Description)));
+
     public static MemberRecord ToMemberRecord(this AirtableRecord record)
-            => new(
+                => new(
             record.Id,
             Number: record.GetField<int>(nameof(MemberRecord.Number)),
             DisplayName: record.GetField<string?>(nameof(MemberRecord.DisplayName)),

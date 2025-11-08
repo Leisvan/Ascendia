@@ -36,8 +36,6 @@ public partial class MembersViewModel : ObservableObject
         _dialogService = dialogService;
         _telemetryService = telemetryService;
         _logger = logger;
-
-        RefreshInternal(false);
     }
 
     public bool CancelEnabled => _cts != null && !_cts.IsCancellationRequested;
@@ -70,6 +68,19 @@ public partial class MembersViewModel : ObservableObject
 
     [ObservableProperty]
     public partial MemberObservable? SelectedMember { get; set; }
+
+    [RelayCommand]
+    public async Task Initialize()
+    {
+        if (IsLoading)
+        {
+            return;
+        }
+        IsLoading = true;
+        await _communityService.InitializeFromCacheAsync();
+        RefreshInternal(false);
+        IsLoading = false;
+    }
 
     [RelayCommand]
     private async Task AddMember()

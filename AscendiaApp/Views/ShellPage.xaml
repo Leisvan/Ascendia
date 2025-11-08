@@ -34,7 +34,9 @@
             <PivotItem x:Uid="ShellPivotItem-Members">
                 <views:MembersPage />
             </PivotItem>
-            <PivotItem x:Uid="ShellPivotItem-Bot" />
+            <PivotItem x:Uid="ShellPivotItem-Bot">
+                <views:BotPage />
+            </PivotItem>
         </Pivot>
         <TextBlock Grid.Row="1"
                    Margin="24,16"

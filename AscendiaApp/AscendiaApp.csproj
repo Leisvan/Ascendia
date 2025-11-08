@@ -33,6 +33,7 @@
     <None Remove="Assets\App\DefaultProfile.png" />
     <None Remove="Assets\Config\appsettings.json" />
     <None Remove="Styles\Colors.xaml" />
+    <None Remove="Views\BotPage.xaml" />
     <None Remove="Views\Dialogs\EditMemberContentDialog.xaml" />
     <None Remove="Views\MembersPage.xaml" />
     <None Remove="Views\ShellPage.xaml" />
@@ -60,6 +61,7 @@
     <ProjectCapability Include="Msix" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="CommunityToolkit.WinUI.Behaviors" Version="8.2.250402" />
     <PackageReference Include="CommunityToolkit.WinUI.Controls.HeaderedControls" Version="8.2.250402" />
     <PackageReference Include="CommunityToolkit.WinUI.Controls.Primitives" Version="8.2.250402" />
     <PackageReference Include="CommunityToolkit.WinUI.Controls.Segmented" Version="8.2.250402" />
@@ -73,6 +75,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Ascendia.Core\Ascendia.Core.csproj" />
+    <ProjectReference Include="..\Ascendia.Discord\Ascendia.Discord.csproj" />
     <ProjectReference Include="..\submodules\LCTWorks.Common\LCTWorks.Core\LCTWorks.Core.csproj" />
     <ProjectReference Include="..\submodules\LCTWorks.Common\LCTWorks.Telemetry\LCTWorks.Telemetry.csproj" />
     <ProjectReference Include="..\submodules\LCTWorks.Common\LCTWorks.WinUI\LCTWorks.WinUI.csproj" />
@@ -86,11 +89,6 @@
     <Content Update="Assets\Config\appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Update="Views\MembersOldPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Resources\Colors.xaml">
@@ -142,6 +140,11 @@
   </ItemGroup>
   <ItemGroup>
     <PRIResource Remove="AppPackages\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\BotPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Views\MembersPage.xaml">

@@ -1,4 +1,5 @@
 ﻿using Ascendia.Core.Services;
+using Ascendia.Discord;
 using AscendiaApp.ViewModels;
 using AscendiaApp.ViewModels.Dialogs;
 using AscendiaApp.Views;
@@ -52,12 +53,16 @@ public partial class App : Application, IAppExtended
                 //ViewModels:
                 .AddTransient<MembersViewModel>()
                 .AddTransient<EditMemberViewModel>()
+                .AddTransient<BotViewModel>()
                 //Discord bot
                 .AddLogging(config =>
                 {
                     config.AddConsole();
                     config.AddProvider(new ConsoleSimpleLoggerProvider());
                 })
+                .AddSingleton<DiscordBotService>()
+                .ConfigureDiscordClient(configuration["DiscordSettings:token"])
+                //Telemetry
                 .AddSentryAndSerilog(configuration["Telemetry:key"], RuntimePackageHelper.Environment, RuntimePackageHelper.IsDebug(), RuntimePackageHelper.GetTelemetryContextData());
             }).Build();
 

@@ -2,7 +2,9 @@
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:adapters="using:LCTWorks.WinUI.Xaml.Adapters"
+      xmlns:core="using:Microsoft.Xaml.Interactivity"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:i="using:Microsoft.Xaml.Interactivity"
       xmlns:local="using:AscendiaApp.Views"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:observable="using:AscendiaApp.Observable"
@@ -16,9 +18,13 @@
                     Value="Stretch" />
         </Style>
     </Page.Resources>
+    <i:Interaction.Behaviors>
+        <core:EventTriggerBehavior EventName="Loaded">
+            <core:InvokeCommandAction Command="{x:Bind ViewModel.InitializeCommand}" />
+        </core:EventTriggerBehavior>
+    </i:Interaction.Behaviors>
 
     <Grid>
-
         <Grid Margin="0,8"
               RowSpacing="8">
             <Grid.RowDefinitions>
@@ -115,7 +121,6 @@
                                                    Style="{StaticResource MaterialSymbolsTextBlockStyle}"
                                                    Text="crown" />
                                     </Border>
-
                                 </Grid>
 
                                 <TextBlock Grid.Row="1"

@@ -31,6 +31,16 @@ public class AirtableHttpService(string? airtableToken, string? baseId)
         return await UpdateRecordsAsync(MembersTableName, [airtableRecord]) > 0;
     }
 
+    public async Task<IEnumerable<DiscordBotGuildSettingsRecord>?> GetDiscordBotGuildsSettingsAsync()
+    {
+        var records = await GetRecordsAsync(GuildSettingsTableName);
+        if (records == null)
+        {
+            return null;
+        }
+        return records.Select(r => r.ToDiscordBotSettings());
+    }
+
     public async Task<IEnumerable<MemberRecord>?> GetMemberRecordsAsync()
     {
         if (!IsConfigured)

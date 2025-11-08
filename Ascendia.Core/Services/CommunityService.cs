@@ -18,8 +18,10 @@ public class CommunityService(
     private const int MessageDelayInMilliseconds = 2000;
     private const int RequestLimitWaitTimeInMilliseconds = 65000;
     private const int RequestRetryLimit = 2;
+    private const string SettingsCacheFileName = "settings.json";
     private readonly AirtableHttpService _airtableService = airtableService;
     private readonly CacheService _cacheService = cacheService;
+    private readonly List<GuildSettingsModel> _guildSettings = [];
     private readonly LadderService _ladderService = ladderService;
     private readonly List<MemberRecord> _members = [];
     private readonly ITelemetryService _telemetryService = telemetryService;
@@ -122,6 +124,21 @@ public class CommunityService(
         return await AddOrUpdateMemberAsync(record);
     }
 
+    public async Task<List<GuildSettingsModel>?> GetAllGuildSettingsAsync(bool forceRefresh = false)
+    {
+        if (forceRefresh || _guildSettings.Count == 0)
+        {
+            var guildSettings = await _airtableService.GetDiscordBotGuildsSettingsAsync();
+            if (guildSettings != null && guildSettings.Any())
+            {
+                _guildSettings.Clear();
+                _guildSettings.AddRange(guildSettings.Select(item => new GuildSettingsModel(item)));
+                await SaveToCacheAsync(false, true);
+            }
+        }
+        return _guildSettings;
+    }
+
     public async Task<List<MemberRecord>> GetAllMembersAsync(bool forceRefresh = false)
     {
         if (IsBusy)
@@ -129,10 +146,6 @@ public class CommunityService(
             return _members;
         }
         IsBusy = true;
-        if (_members.Count == 0 && !forceRefresh)
-        {
-            await LoadMembersFromCacheAsync();
-        }
         if (_members.Count == 0 || forceRefresh)
         {
             var records = await _airtableService.GetMemberRecordsAsync();
@@ -140,7 +153,7 @@ public class CommunityService(
             {
                 _members.Clear();
                 _members.AddRange(records.OrderBy(x => x.DisplayName));
-                await SaveMembersToCacheAsync();
+                await SaveToCacheAsync();
             }
         }
 
@@ -148,8 +161,24 @@ public class CommunityService(
         return _members;
     }
 
+    public async Task InitializeFromCacheAsync()
+    {
+        var cachedMembers = await _cacheService.GetCachedTextAsync(MembersCacheFileName);
+        if (!string.IsNullOrEmpty(cachedMembers))
+        {
+            var ordered = (Json.ToObject<List<MemberRecord>>(cachedMembers) ?? []).OrderBy(x => x.DisplayName);
+            _members.AddRange(ordered);
+        }
+        var settings = await _cacheService.GetCachedTextAsync(SettingsCacheFileName);
+        if (!string.IsNullOrEmpty(settings))
+        {
+            var guildSettings = Json.ToObject<List<GuildSettingsModel>>(settings) ?? [];
+            _guildSettings.AddRange(guildSettings);
+        }
+    }
+
     public bool MemberExists(string accountId)
-        => _members.Any(m => m.AccountId == accountId);
+            => _members.Any(m => m.AccountId == accountId);
 
     public async Task<bool> RemoveMemberAsync(string id)
     {
@@ -163,7 +192,7 @@ public class CommunityService(
         if (results && first != null)
         {
             _members.Remove(first);
-            await SaveMembersToCacheAsync();
+            await SaveToCacheAsync();
         }
         IsBusy = false;
         return results;
@@ -206,7 +235,7 @@ public class CommunityService(
                 if (attempts > 1)
                 {
                     //previous attempt failed. Notify the user and wait before retrying
-                    notifications?.Invoke(this, string.Format(Messages.ProgressRequestLimitReached, index, count));                   
+                    notifications?.Invoke(this, string.Format(Messages.ProgressRequestLimitReached, index, count));
                     _telemetryService.LogInformation(GetType(), message: $"Request limit reached. Waiting {RequestLimitWaitTimeInMilliseconds}ms.");
                     if (cancellationToken == null)
                     {
@@ -307,19 +336,23 @@ public class CommunityService(
     private Task<bool> AddOrUpdateMemberAsync(MemberRecord? record)
         => _airtableService.CreateOrEditMemberAsync(record);
 
-    private async Task LoadMembersFromCacheAsync()
+    private async Task SaveToCacheAsync(bool saveMembers = true, bool saveSettings = false)
     {
-        var cachedMembers = await _cacheService.GetCachedTextAsync(MembersCacheFileName);
-        if (!string.IsNullOrEmpty(cachedMembers))
+        try
         {
-            var ordered = (Json.ToObject<List<MemberRecord>>(cachedMembers) ?? []).OrderBy(x => x.DisplayName);
-            _members.AddRange(ordered);
+            if (saveMembers && _members != null && _members.Count > 0)
+            {
+                var json = Json.Stringify(_members);
+                await _cacheService.CacheTextFileAsync(MembersCacheFileName, json);
+            }
+            if (saveSettings && _guildSettings != null && _guildSettings.Count > 0)
+            {
+                var json = await Json.StringifyAsync(_guildSettings);
+                await _cacheService.CacheTextFileAsync(SettingsCacheFileName, json);
+            }
         }
-    }
-
-    private async Task SaveMembersToCacheAsync()
-    {
-        var json = Json.Stringify(_members);
-        await _cacheService.CacheTextFileAsync(MembersCacheFileName, json);
+        catch
+        {
+        }
     }
 }
