@@ -25,6 +25,7 @@
             <ColumnDefinition Width="500"
                               MinWidth="340"
                               MaxWidth="600" />
+            <ColumnDefinition Width="Auto" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <Grid Margin="0,8"
@@ -170,5 +171,7 @@
                 <TranslateTransform Y="-7" />
             </toolkit:GridSplitter.RenderTransform>
         </toolkit:GridSplitter>
+        <ListView x:Name="Lview"
+                  Grid.Column="2" />
     </Grid>
 </Page>

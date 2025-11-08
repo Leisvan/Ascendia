@@ -12,7 +12,7 @@ public class CommunityService(
     CacheService cacheService,
     AirtableHttpService airtableService,
     LadderService ladderService,
-    ILogger<object> logger)
+   ITelemetryService telemetryService)
 {
     private const string MembersCacheFileName = "members.json";
     private const int MessageDelayInMilliseconds = 2000;
@@ -21,8 +21,8 @@ public class CommunityService(
     private readonly AirtableHttpService _airtableService = airtableService;
     private readonly CacheService _cacheService = cacheService;
     private readonly LadderService _ladderService = ladderService;
-    private readonly ILogger<object> _logger = logger;
-    private List<MemberRecord> _members = [];
+    private readonly List<MemberRecord> _members = [];
+    private readonly ITelemetryService _telemetryService = telemetryService;
 
     public bool IsBusy { get; private set; } = false;
 
@@ -133,7 +133,7 @@ public class CommunityService(
         {
             await LoadMembersFromCacheAsync();
         }
-        if (forceRefresh)
+        if (_members.Count == 0 || forceRefresh)
         {
             var records = await _airtableService.GetMemberRecordsAsync();
             if (records != null)
@@ -190,7 +190,7 @@ public class CommunityService(
             }
             notifications?.Invoke(this, string.Format(Messages.UpdateMemberProgressFormat, ++index, count));
             await Task.Delay(messageDelayInMilliseconds);
-            _logger.LogInformation($"Updating user {index} of {count}: {member.DisplayName} ({member.AccountId})");
+            _telemetryService.LogInformation(GetType(), message: $"Updating user {index} of {count}: {member.DisplayName} ({member.AccountId})");
 
             if (member.DisplayName == null || member.AccountId == null)
             {
@@ -205,7 +205,7 @@ public class CommunityService(
                 {
                     //previous attempt failed. Notify the user and wait before retrying
                     notifications?.Invoke(this, string.Format(Messages.ProgressRequestLimitReached, index, count));
-                    _logger.LogInformation($"Request limit reached. Waiting {RequestLimitWaitTimeInMilliseconds}ms.");
+                    _telemetryService.LogInformation(GetType(), message: $"Request limit reached. Waiting {RequestLimitWaitTimeInMilliseconds}ms.");
                     if (cancellationToken == null)
                     {
                         await Task.Delay(RequestLimitWaitTimeInMilliseconds);
@@ -223,10 +223,10 @@ public class CommunityService(
                                 notifications?.Invoke(this, Messages.ProgressCancelling);
                                 break;
                             }
-                            _logger.LogInformation($"Error: {e.Message}");
+                            _telemetryService.LogInformation(GetType(), message: $"Error: {e.Message}");
                         }
                     }
-                    _logger.LogInformation("Waiting finished.");
+                    _telemetryService.LogInformation(GetType(), message: "Waiting finished.");
                 }
                 var refresh = await _ladderService.RefreshPlayerAsync(member.AccountId);
                 if (refresh)

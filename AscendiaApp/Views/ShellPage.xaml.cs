@@ -11,4 +11,6 @@ public sealed partial class ShellPage : Page
         InitializeComponent();
         TitleBarHelper.Extend(AppTitleBar, AppTitleBarText, "AppDisplayName".GetTextLocalized());
     }
+
+    public string Version { get; } = RuntimePackageHelper.IsDebug() ? "Debug" : RuntimePackageHelper.GetPackageVersion();
 }

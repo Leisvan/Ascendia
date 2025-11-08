@@ -16,6 +16,7 @@
               Padding="16,0"
               HorizontalAlignment="Stretch"
               VerticalAlignment="Stretch"
+              Background="{StaticResource AppColor1}"
               ColumnSpacing="8">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
@@ -35,5 +36,11 @@
             </PivotItem>
             <PivotItem x:Uid="ShellPivotItem-Bot" />
         </Pivot>
+        <TextBlock Grid.Row="1"
+                   Margin="24,16"
+                   HorizontalAlignment="Right"
+                   VerticalAlignment="Top"
+                   Opacity=".4"
+                   Text="{x:Bind Version}" />
     </Grid>
 </Page>
