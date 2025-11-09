@@ -33,6 +33,7 @@
     <None Remove="Assets\App\DefaultProfile.png" />
     <None Remove="Assets\Config\appsettings.json" />
     <None Remove="Styles\Colors.xaml" />
+    <None Remove="Views\AboutPage.xaml" />
     <None Remove="Views\BotPage.xaml" />
     <None Remove="Views\Dialogs\EditMemberContentDialog.xaml" />
     <None Remove="Views\MembersPage.xaml" />
@@ -140,6 +141,11 @@
   </ItemGroup>
   <ItemGroup>
     <PRIResource Remove="AppPackages\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\AboutPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Views\BotPage.xaml">

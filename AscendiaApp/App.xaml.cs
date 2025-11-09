@@ -54,6 +54,7 @@ public partial class App : Application, IAppExtended
                 .AddTransient<MembersViewModel>()
                 .AddTransient<EditMemberViewModel>()
                 .AddTransient<BotViewModel>()
+                .AddTransient<AboutViewModel>()
                 //Discord bot
                 .AddLogging(config =>
                 {

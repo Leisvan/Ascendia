@@ -207,4 +207,7 @@
   <data name="Members-AddNotesBox.Header" xml:space="preserve">
     <value>Notas</value>
   </data>
+  <data name="ShellPivotItem-About.Header" xml:space="preserve">
+    <value>Info</value>
+  </data>
 </root>

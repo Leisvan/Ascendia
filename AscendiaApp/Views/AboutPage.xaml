@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Page x:Class="AscendiaApp.Views.AboutPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:lctworks="using:LCTWorks.WinUI.Controls"
+      xmlns:local="using:AscendiaApp.Views"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      mc:Ignorable="d">
+
+    <Grid Margin="0,8"
+          Background="{StaticResource AppColor3}"
+          CornerRadius="8"
+          RowSpacing="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Image Grid.RowSpan="2"
+                   Width="64"
+                   Height="64"
+                   Margin="16"
+                   Source="/Assets/StoreLogo.png" />
+            <TextBlock Grid.Column="1"
+                       VerticalAlignment="Bottom"
+                       Style="{StaticResource SmoothItemTitleTextBlockStyle}"
+                       Text="{x:Bind ViewModel.AppName}" />
+            <TextBlock Grid.Row="1"
+                       Grid.Column="1"
+                       VerticalAlignment="Top"
+                       Style="{StaticResource SmoothItemCaptionTextBlockStyle}">
+                <Run Text="{x:Bind ViewModel.AppVersion}" />
+                <Run Text=" • " />
+                <Run Text="{x:Bind ViewModel.Architecture}" />
+            </TextBlock>
+        </Grid>
+        <StackPanel Grid.Row="1"
+                    Margin="8,0"
+                    Orientation="Vertical"
+                    Spacing="4">
+            <HyperlinkButton Content="Github repository"
+                             NavigateUri="https://github.com/Leisvan/ascendia" />
+        </StackPanel>
+    </Grid>
+</Page> 
