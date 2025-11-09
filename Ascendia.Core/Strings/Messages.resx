@@ -149,7 +149,6 @@
     <value>No se pudo acceder a W/L</value>
   </data>
   <data name="UpdateMemberProgressFormat" xml:space="preserve">
-    <value>Actualizando {0} de {1} perfiles.
-{2}</value>
+    <value>Obteniendo perfiles. {0} de {1}. `{2}`</value>
   </data>
 </root>

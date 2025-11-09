@@ -30,7 +30,7 @@
                        VerticalAlignment="Center" />
         </Grid>
         <Pivot Grid.Row="1"
-               Margin="16,0">
+               Margin="4,0">
             <PivotItem x:Uid="ShellPivotItem-Members">
                 <views:MembersPage />
             </PivotItem>

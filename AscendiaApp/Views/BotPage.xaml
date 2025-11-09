@@ -11,7 +11,8 @@
       xmlns:ui="using:CommunityToolkit.WinUI"
       mc:Ignorable="d">
 
-    <Grid>
+    <Grid Margin="0,8"
+          ColumnSpacing="4">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="500"
                               MinWidth="340"
@@ -19,8 +20,7 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <Grid Margin="8"
-              Background="{StaticResource AppColor1}"
+        <Grid Background="{StaticResource AppColor1}"
               CornerRadius="8">
             <Grid.RowDefinitions>
                 <RowDefinition Height="68" />
@@ -66,7 +66,6 @@
         </Grid>
 
         <ScrollViewer Grid.Column="2"
-                      Margin="0,8"
                       HorizontalAlignment="Stretch">
             <Grid RowSpacing="8">
                 <Grid.RowDefinitions>
@@ -79,7 +78,18 @@
                 <controls:SettingsExpander Description="Lista de configuraciones en uso por el bot"
                                            Header="Config"
                                            HeaderIcon="{ui:FontIcon Glyph=&#xE713;}"
-                                           IsEnabled="{x:Bind ViewModel.IsConnected, Mode=OneWay}" />
+                                           IsEnabled="{x:Bind ViewModel.IsConnected, Mode=OneWay}">
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="8">
+                        <ComboBox MinWidth="220"
+                                  ItemsSource="{x:Bind ViewModel.Guilds, Mode=OneWay}"
+                                  SelectedItem="{x:Bind ViewModel.SelectedGuild, Mode=TwoWay}" />
+                        <Button Command="{x:Bind ViewModel.RefreshCommand}"
+                                IsEnabled="{x:Bind ViewModel.IsRankingIdle, Mode=OneWay}">
+                            <FontIcon Glyph="&#xE895;" />
+                        </Button>
+                    </StackPanel>
+                </controls:SettingsExpander>
             </Grid>
         </ScrollViewer>
     </Grid>

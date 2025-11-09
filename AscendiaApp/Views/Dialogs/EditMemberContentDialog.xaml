@@ -90,6 +90,12 @@
                 <TextBox x:Uid="Members-AddCountryBox"
                          Text="{x:Bind ViewModel.Country, Mode=TwoWay}" />
 
+                <TextBox x:Uid="Members-AddNotesBox"
+                         Height="120"
+                         AcceptsReturn="True"
+                         MaxLength="2048"
+                         Text="{x:Bind ViewModel.Notes, Mode=TwoWay}" />
+
                 <Rectangle Width="Auto"
                            Height="1"
                            Margin="0,8"
@@ -122,19 +128,19 @@
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <lctworks:ThemedButton x:Uid="Dialog-OkButton"
-                                   MinWidth="120"
-                                   HorizontalAlignment="Stretch"
-                                   VerticalAlignment="Center"
-                                   Command="{x:Bind ViewModel.StartAddingCommand, Mode=OneWay}"
-                                   Style="{StaticResource AccentThemedButtonStyle}" />
-            <lctworks:ThemedButton x:Uid="Dialog-CancelButton"
-                                   Grid.Column="1"
-                                   MinWidth="120"
-                                   HorizontalAlignment="Stretch"
-                                   VerticalAlignment="Center"
-                                   VerticalContentAlignment="Center"
-                                   Command="{x:Bind ViewModel.CancelCommand, Mode=OneWay}" />
+            <Button x:Uid="Dialog-OkButton"
+                    MinWidth="120"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Center"
+                    Command="{x:Bind ViewModel.StartAddingCommand, Mode=OneWay}"
+                    Style="{StaticResource AccentButtonStyle}" />
+            <Button x:Uid="Dialog-CancelButton"
+                    Grid.Column="1"
+                    MinWidth="120"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Command="{x:Bind ViewModel.CancelCommand, Mode=OneWay}" />
         </Grid>
 
         <Grid Grid.RowSpan="3"
@@ -151,7 +157,6 @@
             </StackPanel>
             <Grid HorizontalAlignment="Center"
                   VerticalAlignment="Stretch"
-                  RowSpacing="32"
                   Visibility="{x:Bind ViewModel.IsFinished, Mode=OneWay}">
                 <Grid.RowDefinitions>
                     <RowDefinition />
@@ -173,6 +178,14 @@
                                Style="{StaticResource SmoothSubtitleTextBlockStyle}"
                                TextAlignment="Center"
                                TextWrapping="WrapWholeWords" />
+                    <Button x:Uid="Dialog-Ok2Button"
+                            Grid.Row="1"
+                            MinWidth="120"
+                            Margin="0,32"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Top"
+                            Command="{x:Bind ViewModel.AcceptFinishedCommand}"
+                            Style="{StaticResource AccentButtonStyle}" />
                 </StackPanel>
                 <StackPanel HorizontalAlignment="Center"
                             VerticalAlignment="Center"
@@ -190,15 +203,16 @@
                                Text="{x:Bind ViewModel.ErrorMessage, Mode=OneWay}"
                                TextAlignment="Center"
                                TextWrapping="WrapWholeWords" />
+                    <Button x:Uid="Dialog-Ok2Button"
+                            Grid.Row="1"
+                            MinWidth="120"
+                            Margin="0,32"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Top"
+                            Command="{x:Bind ViewModel.AcceptFinishedCommand}"
+                            Style="{StaticResource AccentButtonStyle}" />
                 </StackPanel>
-                <lctworks:ThemedButton x:Uid="Dialog-OkButton"
-                                       Grid.Row="1"
-                                       MinWidth="120"
-                                       Margin="0,32"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Bottom"
-                                       Command="{x:Bind ViewModel.AcceptFinishedCommand}"
-                                       Style="{StaticResource AccentThemedButtonStyle}" />
+
             </Grid>
         </Grid>
     </Grid>

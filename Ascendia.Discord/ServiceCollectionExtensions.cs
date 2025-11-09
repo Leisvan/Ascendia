@@ -19,9 +19,10 @@ namespace Ascendia.Discord
                 .AddDiscordClient(token, DiscordIntents.Guilds | DiscordIntents.AllUnprivileged | DiscordIntents.MessageContents | SlashCommandProcessor.RequiredIntents)
                 .AddCommandsExtension((serviceProvider, extension) =>
                 {
-                    extension.AddCommands([typeof(TestCommand)]);
+                    extension.AddCommands([typeof(PlayersCommand)]);
                 })
-                .AddInteractivityExtension();
+                .AddInteractivityExtension()
+                .ConfigureEventHandlers(b => b.AddEventHandlers<ComponentInteractionCreatedEventHandler>(ServiceLifetime.Singleton));
 
             return services;
         }

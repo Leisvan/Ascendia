@@ -1,7 +1,11 @@
 ﻿using Ascendia.Core.Interactivity;
 using Ascendia.Core.Models;
 using Ascendia.Core.Services;
+using Ascendia.Discord.Internal;
+using Ascendia.Discord.Strings;
 using DSharpPlus;
+using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
 using DSharpPlus.Interactivity;
 
 namespace Ascendia.Discord;
@@ -20,6 +24,11 @@ public class DiscordBotService
     }
 
     public DiscordClient Client => _client;
+
+    internal GuildActionsService Actions => _guildActions;
+
+    public void CancelOperation()
+        => _guildActions.CancelOperation();
 
     public async Task<bool> ConnectAsync()
     {
@@ -58,5 +67,30 @@ public class DiscordBotService
             members = members?.Where(x => !x.Record.IsDebugGuild).ToList();
         }
         return members;
+    }
+
+    public async Task<bool> UpdateMemberRegionsAsync(bool forceUpdate = false, bool includeWL = true, ulong guildId = 0)
+    {
+        var guildSettings = _communityService.GetGuildSettings(guildId);
+        if (guildSettings == null || !ulong.TryParse(guildSettings.RankingChannelId, out ulong channelId) || channelId == 0)
+        {
+            var errorMessage = MessageResources.ChannelIdNotFoundErrorMessage;
+            LogNotifier.NotifyError(errorMessage);
+            return false;
+        }
+        var errorResult = await _guildActions.UpdateMemberRegionsAsync(forceUpdate, includeWL, channelId);
+        return errorResult == null;
+    }
+
+    internal async Task RespondToInteractionAsync(ComponentInteractionCreatedEventArgs args)
+    {
+        if (args.Id == InteractionsHelper.CancelRegionUpdateButtonId)
+        {
+            CancelOperation();
+            var builder = new DiscordInteractionResponseBuilder()
+                .WithContent(MessageResources.OperationCancellingMessage);
+
+            await args.Interaction.CreateResponseAsync(DiscordInteractionResponseType.UpdateMessage, builder);
+        }
     }
 }

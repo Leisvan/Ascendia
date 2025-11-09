@@ -4,6 +4,10 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
+  <Folder Name="/.assets/">
+    <File Path=".assets/Ascendia.Logo.png" />
+    <File Path=".assets/AvatarLogo.png" />
+  </Folder>
   <Folder Name="/.github-workflows/">
     <File Path=".github/workflows/build.yml" />
     <File Path=".github/workflows/BuildAndDeployStart.yml" />

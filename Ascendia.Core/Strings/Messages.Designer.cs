@@ -152,8 +152,7 @@ namespace Ascendia.Core.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Actualizando {0} de {1} perfiles.
-        ///{2}.
+        ///   Looks up a localized string similar to Obteniendo perfiles. {0} de {1}. `{2}`.
         /// </summary>
         internal static string UpdateMemberProgressFormat {
             get {

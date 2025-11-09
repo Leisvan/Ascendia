@@ -117,94 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AddMember-FailedDefaultMessage" xml:space="preserve">
-    <value>Hubo un error. Inténtelo de nuevo</value>
+  <data name="AccessingMembersListMessage" xml:space="preserve">
+    <value>Accediendo a la lista de miembros.</value>
   </data>
-  <data name="AddMember-IdRequiredErrorMessage" xml:space="preserve">
-    <value>Es necesario un Id válido para crear un nuevo perfil.</value>
+  <data name="ChannelIdNotFoundErrorMessage" xml:space="preserve">
+    <value>Id del canal no encontrado.</value>
   </data>
-  <data name="AddMember-SuccessBox.Text" xml:space="preserve">
-    <value>Se agregó el perfil con éxito</value>
+  <data name="OperationAlredyInProgressMessage" xml:space="preserve">
+    <value>La operación ya está en progreso.</value>
   </data>
-  <data name="AppDisplayName" xml:space="preserve">
-    <value>Ascendia - Dota 2</value>
+  <data name="OperationCancelledMessage" xml:space="preserve">
+    <value>Operación cancelada.</value>
   </data>
-  <data name="Dialog-CancelButton.Content" xml:space="preserve">
-    <value>Cancelar</value>
+  <data name="OperationCancellingMessage" xml:space="preserve">
+    <value>Cancelando operación...</value>
   </data>
-  <data name="Dialog-OkButton.Content" xml:space="preserve">
-    <value>Aceptar</value>
+  <data name="StartingOperationMessage" xml:space="preserve">
+    <value>Iniciando. Por favor, espere.</value>
   </data>
-  <data name="Members-AddIdBox.Header" xml:space="preserve">
-    <value>El Id del nuevo miembro (Obligatorio)</value>
-  </data>
-  <data name="Members-AddNameBox.Header" xml:space="preserve">
-    <value>Nick a mostrar</value>
-  </data>
-  <data name="Members-AddTeamBox.Header" xml:space="preserve">
-    <value>Team</value>
-  </data>
-  <data name="Members-AddPhoneBox.Header" xml:space="preserve">
-    <value>Teléfono</value>
-  </data>
-  <data name="Members-AddEmailBox.Header" xml:space="preserve">
-    <value>E-Mail</value>
-  </data>
-  <data name="Members-AddCountryBox.Header" xml:space="preserve">
-    <value>País</value>
-  </data>
-  <data name="Members-CancelButton.Content" xml:space="preserve">
-    <value>Cancelar</value>
-  </data>
-  <data name="Members-UpdatePlayer.Content" xml:space="preserve">
-    <value>Actualizar jugador (Refresh)</value>
-  </data>
-  <data name="Members-IsCaptain.Content" xml:space="preserve">
-    <value>Capitán</value>
-  </data>
-  <data name="Members-PositionsHeader.Header" xml:space="preserve">
-    <value>Posición</value>
-  </data>
-  <data name="Members-CheckLadder.OnContent" xml:space="preserve">
-    <value>Actualizar ladder</value>
-  </data>
-  <data name="Members-CheckLadder.OffContent" xml:space="preserve">
-    <value>Actualizar ladder</value>
-  </data>
-  <data name="Members-CheckWinLose.Content" xml:space="preserve">
-    <value>Actualizar Win/Lose</value>
-  </data>
-  <data name="Members-SearchBox.PlaceholderText" xml:space="preserve">
-    <value>Buscar</value>
-  </data>
-  <data name="ShellPivotItem-Bot.Header" xml:space="preserve">
-    <value>Bot</value>
-  </data>
-  <data name="ShellPivotItem-Members.Header" xml:space="preserve">
-    <value>Perfiles</value>
-  </data>
-  <data name="Members-NewTitleBlock.Text" xml:space="preserve">
-    <value>Nuevo miembro</value>
-  </data>
-  <data name="Members-EditTitleBlock.Text" xml:space="preserve">
-    <value>Editar miembro</value>
-  </data>
-  <data name="Dialog-RemoveMemberTitle" xml:space="preserve">
-    <value>Eliminar perfil</value>
-  </data>
-  <data name="Dialog-RemoveMemberMessage" xml:space="preserve">
-    <value>¿Está seguro de que quiere eliminar este perfil?</value>
-  </data>
-  <data name="Dialog-RemoveMemberPrimaryButtonText" xml:space="preserve">
-    <value>Eliminar</value>
-  </data>
-  <data name="Dialog-RemoveMemberSecondaryButtonText" xml:space="preserve">
-    <value>Cancelar</value>
-  </data>
-  <data name="Dialog-Ok2Button.Content" xml:space="preserve">
-    <value>Vale</value>
-  </data>
-  <data name="Members-AddNotesBox.Header" xml:space="preserve">
-    <value>Notas</value>
+  <data name="UpdatedProfilesCountFormat" xml:space="preserve">
+    <value>{0} perfiles actualizados.</value>
   </data>
 </root>

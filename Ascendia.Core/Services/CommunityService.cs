@@ -37,6 +37,7 @@ public class CommunityService(
         string? country = null,
         bool? isCaptain = false,
         string? position = null,
+        string? notes = null,
         bool checkLadder = true,
         bool refreshPlayer = true,
         bool checkWinLose = true,
@@ -94,7 +95,7 @@ public class CommunityService(
             name = player?.Profile?.PersonaName ?? Messages.DefaultPlayerName;
         }
 
-        MemberRecord record = CreateMemberRecord("", name, accountId, team, phone, email, country, isCaptain, position, player, winLose);
+        MemberRecord record = CreateMemberRecord("", name, accountId, team, phone, email, country, isCaptain, position, notes, player, winLose);
         IsBusy = false;
         return await AddOrUpdateMemberAsync(record);
     }
@@ -109,6 +110,7 @@ public class CommunityService(
         string? country = null,
         bool? isCaptain = false,
         string? position = null,
+        string? notes = null,
         EventHandler<string>? notifications = null)
     {
         if (IsBusy)
@@ -119,7 +121,7 @@ public class CommunityService(
 
         notifications?.Invoke(this, Messages.ProgressAddToDb);
 
-        MemberRecord record = CreateMemberRecord(id, name, accountId, team, phone, email, country, isCaptain, position);
+        MemberRecord record = CreateMemberRecord(id, name, accountId, team, phone, email, country, isCaptain, position, notes);
         IsBusy = false;
         return await AddOrUpdateMemberAsync(record);
     }
@@ -161,6 +163,15 @@ public class CommunityService(
         return _members;
     }
 
+    public GuildSettingsModel? GetGuildSettings(ulong guildId)
+    {
+        if (_guildSettings == null || _guildSettings.Count == 0)
+        {
+            return default;
+        }
+        return _guildSettings.FirstOrDefault(x => x.GuildId == guildId);
+    }
+
     public async Task InitializeFromCacheAsync()
     {
         var cachedMembers = await _cacheService.GetCachedTextAsync(MembersCacheFileName);
@@ -198,7 +209,7 @@ public class CommunityService(
         return results;
     }
 
-    public async Task<int> UpdateLadderAsync(bool incudeWL = true, EventHandler<string>? notifications = null, int messageDelayInMilliseconds = MessageDelayInMilliseconds, CancellationToken? cancellationToken = null)
+    public async Task<int> UpdatePlayersAsync(bool incudeWL = true, EventHandler<string>? notifications = null, int messageDelayInMilliseconds = MessageDelayInMilliseconds, CancellationToken? cancellationToken = null)
     {
         //If updates to those > last hour, POST refresh.
         IsBusy = true;
@@ -206,6 +217,7 @@ public class CommunityService(
             .Where(m => m.IsEnabled)
             //.Where(m => m.AccountId == "190234148")
             .OrderBy(m => m.LastUpdated)
+            //.Take(2)
             .ToList();
 
         var count = membersToUpdate.Count;
@@ -217,7 +229,7 @@ public class CommunityService(
             {
                 break;
             }
-            var displayName = $"{member.DisplayName ?? "?"} ({member.AccountId ?? "?"})";
+            var displayName = $"{member.DisplayName ?? "?"}";
 
             notifications?.Invoke(this, string.Format(Messages.UpdateMemberProgressFormat, ++index, count, displayName));
             await Task.Delay(messageDelayInMilliseconds);
@@ -271,7 +283,7 @@ public class CommunityService(
                 attempts++;
             }
 
-            var record = CreateMemberRecord(member.Id, member.DisplayName, member.AccountId, member.Team, member.Phone, member.Email, member.Country, member.IsCaptain, member.Position, playerData, winLoseData, member);
+            var record = CreateMemberRecord(member.Id, member.DisplayName, member.AccountId, member.Team, member.Phone, member.Email, member.Country, member.IsCaptain, member.Position, member.Notes, playerData, winLoseData, member);
             updatedRecords.Add(record);
         }
 
@@ -290,6 +302,7 @@ public class CommunityService(
         string? country = null,
         bool? isCaptain = null,
         string? position = null,
+        string? notes = null,
         PlayerOpenDotaModel? player = null,
         WinLoseOpenDotaModel? winLose = null,
         MemberRecord? previousRecord = null)
@@ -330,6 +343,7 @@ public class CommunityService(
             LastChange = lastChange,
             IsEnabled = true,
             Team = team ?? string.Empty,
+            Notes = notes ?? string.Empty,
         };
     }
 

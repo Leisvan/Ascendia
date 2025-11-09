@@ -33,6 +33,9 @@ public partial class EditMemberViewModel(CommunityService communityService) : Ob
     [ObservableProperty]
     public partial string? EMail { get; set; }
 
+    [ObservableProperty]
+    public partial string? Notes { get; set; }
+
     public string? ErrorMessage
     {
         get => _errorMessage ?? "AddMember-FailedDefaultMessage".GetTextLocalized();
@@ -114,6 +117,7 @@ public partial class EditMemberViewModel(CommunityService communityService) : Ob
         Country = member.Record.Country;
         IsCaptain = member.Record.IsCaptain ?? false;
         Position = member.Record.Position;
+        Notes = member.Record.Notes;
     }
 
     [RelayCommand]
@@ -166,14 +170,14 @@ public partial class EditMemberViewModel(CommunityService communityService) : Ob
                 {
                     Name = EditMember!.Record.DisplayName ?? string.Empty;
                 }
-                success = await _communityService.EditMemberAsync(EditMember!.Record.Id, Name, idStr, Team, Phone, EMail, Country, IsCaptain, Position, (s, e) =>
+                success = await _communityService.EditMemberAsync(EditMember!.Record.Id, Name, idStr, Team, Phone, EMail, Country, IsCaptain, Position, Notes, (s, e) =>
                 {
                     ProgressNotificationMessage = e;
                 });
             }
             else
             {
-                success = await _communityService.AddNewMemberAsync(Name, idStr, Team, Phone, EMail, Country, IsCaptain, Position, CheckLadder, UpdateBeforeChecking, CheckWinLose ?? false, (s, e) =>
+                success = await _communityService.AddNewMemberAsync(Name, idStr, Team, Phone, EMail, Country, IsCaptain, Position, Notes, CheckLadder, UpdateBeforeChecking, CheckWinLose ?? false, (s, e) =>
                 {
                     ProgressNotificationMessage = e;
                 });

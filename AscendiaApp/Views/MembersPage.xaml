@@ -24,141 +24,132 @@
         </core:EventTriggerBehavior>
     </i:Interaction.Behaviors>
 
-    <Grid>
-        <Grid Margin="0,8"
-              RowSpacing="8">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition />
-            </Grid.RowDefinitions>
-            <Grid Padding="8"
-                  Background="{StaticResource AppColor3}"
-                  ColumnSpacing="8"
-                  CornerRadius="8">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <AutoSuggestBox x:Uid="Members-SearchBox"
-                                QueryIcon="Find"
-                                Text="{x:Bind ViewModel.SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                <StackPanel Grid.Column="1"
-                            Orientation="Horizontal"
-                            Spacing="8">
+    <Grid Margin="0,8"
+          RowSpacing="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid Padding="8"
+              Background="{StaticResource AppColor3}"
+              ColumnSpacing="8"
+              CornerRadius="8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <AutoSuggestBox x:Uid="Members-SearchBox"
+                            QueryIcon="Find"
+                            Text="{x:Bind ViewModel.SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <StackPanel Grid.Column="1"
+                        Orientation="Horizontal"
+                        Spacing="8">
 
-                    <Button VerticalAlignment="Stretch"
-                            Command="{x:Bind ViewModel.AddMemberCommand}"
-                            IsEnabled="{x:Bind ViewModel.NotLoading, Mode=OneWay}">
-                        <FontIcon FontFamily="{StaticResource MaterialSymbolsFontFamily}"
-                                  Glyph="Add" />
-                    </Button>
-                    <Button VerticalAlignment="Stretch"
-                            Command="{x:Bind ViewModel.EditSelectedMemberCommand}"
-                            IsEnabled="{x:Bind ViewModel.NotLoading, Mode=OneWay}">
-                        <FontIcon FontFamily="{StaticResource MaterialSymbolsFontFamily}"
-                                  Glyph="edit" />
-                    </Button>
-                    <Button VerticalAlignment="Stretch"
-                            Command="{x:Bind ViewModel.RemoveSelectedMemberCommand}"
-                            IsEnabled="{x:Bind ViewModel.NotLoading, Mode=OneWay}">
-                        <FontIcon FontFamily="{StaticResource MaterialSymbolsFontFamily}"
-                                  Glyph="delete_forever" />
-                    </Button>
-                    <Button VerticalAlignment="Stretch"
-                            Command="{x:Bind ViewModel.RefreshCommand}"
-                            IsEnabled="{x:Bind ViewModel.NotLoading, Mode=OneWay}">
-                        <FontIcon FontFamily="{StaticResource MaterialSymbolsFontFamily}"
-                                  Glyph="Refresh" />
-                    </Button>
-                    <AppBarSeparator />
-                    <Button VerticalAlignment="Stretch"
-                            Command="{x:Bind ViewModel.UpdateAllMembersCommand}"
-                            IsEnabled="{x:Bind ViewModel.NotLoading, Mode=OneWay}">
-                        <FontIcon FontFamily="{StaticResource MaterialSymbolsFontFamily}"
-                                  Glyph="published_with_changes" />
-                    </Button>
-                </StackPanel>
-            </Grid>
-            <Grid Grid.Row="1"
-                  Background="{StaticResource AppColor3}"
-                  CornerRadius="8">
-                <GridView Padding="8"
-                          ItemsSource="{x:Bind ViewModel.Members, Mode=OneWay}"
-                          SelectedItem="{x:Bind ViewModel.SelectedMember, Mode=TwoWay}">
-                    <GridView.ItemTemplate>
-                        <DataTemplate x:DataType="observable:MemberObservable">
-                            <Grid Width="180"
-                                  Height="280"
-                                  Margin="8"
-                                  Background="{ThemeResource AppColor2}"
-                                  CornerRadius="8">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-                                <Rectangle Height="56"
-                                           VerticalAlignment="Top"
-                                           Fill="{ThemeResource AppColor1}" />
-                                <Grid HorizontalAlignment="Center"
-                                      VerticalAlignment="Center">
-                                    <Ellipse Width="72"
-                                             Height="72"
-                                             Margin="8"
-                                             Stroke="{StaticResource AppColor4}"
-                                             StrokeThickness="2">
-                                        <Ellipse.Fill>
-                                            <ImageBrush ImageSource="{x:Bind AvatarUrl, Mode=OneWay}" />
-                                        </Ellipse.Fill>
-                                    </Ellipse>
-                                    <Border Padding="6,4"
-                                            HorizontalAlignment="Right"
-                                            VerticalAlignment="Top"
-                                            Background="LightGoldenrodYellow"
-                                            CornerRadius="16"
-                                            Visibility="{x:Bind IsCaptain, Mode=OneWay}">
-                                        <TextBlock Foreground="{StaticResource TextColorDark1}"
-                                                   Style="{StaticResource MaterialSymbolsTextBlockStyle}"
-                                                   Text="crown" />
-                                    </Border>
-                                </Grid>
-
-                                <TextBlock Grid.Row="1"
-                                           HorizontalAlignment="Center"
-                                           HorizontalTextAlignment="Center"
-                                           Style="{StaticResource SmoothItemTitleTextBlockStyle}"
-                                           Text="{x:Bind DisplayName, Mode=OneWay}" />
-                                <TextBlock Grid.Row="2"
-                                           HorizontalAlignment="Center"
-                                           HorizontalTextAlignment="Center"
-                                           Opacity=".4"
-                                           Style="{StaticResource SmoothItemCaptionTextBlockStyle}"
-                                           Text="{x:Bind AccountName, Mode=OneWay}" />
+                <Button VerticalAlignment="Stretch"
+                        Command="{x:Bind ViewModel.AddMemberCommand}"
+                        IsEnabled="{x:Bind ViewModel.NotLoading, Mode=OneWay}">
+                    <FontIcon FontFamily="{StaticResource MaterialSymbolsFontFamily}"
+                              Glyph="Add" />
+                </Button>
+                <Button VerticalAlignment="Stretch"
+                        Command="{x:Bind ViewModel.EditSelectedMemberCommand}"
+                        IsEnabled="{x:Bind ViewModel.NotLoading, Mode=OneWay}">
+                    <FontIcon FontFamily="{StaticResource MaterialSymbolsFontFamily}"
+                              Glyph="edit" />
+                </Button>
+                <Button VerticalAlignment="Stretch"
+                        Command="{x:Bind ViewModel.RemoveSelectedMemberCommand}"
+                        IsEnabled="{x:Bind ViewModel.NotLoading, Mode=OneWay}">
+                    <FontIcon FontFamily="{StaticResource MaterialSymbolsFontFamily}"
+                              Glyph="delete_forever" />
+                </Button>
+                <Button VerticalAlignment="Stretch"
+                        Command="{x:Bind ViewModel.RefreshCommand}"
+                        IsEnabled="{x:Bind ViewModel.NotLoading, Mode=OneWay}">
+                    <FontIcon FontFamily="{StaticResource MaterialSymbolsFontFamily}"
+                              Glyph="Refresh" />
+                </Button>
+            </StackPanel>
+        </Grid>
+        <Grid Grid.Row="1"
+              Background="{StaticResource AppColor3}"
+              CornerRadius="8">
+            <GridView Padding="8"
+                      ItemsSource="{x:Bind ViewModel.Members, Mode=OneWay}"
+                      SelectedItem="{x:Bind ViewModel.SelectedMember, Mode=TwoWay}">
+                <GridView.ItemTemplate>
+                    <DataTemplate x:DataType="observable:MemberObservable">
+                        <Grid Width="180"
+                              Height="280"
+                              Margin="8"
+                              Background="{ThemeResource AppColor2}"
+                              CornerRadius="8">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Rectangle Height="56"
+                                       VerticalAlignment="Top"
+                                       Fill="{ThemeResource AppColor1}" />
+                            <Grid HorizontalAlignment="Center"
+                                  VerticalAlignment="Center">
+                                <Ellipse Width="72"
+                                         Height="72"
+                                         Margin="8"
+                                         Stroke="{StaticResource AppColor4}"
+                                         StrokeThickness="2">
+                                    <Ellipse.Fill>
+                                        <ImageBrush ImageSource="{x:Bind AvatarUrl, Mode=OneWay}" />
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                                <Border Padding="6,4"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Top"
+                                        Background="LightGoldenrodYellow"
+                                        CornerRadius="16"
+                                        Visibility="{x:Bind IsCaptain, Mode=OneWay}">
+                                    <TextBlock Foreground="{StaticResource TextColorDark1}"
+                                               Style="{StaticResource MaterialSymbolsTextBlockStyle}"
+                                               Text="crown" />
+                                </Border>
                             </Grid>
-                        </DataTemplate>
-                    </GridView.ItemTemplate>
-                </GridView>
 
-                <Border VerticalAlignment="Stretch"
-                        Background="{StaticResource AppColor3}"
-                        Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay}">
-                    <StackPanel VerticalAlignment="Center"
-                                Orientation="Vertical"
-                                Spacing="16">
-                        <ProgressRing IsActive="True" />
-                        <TextBlock MaxWidth="320"
-                                   HorizontalAlignment="Center"
-                                   Text="{x:Bind ViewModel.LoadingNotification, Mode=OneWay}"
-                                   TextAlignment="Center"
-                                   TextWrapping="WrapWholeWords" />
-                        <Button x:Uid="Members-CancelButton"
-                                HorizontalAlignment="Center"
-                                Command="{x:Bind ViewModel.CancelCommand}"
-                                IsEnabled="{x:Bind ViewModel.CancelEnabled, Mode=OneWay}"
-                                Visibility="{x:Bind ViewModel.CancelVisibile, Mode=OneWay}" />
-                    </StackPanel>
-                </Border>
-            </Grid>
+                            <TextBlock Grid.Row="1"
+                                       HorizontalAlignment="Center"
+                                       HorizontalTextAlignment="Center"
+                                       Style="{StaticResource SmoothItemTitleTextBlockStyle}"
+                                       Text="{x:Bind DisplayName, Mode=OneWay}" />
+                            <TextBlock Grid.Row="2"
+                                       HorizontalAlignment="Center"
+                                       HorizontalTextAlignment="Center"
+                                       Opacity=".4"
+                                       Style="{StaticResource SmoothItemCaptionTextBlockStyle}"
+                                       Text="{x:Bind AccountName, Mode=OneWay}" />
+                        </Grid>
+                    </DataTemplate>
+                </GridView.ItemTemplate>
+            </GridView>
+
+            <Border VerticalAlignment="Stretch"
+                    Background="{StaticResource AppColor3}"
+                    Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay}">
+                <StackPanel VerticalAlignment="Center"
+                            Orientation="Vertical"
+                            Spacing="16">
+                    <ProgressRing IsActive="True" />
+                    <TextBlock MaxWidth="320"
+                               HorizontalAlignment="Center"
+                               Text="{x:Bind ViewModel.LoadingNotification, Mode=OneWay}"
+                               TextAlignment="Center"
+                               TextWrapping="WrapWholeWords" />
+                    <Button x:Uid="Members-CancelButton"
+                            HorizontalAlignment="Center"
+                            Command="{x:Bind ViewModel.CancelCommand}"
+                            IsEnabled="{x:Bind ViewModel.CancelEnabled, Mode=OneWay}"
+                            Visibility="{x:Bind ViewModel.CancelVisibile, Mode=OneWay}" />
+                </StackPanel>
+            </Border>
         </Grid>
     </Grid>
 </Page>

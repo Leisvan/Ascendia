@@ -199,26 +199,4 @@ public partial class MembersViewModel : ObservableObject
         }
         IsLoading = false;
     }
-
-    [RelayCommand]
-    private async Task UpdateAllMembersAsync()
-    {
-        await RefreshInternalAsync(true);
-
-        IsLoading = true;
-        _cts = new CancellationTokenSource();
-        OnPropertyChanged(nameof(CancelEnabled));
-
-        var result = await _communityService.UpdateLadderAsync(true, (s, e) =>
-        {
-            LoadingNotification = e;
-        }, cancellationToken: _cts.Token);
-
-        IsLoading = false;
-
-        if (result > 0)
-        {
-            await RefreshInternalAsync(true);
-        }
-    }
 }
