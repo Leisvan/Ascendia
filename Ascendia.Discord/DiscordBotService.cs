@@ -59,6 +59,10 @@ public class DiscordBotService
         }
     }
 
+    public async Task DisplayRankAsync(bool includeBanned, ulong guildId = 0)
+    {
+    }
+
     public async Task<List<GuildSettingsModel>?> GetSettingServersAsync(bool includeDebugGuilds, bool forceRefresh = false)
     {
         var members = await _communityService.GetAllGuildSettingsAsync(forceRefresh);
@@ -78,7 +82,7 @@ public class DiscordBotService
             LogNotifier.NotifyError(errorMessage);
             return false;
         }
-        var errorResult = await _guildActions.UpdateMemberRegionsAsync(forceUpdate, includeWL, channelId);
+        var errorResult = await _guildActions.UpdateMemberRegionsAsync(forceUpdate, includeWL, guildId, channelId);
         return errorResult == null;
     }
 

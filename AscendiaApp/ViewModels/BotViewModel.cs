@@ -40,6 +40,10 @@ public partial class BotViewModel(DiscordBotService botService, CommunityService
     public partial GuildSettingsModel? SelectedGuild { get; set; }
 
     [RelayCommand]
+    public void CancelUpdateRank()
+    => _botService.CancelOperation();
+
+    [RelayCommand]
     private async Task ConnectBot()
     {
         if (await _botService.ConnectAsync())
@@ -57,6 +61,32 @@ public partial class BotViewModel(DiscordBotService botService, CommunityService
         IsConnected = false;
     }
 
+    private async Task ExecuteRankingActionAsync(bool updateMembers,
+        bool displayRank,
+        bool forceUpdate = false,
+        bool includeBanned = false,
+        bool includeWL = true)
+    {
+        if (SelectedGuild == null)
+        {
+            return;
+        }
+        await UIDispatchAsync(() => IsRankingBusy = true);
+        if (updateMembers)
+        {
+            if (!await _botService.UpdateMemberRegionsAsync(forceUpdate, includeWL, SelectedGuild.GuildId))
+            {
+                await UIDispatchAsync(() => IsRankingBusy = false);
+                return;
+            }
+        }
+        if (displayRank)
+        {
+            await _botService.DisplayRankAsync(includeBanned, SelectedGuild.GuildId);
+        }
+        await UIDispatchAsync(() => IsRankingBusy = false);
+    }
+
     private async Task LoadAsync(bool forceRefresh = false)
     {
         var allGuilds = await _botService.GetSettingServersAsync(RuntimePackageHelper.IsDebug(), forceRefresh);
@@ -69,7 +99,8 @@ public partial class BotViewModel(DiscordBotService botService, CommunityService
         {
             Guilds.Add(item);
         }
-        var first = Guilds.FirstOrDefault(x => !x.Record.IsDebugGuild);
+
+        var first = Guilds.Count == 1 ? Guilds.FirstOrDefault() : Guilds.FirstOrDefault(x => !x.Record.IsDebugGuild);
         if (first != null)
         {
             SelectedGuild = first;
@@ -95,24 +126,6 @@ public partial class BotViewModel(DiscordBotService botService, CommunityService
     }
 
     [RelayCommand]
-    private async Task UpdateAllMembersAsync()
-    {
-        //await RefreshInternalAsync(true);
-
-        //IsLoading = true;
-        //_cts = new CancellationTokenSource();
-        //OnPropertyChanged(nameof(CancelEnabled));
-
-        //var result = await _communityService.UpdateLadderAsync(true, (s, e) =>
-        //{
-        //    LoadingNotification = e;
-        //}, cancellationToken: _cts.Token);
-
-        //IsLoading = false;
-
-        //if (result > 0)
-        //{
-        //    await RefreshInternalAsync(true);
-        //}
-    }
+    private Task UpdateAllMembersAsync()
+        => ExecuteRankingActionAsync(true, false, false, false);
 }

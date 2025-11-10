@@ -55,15 +55,11 @@ internal class GuildActionsService(
         }
         _cts = new CancellationTokenSource();
 
-        TimeSpan? updateTime = null;
+        int minutesUpdateThreshold = 0;
         if (!forceUpdate)
         {
             var guildSettings = _communityDataService.GetGuildSettings(guildId);
-            var regionUpdateMinutesThreshold = guildSettings?.RegionUpdateThresholdInMinutes;
-            if (regionUpdateMinutesThreshold.HasValue && regionUpdateMinutesThreshold.Value > 0)
-            {
-                updateTime = TimeSpan.FromMinutes(regionUpdateMinutesThreshold.Value);
-            }
+            minutesUpdateThreshold = guildSettings?.RegionUpdateThresholdInMinutes ?? 0;
         }
 
         DiscordMessage? message = null;
@@ -76,11 +72,16 @@ internal class GuildActionsService(
             WriteToConsole(messageContent);
             message = await context.EditResponseAsync(builder);
         }
-        var result = await _communityDataService.UpdatePlayersAsync(includeWL,
+
+        var result = await _communityDataService.UpdatePlayersAsync(
+            includeWL,
             async (s, e) =>
             {
                 message = await UpdateMessageAsync(e, channelId, message);
-            }, cancellationToken: _cts.Token);
+            },
+            minutesUpdateThreshold: minutesUpdateThreshold,
+            cancellationToken: _cts.Token);
+
         if (result == -1 || _cts?.Token.IsCancellationRequested == true)
         {
             await UpdateMessageAsync(MessageResources.OperationCancelledMessage, channelId, message);

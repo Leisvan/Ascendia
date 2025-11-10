@@ -209,12 +209,13 @@ public class CommunityService(
         return results;
     }
 
-    public async Task<int> UpdatePlayersAsync(bool incudeWL = true, EventHandler<string>? notifications = null, int messageDelayInMilliseconds = MessageDelayInMilliseconds, CancellationToken? cancellationToken = null)
+    public async Task<int> UpdatePlayersAsync(bool incudeWL = true, EventHandler<string>? notifications = null, int messageDelayInMilliseconds = MessageDelayInMilliseconds, int minutesUpdateThreshold = 0, CancellationToken? cancellationToken = null)
     {
         //If updates to those > last hour, POST refresh.
         IsBusy = true;
         var membersToUpdate = _members
             .Where(m => m.IsEnabled)
+            .Where(m => minutesUpdateThreshold <= 0 || m.LastUpdated?.AddMinutes(minutesUpdateThreshold) <= DateTimeOffset.UtcNow.DateTime)
             //.Where(m => m.AccountId == "190234148")
             .OrderBy(m => m.LastUpdated)
             //.Take(2)
