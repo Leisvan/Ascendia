@@ -1,4 +1,4 @@
-name: x86/x64 MSIX
+name: x86/x64 MSIX Bundle
 
 on:
   workflow_dispatch:
@@ -15,7 +15,7 @@ jobs:
   build:
     runs-on: windows-latest
     outputs:
-      bundle_path: ${{ steps.bundler.outputs.msixbundle_path }}
+      bundle_path: ${{ steps.find-bundle.outputs.BUNDLE_PATH }}
     env:
       DOTNET_VERSION: '9.0.x'
       Configuration: 'Release'
@@ -73,8 +73,6 @@ jobs:
         run: |
           $configDir = "AscendiaApp\Assets\Config"
           New-Item -ItemType Directory -Force -Path $configDir | Out-Null
-
-          # Fail fast if a required secret is missing
           $required = @{
             AIRBASE_TOKEN='${{ secrets.AIRBASE_TOKEN }}'
             AIRBASE_BASEID='${{ secrets.AIRBASE_BASEID }}'
@@ -83,9 +81,10 @@ jobs:
             TELEMETRY_KEY='${{ secrets.TELEMETRY_KEY }}'
           }
           $missing = @()
-          foreach($k in $required.Keys){ if([string]::IsNullOrWhiteSpace($required[$k])){ $missing += $k } }
+            foreach($k in $required.Keys){
+              if([string]::IsNullOrWhiteSpace($required[$k])){ $missing += $k }
+            }
           if($missing.Count -gt 0){ throw "Missing required secrets: $($missing -join ', ')" }
-
           $json = @{
             AirBaseSettings = @{
               token = "${{ secrets.AIRBASE_TOKEN }}"
@@ -99,60 +98,37 @@ jobs:
               key = "${{ secrets.TELEMETRY_KEY }}"
             }
           } | ConvertTo-Json -Depth 5
-
           Set-Content -Path (Join-Path $configDir 'appsettings.json') -Value $json -Encoding UTF8
 
-      - name: Build x64 MSIX
+      - name: Build MSIX Bundle (x86 + x64)
         shell: pwsh
         run: |
           msbuild ${{ env.Solution_Name }} `
             /p:Configuration=${{ env.Configuration }} `
-            /p:AppxBundle=Never `
-            /p:AppxPackageDir="${{ env.Appx_Package_Dir }}\" `
+            /p:AppxBundle=Always `
+            /p:AppxBundlePlatforms="x86|x64" `
             /p:UapAppxPackageBuildMode=StoreUpload `
             /p:GenerateAppxPackageOnBuild=true `
-            /p:AppxPackageSigningEnabled=false `
-            /p:Platform=x64
-
-      - name: Build x86 MSIX
-        shell: pwsh
-        run: |
-          msbuild ${{ env.Solution_Name }} `
-            /p:Configuration=${{ env.Configuration }} `
-            /p:AppxBundle=Never `
             /p:AppxPackageDir="${{ env.Appx_Package_Dir }}\" `
-            /p:UapAppxPackageBuildMode=StoreUpload `
-            /p:GenerateAppxPackageOnBuild=true `
-            /p:AppxPackageSigningEnabled=false `
-            /p:Platform=x86
+            /p:AppxPackageSigningEnabled=false
 
-      - name: Set Package Vars
-        id: set-package
+      - name: Locate bundle
+        id: find-bundle
         shell: pwsh
         run: |
-          "X86=${{ env.Appx_Package_Dir }}\${{ env.Project_Name }}_${{ steps.gitversion.outputs.MajorMinorPatch }}.0_x86_Test" >> $env:GITHUB_OUTPUT
-          "x64=${{ env.Appx_Package_Dir }}\${{ env.Project_Name }}_${{ steps.gitversion.outputs.MajorMinorPatch }}.0_x64_Test" >> $env:GITHUB_OUTPUT
-
-      - name: Stage MSIXs for bundling
-        id: stage-msix
-        shell: pwsh
-        run: |
-          $bundleDir = Join-Path "${{ env.Appx_Package_Dir }}" "bundle_stage"
-          New-Item -ItemType Directory -Force -Path $bundleDir | Out-Null
-          Copy-Item "${{ steps.set-package.outputs.x86 }}\*.msix" $bundleDir -Force
-          Copy-Item "${{ steps.set-package.outputs.x64 }}\*.msix" $bundleDir -Force
-          "BundleStage=$bundleDir" >> $env:GITHUB_OUTPUT
-
-      - name: Make msixbundle (x86 + x64)
-        id: bundler
-        uses: LanceMcCarthy/Action-MsixBundler@v3
-        with:
-          msix-folder: ${{ steps.stage-msix.outputs.BundleStage }}
-          msixbundle-filepath: ${{ env.Appx_Package_Dir }}\${{ env.Project_Name }}_${{ steps.gitversion.outputs.MajorMinorPatch }}.0_x86_x64.msixbundle
-          msixbundle-version: "${{ steps.gitversion.outputs.MajorMinorPatch }}.0"
+          $version = "${{ steps.gitversion.outputs.MajorMinorPatch }}.0"
+          $expected = "${{ env.Project_Name }}_${version}_x86_x64.msixbundle"
+          $bundle = Get-ChildItem -Path "${{ env.Appx_Package_Dir }}" -Filter $expected -Recurse | Select-Object -First 1
+          if(-not $bundle){
+            Write-Host "Bundle not found by expected name, perform loose search..."
+            $bundle = Get-ChildItem -Path "${{ env.Appx_Package_Dir }}" -Filter *.msixbundle -Recurse | Where-Object { $_.Name -like "*_${version}_x86_x64.msixbundle" } | Select-Object -First 1
+          }
+          if(-not $bundle){ throw "Could not find .msixbundle for version $version" }
+          "BUNDLE_PATH=$($bundle.FullName)" >> $env:GITHUB_OUTPUT
+          Write-Host "Found bundle: $($bundle.FullName)"
 
       - name: Upload MSIX Bundle
         uses: actions/upload-artifact@v4
         with:
           name: MsixBundle
-          path: ${{ steps.bundler.outputs.msixbundle_path }}
+          path: ${{ steps.find-bundle.outputs.BUNDLE_PATH }}
