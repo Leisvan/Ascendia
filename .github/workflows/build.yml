@@ -131,14 +131,26 @@ jobs:
           "X86=${{ env.Appx_Package_Dir }}\${{ env.Project_Name }}_${{ steps.gitversion.outputs.MajorMinorPatch }}.0_x86_Test" >> $env:GITHUB_OUTPUT
           "x64=${{ env.Appx_Package_Dir }}\${{ env.Project_Name }}_${{ steps.gitversion.outputs.MajorMinorPatch }}.0_x64_Test" >> $env:GITHUB_OUTPUT
 
-      - name: Upload Msix x86
-        uses: actions/upload-artifact@v4
-        with:
-          name: Msix-x86
-          path: ${{ steps.set-package.outputs.x86 }}\*.msix
+      - name: Stage MSIXs for bundling
+        id: stage-msix
+        shell: pwsh
+        run: |
+          $bundleDir = Join-Path "${{ env.Appx_Package_Dir }}" "bundle_stage"
+          New-Item -ItemType Directory -Force -Path $bundleDir | Out-Null
+          Copy-Item "${{ steps.set-package.outputs.x86 }}\*.msix" $bundleDir -Force
+          Copy-Item "${{ steps.set-package.outputs.x64 }}\*.msix" $bundleDir -Force
+          "BundleStage=$bundleDir" >> $env:GITHUB_OUTPUT
 
-      - name: Upload Msix x64
+      - name: Make msixbundle (x86 + x64)
+        id: bundler
+        uses: LanceMcCarthy/Action-MsixBundler@v3
+        with:
+          msix-folder: ${{ steps.stage-msix.outputs.BundleStage }}
+          msixbundle-filepath: ${{ env.Appx_Package_Dir }}\${{ env.Project_Name }}_${{ steps.gitversion.outputs.MajorMinorPatch }}.0_x86_x64.msixbundle
+          msixbundle-version: "${{ steps.gitversion.outputs.MajorMinorPatch }}.0"
+
+      - name: Upload MSIX Bundle
         uses: actions/upload-artifact@v4
         with:
-          name: Msix-x64
-          path: ${{ steps.set-package.outputs.x64 }}\*.msix
+          name: MsixBundle
+          path: ${{ steps.bundler.outputs.msixbundle_path }}
