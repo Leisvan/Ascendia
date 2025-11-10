@@ -69,6 +69,8 @@ public partial class App : Application, IAppExtended
 
         _telemetryService = GetService<ITelemetryService>();
 
+        _telemetryService?.Log(message: "App started");
+
         UnhandledException += App_UnhandledException;
         AppDomain.CurrentDomain.UnhandledException += AppDomainUnhandledException;
         TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
@@ -117,11 +119,14 @@ public partial class App : Application, IAppExtended
     protected override async void OnLaunched(LaunchActivatedEventArgs args)
     {
         base.OnLaunched(args);
+        _telemetryService?.Log(message: "OnLaunched");
+
         var shellPage = new ShellPage();
         var activationService = GetService<ActivationService>();
         if (activationService != null)
         {
             await activationService.ActivateAsync(args, shellPage);
+            _telemetryService?.Log(message: "App activated");
         }
     }
 

@@ -36,6 +36,7 @@ public partial class MembersViewModel : ObservableObject
         _dialogService = dialogService;
         _telemetryService = telemetryService;
         _logger = logger;
+        _telemetryService.Log(message: "MembersViewModel created");
     }
 
     public bool CancelEnabled => _cts != null && !_cts.IsCancellationRequested;
