@@ -14,6 +14,8 @@ env:
 jobs:
   build:
     runs-on: windows-latest
+    outputs:
+      bundle_path: ${{ steps.bundler.outputs.msixbundle_path }}
     env:
       DOTNET_VERSION: '9.0.x'
       Configuration: 'Release'

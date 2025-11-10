@@ -7,10 +7,18 @@ on:
         description: 'Build workflow run id (optional when called by orchestrator)'
         required: false
         default: ''
+      bundle_path:
+        description: 'Optional explicit bundle path (skip download search)'
+        required: false
+        default: ''
   workflow_call:
     inputs:
       build_run_id:
         description: 'Build workflow run id (not needed when called in same run)'
+        required: false
+        type: string
+      bundle_path:
+        description: 'Absolute path to msixbundle from build job output'
         required: false
         type: string
 
@@ -25,13 +33,28 @@ jobs:
   publish:
     runs-on: windows-latest
     steps:
-      - name: Download MSIX artifacts
-        if: ${{ (inputs.build_run_id == '' || inputs.build_run_id == null) && (github.event.inputs.build_run_id == '' || github.event.inputs.build_run_id == null) }}
+      - name: Download MSIX Bundle artifact
+        if: ${{ (inputs.bundle_path == '' || inputs.bundle_path == null) }}
         uses: actions/download-artifact@v4
         with:
-          pattern: Msix-*
-          merge-multiple: true
+          name: MsixBundle
           path: ${{ env.PACKAGE_DIRECTORY }}
+
+      - name: Resolve bundle path
+        id: resolve
+        shell: pwsh
+        run: |
+          if("${{ inputs.bundle_path }}"){
+            $p = "${{ inputs.bundle_path }}"
+            if(-not (Test-Path $p)){ throw "Provided bundle_path not found: $p" }
+          } else {
+            $folder = "${{ env.PACKAGE_DIRECTORY }}"
+            $bundle = Get-ChildItem -Path $folder -Filter *.msixbundle -Recurse | Select-Object -First 1
+            if(-not $bundle){ throw "No .msixbundle found in $folder" }
+            $p = $bundle.FullName
+          }
+          "BUNDLE_PATH=$p" >> $env:GITHUB_OUTPUT
+          Write-Host "Using bundle: $p"
 
       - name: Publish to Store
         uses: isaacrlevin/windows-store-action@1.0
@@ -40,4 +63,4 @@ jobs:
           client-id: ${{ secrets.ENTRA_APPLICATION_CLIENT_ID }}
           client-secret: ${{ secrets.ENTRA_APPLICATION_SECRET }}
           app-id: ${{ secrets.STORE_APP_ID }}
-          package-path: "${{ env.PACKAGE_DIRECTORY }}"
+          package-path: "${{ steps.resolve.outputs.BUNDLE_PATH }}"
