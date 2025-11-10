@@ -362,3 +362,6 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /AscendiaApp/Assets/Config/appsettings.json
+/AscendiaApp_0.4.0.0_Test
+/signing-temp
+*.msixupload
