@@ -16,16 +16,19 @@
     <File Path=".github/workflows/store-upload.yml" />
   </Folder>
   <Folder Name="/submodules/">
-    <Project Path="submodules/LCTWorks.Common/LCTWorks.Core/LCTWorks.Core.csproj" />
-    <Project Path="submodules/LCTWorks.Common/LCTWorks.Telemetry/LCTWorks.Telemetry.csproj" />
-    <Project Path="submodules/LCTWorks.Common/LCTWorks.WinUI/LCTWorks.WinUI.csproj" />
+   <Project Path="submodules/LCTWorks.Common/LCTWorks.Core/LCTWorks.Core.csproj" />
+   <Project Path="submodules/LCTWorks.Common/LCTWorks.Telemetry/LCTWorks.Telemetry.csproj" />
+   <Project Path="submodules/LCTWorks.Common/LCTWorks.WinUI/LCTWorks.WinUI.csproj" />
   </Folder>
   <Project Path="Ascendia.Core/Ascendia.Core.csproj">
     <Platform Solution="*|Any CPU" Project="x64" />
     <Platform Solution="*|x64" Project="x64" />
     <Platform Solution="*|x86" Project="x86" />
   </Project>
-  <Project Path="Ascendia.Discord/Ascendia.Discord.csproj" Id="6ebca599-7773-4e8e-9fdc-741bc34809ad" />
+  <Project Path="Ascendia.Discord/Ascendia.Discord.csproj" Id="6ebca599-7773-4e8e-9fdc-741bc34809ad">
+    <Platform Solution="Release|x64" Project="x64" />
+    <Platform Solution="Release|x86" Project="x86" />
+  </Project>
   <Project Path="AscendiaApp/AscendiaApp.csproj" Id="5cddceb3-14f1-4570-bc84-088bcbaa6cf8">
     <Platform Solution="*|Any CPU" Project="x64" />
     <Platform Solution="*|x64" Project="x64" />

@@ -63,4 +63,4 @@ jobs:
           client-id: ${{ secrets.ENTRA_APPLICATION_CLIENT_ID }}
           client-secret: ${{ secrets.ENTRA_APPLICATION_SECRET }}
           app-id: ${{ secrets.STORE_APP_ID }}
-          package-path: "${{ steps.resolve.outputs.BUNDLE_PATH }}"
+          package-path: "${{ env.PACKAGE_DIRECTORY }}"

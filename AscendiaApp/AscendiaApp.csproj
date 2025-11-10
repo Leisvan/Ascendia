@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net9.0-windows10.0.22621.0</TargetFramework>
+	 <WinUISDKReferences>true</WinUISDKReferences>
+	 <TargetFramework>net9.0-windows10.0.22621.0</TargetFramework>
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
     <RootNamespace>AscendiaApp</RootNamespace>
 	<ApplicationIcon>Assets/WindowIcon.ico</ApplicationIcon>
@@ -10,7 +11,6 @@
     <RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
     <PublishProfile>win-$(Platform).pubxml</PublishProfile>
     <UseWinUI>true</UseWinUI>
-    <WinUISDKReferences>false</WinUISDKReferences>
 	<LangVersion>preview</LangVersion>
 	<EnableMsixTooling>true</EnableMsixTooling>
     <Nullable>enable</Nullable>
@@ -135,6 +135,7 @@
 	<AppxBundlePlatforms>x86|x64</AppxBundlePlatforms>
 	<GenerateTemporaryStoreCertificate>False</GenerateTemporaryStoreCertificate>
 	<HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
+	<PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
     <PRIResource Remove="BundleArtifacts\**" />
