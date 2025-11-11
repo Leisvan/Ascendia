@@ -6,6 +6,7 @@ using DSharpPlus.Commands;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity;
 using System.Globalization;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Ascendia.Discord.Internal;
@@ -38,14 +39,16 @@ internal class GuildActionsService(
             CommandContext? context = null)
     {
         var rankComparer = new MemberRecordRankingComparer();
-        int seq = 1;
         var membersList = await _communityDataService.GetAllMembersAsync();
-        var lines = membersList
+        var filteredMembers = membersList
             .Where(x => includeBanned || x.IsEnabled)
             .Where(x => x.RankTier > 0 && x.LeaderboardRank > 0)
-            .Order(rankComparer)
-            .Select(x => GetMemberLine(seq++, x))
-            .ToList();
+            .Order(rankComparer);
+        var lines = new List<string>();
+        foreach (var member in filteredMembers)
+        {
+            lines.Add(await GetMemberLineAsync(member));
+        }
 
         var channel = context == null
                ? await _botService.Client.GetChannelAsync(channelId)
@@ -58,16 +61,19 @@ internal class GuildActionsService(
         }
 
         var headerString = GetRankingHeaderString();
-        await SendMessageAsync(channel, headerString);
+        await SendMessageAsync(channel, $"`##` {headerString}");
 
         var chunks = lines.Chunk(RankingMessageChunkSize);
         var leadersChunks = chunks.Take(RankingLeadersChunkCount);
+        var seq = 1;
+
         foreach (var chunk in leadersChunks)
         {
             var stringBuilder = new StringBuilder();
             foreach (var line in chunk)
             {
-                stringBuilder.AppendLine(line);
+                var seqLine = $"`{seq++:00}` {line}";
+                stringBuilder.AppendLine(seqLine);
             }
             var allLines = stringBuilder.ToString();
             await SendMessageAsync(channel, allLines);
@@ -80,13 +86,16 @@ internal class GuildActionsService(
             {
                 return MessageResources.ThreadCreationFailedMessage;
             }
-            await SendMessageAsync(threadChannel, headerString);
+            await SendMessageAsync(threadChannel, $"`###` {headerString}");
+            int seqx = 1;
             foreach (var chunk in chunks)
             {
                 var stringBuilder = new StringBuilder();
+
                 foreach (var line in chunk)
                 {
-                    stringBuilder.AppendLine(line);
+                    var seqLine = $"`{seqx++:000}` {line}";
+                    stringBuilder.AppendLine(seqLine);
                 }
                 var allLines = stringBuilder.ToString();
                 await SendMessageAsync(threadChannel, allLines);
@@ -170,29 +179,40 @@ internal class GuildActionsService(
         }
     }
 
-    private static string GetMemberLine(int seqNumber, MemberRecord member)
-    {
-        return $"`{seqNumber}` {member.RankTier}:{member.LeaderboardRank} - {member.DisplayName}";
-    }
-
     private static string GetRankingHeaderString()
     {
-        return "`H``e``a``d``e``r`";
-        //return
-        //    "`##`" + BlankSpace //Number
-        //    + DoubleSpaceCode + BlankSpace // Race logo
-        //    + $"`{StringLengthCapTool.Default.GetString("NICK")}`" + BlankSpace // Nick
-        //    + "`  `| " // Country flag
-        //    + "` MMR`" + BlankSpace // MMR
-        //    + "` ↕MMR`" + BlankSpace // MMR Diff
-        //    + DoubleSpaceCode + BlankSpace //League icon
-        //    + "`  WR`" + BlankSpace // Winrate
-        //    + "`TOTAL`"; //Total games played
+        return
+            DoubleSpaceCode + BlankSpace // League emoji
+            + "`RANK`" + BlankSpace
+            + $"`{StringLengthCapTool.Default.GetString("NICK")}`" + BlankSpace // Nick
+            + "`  WR`" + BlankSpace
+            + "`TOTAL`";
     }
 
     private static void WriteToConsole(string message, ConsoleColor foregroundColor = ConsoleColor.White)
     {
         ConsoleInteractionsHelper.WriteLine(message, foregroundColor);
+    }
+
+    private async Task<string> GetMemberLineAsync(MemberRecord member)
+    {
+        var builder = new StringBuilder();
+
+        var rankEmoji = await EmojisHelper.GetRankEmojiStringAsync(_botService.Client, member.RankTier);
+
+        var newPlayer = member.PreviousLeaderboardRank == null;
+        var total = member.Win + member.Lose ?? 0;
+        var winrate = total == 0 ? default : member.Win / total * 100;
+        var winrateString = winrate == null ? " N/A" : $"{StringLengthCapTool.InvertedThreeSpaces.GetString(winrate)}%";
+
+        builder.Append($"{rankEmoji} ");
+        builder.Append($"`{StringLengthCapTool.InvertedFourSpaces.GetString(member.LeaderboardRank ?? 0)}` ");
+        //builder.Append($"{positionEmoji} ");
+        builder.Append($"`{StringLengthCapTool.Default.GetString(member.DisplayName)}` ");
+        builder.Append($"`{winrateString}` ");
+        builder.Append($"`{StringLengthCapTool.InvertedFiveSpaces.GetString(total)}` ");
+
+        return builder.ToString();
     }
 
     private async Task SendMessageAsync(DiscordChannel channel, string content)

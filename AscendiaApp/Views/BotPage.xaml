@@ -98,8 +98,6 @@
                                            IsExpanded="True">
                     <lctWorks:ThemedButton Command="{x:Bind ViewModel.CancelUpdateRankCommand}"
                                            Content="Cancelar"
-                                           Glyph="cancel"
-                                           GlyphFontFamily="{StaticResource MaterialSymbolsFontFamily}"
                                            Style="{StaticResource DangerThemedButtonStyle}"
                                            Visibility="{x:Bind ViewModel.IsRankingBusy, Mode=OneWay}" />
                     <controls:SettingsExpander.Items>
