@@ -61,8 +61,12 @@ public partial class BotViewModel(DiscordBotService botService, CommunityService
         IsConnected = false;
     }
 
+    [RelayCommand]
+    private Task DisplayRankingAsync()
+        => ExecuteRankingActionAsync(false, true, false);
+
     private async Task ExecuteRankingActionAsync(bool updateMembers,
-        bool displayRank,
+            bool displayRank,
         bool forceUpdate = false,
         bool includeBanned = false,
         bool includeWL = true)

@@ -13,6 +13,21 @@ public class PlayersCommand(DiscordBotService service)
 {
     private readonly DiscordBotService _service = service;
 
+    [Command("rank")]
+    [RequirePermissions(DiscordPermission.Administrator)]
+    public async ValueTask RankAsync(CommandContext context, bool includeBanned = false)
+    {
+        var guildId = context.Guild?.Id ?? 0;
+
+        await context.RespondAsync(MessageResources.StartingOperationMessage);
+
+        var result = await _service.Actions.DisplayRankingAsync(includeBanned, context: context);
+        if (result != null)
+        {
+            await context.EditResponseAsync(result);
+        }
+    }
+
     [Command("update")]
     [RequirePermissions(DiscordPermission.Administrator)]
     public async ValueTask UpdateAsync(CommandContext context, bool forceUpdate = true, bool incudeWL = true)

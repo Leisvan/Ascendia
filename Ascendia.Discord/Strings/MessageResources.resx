@@ -123,6 +123,9 @@
   <data name="ChannelIdNotFoundErrorMessage" xml:space="preserve">
     <value>Id del canal no encontrado.</value>
   </data>
+  <data name="NoMembersToShowMessage" xml:space="preserve">
+    <value>No hay suficientes perfiles para mostrar el ranking.</value>
+  </data>
   <data name="OperationAlredyInProgressMessage" xml:space="preserve">
     <value>La operación ya está en progreso.</value>
   </data>
@@ -134,6 +137,9 @@
   </data>
   <data name="StartingOperationMessage" xml:space="preserve">
     <value>Iniciando. Por favor, espere.</value>
+  </data>
+  <data name="ThreadCreationFailedMessage" xml:space="preserve">
+    <value>No se pudo crear el Hilo en este canal.</value>
   </data>
   <data name="UpdatedProfilesCountFormat" xml:space="preserve">
     <value>{0} perfiles actualizados.</value>

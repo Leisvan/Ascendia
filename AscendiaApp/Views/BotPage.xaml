@@ -112,7 +112,8 @@
                                         Content="Actualizar"
                                         IsEnabled="{x:Bind ViewModel.IsRankingIdle, Mode=OneWay}"
                                         Style="{StaticResource AccentButtonStyle}" />
-                                <Button Content="Mostrar"
+                                <Button Command="{x:Bind ViewModel.DisplayRankingCommand}"
+                                        Content="Mostrar"
                                         IsEnabled="{x:Bind ViewModel.IsRankingIdle, Mode=OneWay}" />
                             </StackPanel>
                         </controls:SettingsCard>

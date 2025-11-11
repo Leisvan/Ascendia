@@ -1,11 +1,12 @@
 ﻿using Ascendia.Core.Interactivity;
+using Ascendia.Core.Records;
 using Ascendia.Core.Services;
 using Ascendia.Discord.Strings;
 using DSharpPlus.Commands;
 using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
 using DSharpPlus.Interactivity;
 using System.Globalization;
+using System.Text;
 
 namespace Ascendia.Discord.Internal;
 
@@ -17,6 +18,7 @@ internal class GuildActionsService(
 {
     private const string BlankSpace = " ";
     private const string DoubleSpaceCode = "`  `";
+    private const int RankingLeadersChunkCount = 2;
     private const int RankingMessageChunkSize = 8;
     private static readonly CultureInfo CultureInfo = new("es-ES");
     private readonly DiscordBotService _botService = botService;
@@ -35,9 +37,60 @@ internal class GuildActionsService(
             ulong channelId = 0,
             CommandContext? context = null)
     {
-        var members = await _communityDataService.GetAllMembersAsync();
-        foreach (var member in members.Where(x => includeBanned || !x.IsEnabled))
+        var rankComparer = new MemberRecordRankingComparer();
+        int seq = 1;
+        var membersList = await _communityDataService.GetAllMembersAsync();
+        var lines = membersList
+            .Where(x => includeBanned || x.IsEnabled)
+            .Where(x => x.RankTier > 0 && x.LeaderboardRank > 0)
+            .Order(rankComparer)
+            .Select(x => GetMemberLine(seq++, x))
+            .ToList();
+
+        var channel = context == null
+               ? await _botService.Client.GetChannelAsync(channelId)
+               : context.Channel;
+
+        if (lines.Count == 0)
         {
+            await SendMessageAsync(channel, MessageResources.NoMembersToShowMessage);
+            return MessageResources.NoMembersToShowMessage;
+        }
+
+        var headerString = GetRankingHeaderString();
+        await SendMessageAsync(channel, headerString);
+
+        var chunks = lines.Chunk(RankingMessageChunkSize);
+        var leadersChunks = chunks.Take(RankingLeadersChunkCount);
+        foreach (var chunk in leadersChunks)
+        {
+            var stringBuilder = new StringBuilder();
+            foreach (var line in chunk)
+            {
+                stringBuilder.AppendLine(line);
+            }
+            var allLines = stringBuilder.ToString();
+            await SendMessageAsync(channel, allLines);
+        }
+        if (lines.Count > RankingMessageChunkSize * RankingLeadersChunkCount)
+        {
+            var threadName = $"Full Ranking ({lines.Count} players)";
+            var threadChannel = await CreateThreadAsync(threadName, channel);
+            if (!threadChannel.IsThread)
+            {
+                return MessageResources.ThreadCreationFailedMessage;
+            }
+            await SendMessageAsync(threadChannel, headerString);
+            foreach (var chunk in chunks)
+            {
+                var stringBuilder = new StringBuilder();
+                foreach (var line in chunk)
+                {
+                    stringBuilder.AppendLine(line);
+                }
+                var allLines = stringBuilder.ToString();
+                await SendMessageAsync(threadChannel, allLines);
+            }
         }
         return null;
     }
@@ -96,9 +149,63 @@ internal class GuildActionsService(
         return null;
     }
 
+    private static async Task<DiscordChannel> CreateThreadAsync(string threadName, DiscordChannel channel)
+    {
+        try
+        {
+            if (channel.IsThread)
+            {
+                return channel;
+            }
+            else
+            {
+                // Create a thread (24h auto-archive). Title includes total count.
+                return await channel.CreateThreadAsync(threadName, DiscordAutoArchiveDuration.Day, DiscordChannelType.PublicThread);
+            }
+        }
+        catch (Exception ex)
+        {
+            WriteToConsole($"{MessageResources.ThreadCreationFailedMessage}: {ex.Message}", ConsoleColor.Red);
+            return channel;
+        }
+    }
+
+    private static string GetMemberLine(int seqNumber, MemberRecord member)
+    {
+        return $"`{seqNumber}` {member.RankTier}:{member.LeaderboardRank} - {member.DisplayName}";
+    }
+
+    private static string GetRankingHeaderString()
+    {
+        return "`H``e``a``d``e``r`";
+        //return
+        //    "`##`" + BlankSpace //Number
+        //    + DoubleSpaceCode + BlankSpace // Race logo
+        //    + $"`{StringLengthCapTool.Default.GetString("NICK")}`" + BlankSpace // Nick
+        //    + "`  `| " // Country flag
+        //    + "` MMR`" + BlankSpace // MMR
+        //    + "` ↕MMR`" + BlankSpace // MMR Diff
+        //    + DoubleSpaceCode + BlankSpace //League icon
+        //    + "`  WR`" + BlankSpace // Winrate
+        //    + "`TOTAL`"; //Total games played
+    }
+
     private static void WriteToConsole(string message, ConsoleColor foregroundColor = ConsoleColor.White)
     {
         ConsoleInteractionsHelper.WriteLine(message, foregroundColor);
+    }
+
+    private async Task SendMessageAsync(DiscordChannel channel, string content)
+    {
+        try
+        {
+            WriteToConsole(content);
+            await channel.SendMessageAsync(content);
+        }
+        catch (Exception e)
+        {
+            LogNotifier.Notify(e.Message);
+        }
     }
 
     private async Task<DiscordMessage?> UpdateMessageAsync(string content, ulong channelId, DiscordMessage? message = null, bool removeComponents = false)

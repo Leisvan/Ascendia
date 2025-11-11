@@ -61,6 +61,14 @@ public class DiscordBotService
 
     public async Task DisplayRankAsync(bool includeBanned, ulong guildId = 0)
     {
+        var guildSettings = _communityService.GetGuildSettings(guildId);
+        if (guildSettings == null || !ulong.TryParse(guildSettings.RankingChannelId, out ulong channelId) || channelId == 0)
+        {
+            var errorMessage = MessageResources.ChannelIdNotFoundErrorMessage;
+            LogNotifier.NotifyError(errorMessage);
+            return;
+        }
+        await _guildActions.DisplayRankingAsync(includeBanned, channelId);
     }
 
     public async Task<List<GuildSettingsModel>?> GetSettingServersAsync(bool includeDebugGuilds, bool forceRefresh = false)

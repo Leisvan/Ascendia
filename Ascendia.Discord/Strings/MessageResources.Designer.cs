@@ -79,6 +79,15 @@ namespace Ascendia.Discord.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No hay suficientes perfiles para mostrar el ranking..
+        /// </summary>
+        internal static string NoMembersToShowMessage {
+            get {
+                return ResourceManager.GetString("NoMembersToShowMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to La operación ya está en progreso..
         /// </summary>
         internal static string OperationAlredyInProgressMessage {
@@ -111,6 +120,15 @@ namespace Ascendia.Discord.Strings {
         internal static string StartingOperationMessage {
             get {
                 return ResourceManager.GetString("StartingOperationMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No se pudo crear el Hilo en este canal..
+        /// </summary>
+        internal static string ThreadCreationFailedMessage {
+            get {
+                return ResourceManager.GetString("ThreadCreationFailedMessage", resourceCulture);
             }
         }
         
