@@ -91,7 +91,7 @@ jobs:
               token = "${{ secrets.DISCORD_TOKEN }}"
               clientSecret = "${{ secrets.DISCORD_CLIENT_SECRET }}"
             }
-            TelemetryKey = @{
+            Telemetry = @{
               key = "${{ secrets.TELEMETRY_KEY }}"
             }
           } | ConvertTo-Json -Depth 5

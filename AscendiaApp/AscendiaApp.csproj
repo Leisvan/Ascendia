@@ -31,7 +31,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="Assets\App\DefaultProfile.png" />
-    <None Remove="Assets\Config\appsettings.json" />
     <None Remove="Styles\Colors.xaml" />
     <None Remove="Views\AboutPage.xaml" />
     <None Remove="Views\BotPage.xaml" />
