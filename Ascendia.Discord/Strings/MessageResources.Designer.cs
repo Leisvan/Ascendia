@@ -79,6 +79,24 @@ namespace Ascendia.Discord.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &gt; Puede encontrar el ranking completo en el siguiente Hilo :point_down:.
+        /// </summary>
+        internal static string FullRankingCaptionMessage {
+            get {
+                return ResourceManager.GetString("FullRankingCaptionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ranking completo {0} perfiles..
+        /// </summary>
+        internal static string FullRankingThreadNameMessage {
+            get {
+                return ResourceManager.GetString("FullRankingThreadNameMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No hay suficientes perfiles para mostrar el ranking..
         /// </summary>
         internal static string NoMembersToShowMessage {
@@ -111,6 +129,15 @@ namespace Ascendia.Discord.Strings {
         internal static string OperationCancellingMessage {
             get {
                 return ResourceManager.GetString("OperationCancellingMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ### Ranking Dota 2 - Impacto Solar..
+        /// </summary>
+        internal static string RankingHeaderMessage {
+            get {
+                return ResourceManager.GetString("RankingHeaderMessage", resourceCulture);
             }
         }
         

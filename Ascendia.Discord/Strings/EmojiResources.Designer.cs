@@ -61,20 +61,137 @@ namespace Ascendia.Discord.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 1437926619833700406.
+        ///   Looks up a localized string similar to 1438241827697197066.
         /// </summary>
-        internal static string Rank_Immortal {
+        internal static string Position_Hardsupport_5 {
             get {
-                return ResourceManager.GetString("Rank_Immortal", resourceCulture);
+                return ResourceManager.GetString("Position_Hardsupport_5", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 1437926621146382426.
+        ///   Looks up a localized string similar to 1438241828842508440.
         /// </summary>
-        internal static string Rank_Unranked {
+        internal static string Position_Midlane_2 {
             get {
-                return ResourceManager.GetString("Rank_Unranked", resourceCulture);
+                return ResourceManager.GetString("Position_Midlane_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1438241829761061035.
+        /// </summary>
+        internal static string Position_Offlane_3 {
+            get {
+                return ResourceManager.GetString("Position_Offlane_3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1438241831237324970.
+        /// </summary>
+        internal static string Position_Safelane_1 {
+            get {
+                return ResourceManager.GetString("Position_Safelane_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1438241840120991865.
+        /// </summary>
+        internal static string Position_Softsupport_4 {
+            get {
+                return ResourceManager.GetString("Position_Softsupport_4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1438256122929615011.
+        /// </summary>
+        internal static string Position_Unknown {
+            get {
+                return ResourceManager.GetString("Position_Unknown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1438242591866093649.
+        /// </summary>
+        internal static string Rank_0 {
+            get {
+                return ResourceManager.GetString("Rank_0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1438242593384304740.
+        /// </summary>
+        internal static string Rank_1 {
+            get {
+                return ResourceManager.GetString("Rank_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1438242594239807558.
+        /// </summary>
+        internal static string Rank_2 {
+            get {
+                return ResourceManager.GetString("Rank_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1438242595842297867.
+        /// </summary>
+        internal static string Rank_3 {
+            get {
+                return ResourceManager.GetString("Rank_3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1438258924267634860.
+        /// </summary>
+        internal static string Rank_4 {
+            get {
+                return ResourceManager.GetString("Rank_4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1438242597599576115.
+        /// </summary>
+        internal static string Rank_5 {
+            get {
+                return ResourceManager.GetString("Rank_5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1438242598861930657.
+        /// </summary>
+        internal static string Rank_6 {
+            get {
+                return ResourceManager.GetString("Rank_6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1438242599948255339.
+        /// </summary>
+        internal static string Rank_7 {
+            get {
+                return ResourceManager.GetString("Rank_7", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1438242600825127124.
+        /// </summary>
+        internal static string Rank_8 {
+            get {
+                return ResourceManager.GetString("Rank_8", resourceCulture);
             }
         }
     }

@@ -117,10 +117,49 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Rank_Immortal" xml:space="preserve">
-    <value>1437926619833700406</value>
+  <data name="Position_Hardsupport_5" xml:space="preserve">
+    <value>1438241827697197066</value>
   </data>
-  <data name="Rank_Unranked" xml:space="preserve">
-    <value>1437926621146382426</value>
+  <data name="Position_Midlane_2" xml:space="preserve">
+    <value>1438241828842508440</value>
+  </data>
+  <data name="Position_Offlane_3" xml:space="preserve">
+    <value>1438241829761061035</value>
+  </data>
+  <data name="Position_Safelane_1" xml:space="preserve">
+    <value>1438241831237324970</value>
+  </data>
+  <data name="Position_Softsupport_4" xml:space="preserve">
+    <value>1438241840120991865</value>
+  </data>
+  <data name="Position_Unknown" xml:space="preserve">
+    <value>1438256122929615011</value>
+  </data>
+  <data name="Rank_0" xml:space="preserve">
+    <value>1438242591866093649</value>
+  </data>
+  <data name="Rank_1" xml:space="preserve">
+    <value>1438242593384304740</value>
+  </data>
+  <data name="Rank_2" xml:space="preserve">
+    <value>1438242594239807558</value>
+  </data>
+  <data name="Rank_3" xml:space="preserve">
+    <value>1438242595842297867</value>
+  </data>
+  <data name="Rank_4" xml:space="preserve">
+    <value>1438258924267634860</value>
+  </data>
+  <data name="Rank_5" xml:space="preserve">
+    <value>1438242597599576115</value>
+  </data>
+  <data name="Rank_6" xml:space="preserve">
+    <value>1438242598861930657</value>
+  </data>
+  <data name="Rank_7" xml:space="preserve">
+    <value>1438242599948255339</value>
+  </data>
+  <data name="Rank_8" xml:space="preserve">
+    <value>1438242600825127124</value>
   </data>
 </root>

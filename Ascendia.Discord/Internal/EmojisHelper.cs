@@ -24,12 +24,33 @@ internal class EmojisHelper
         return null;
     }
 
+    public static Task<string> GetPositionEmojiStringAsync(DiscordClient client, int? position)
+    {
+        var emojiId = position switch
+        {
+            1 => EmojiResources.Position_Safelane_1,
+            2 => EmojiResources.Position_Midlane_2,
+            3 => EmojiResources.Position_Offlane_3,
+            4 => EmojiResources.Position_Softsupport_4,
+            5 => EmojiResources.Position_Hardsupport_5,
+            _ => EmojiResources.Position_Unknown,
+        };
+        return GetEmojiStringAsync(client, emojiId);
+    }
+
     public static Task<string> GetRankEmojiStringAsync(DiscordClient client, int? tier)
     {
         var emojiId = tier switch
         {
-            80 => EmojiResources.Rank_Immortal,
-            _ => EmojiResources.Rank_Unranked,
+            80 => EmojiResources.Rank_8,
+            >= 70 and <= 79 => EmojiResources.Rank_7,
+            >= 60 and <= 69 => EmojiResources.Rank_6,
+            >= 50 and <= 59 => EmojiResources.Rank_5,
+            >= 40 and <= 49 => EmojiResources.Rank_4,
+            >= 30 and <= 39 => EmojiResources.Rank_3,
+            >= 20 and <= 29 => EmojiResources.Rank_2,
+            >= 10 and <= 19 => EmojiResources.Rank_1,
+            _ => EmojiResources.Rank_0,
         };
         return GetEmojiStringAsync(client, emojiId);
     }

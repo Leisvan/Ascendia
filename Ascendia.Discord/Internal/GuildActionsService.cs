@@ -60,6 +60,8 @@ internal class GuildActionsService(
             return MessageResources.NoMembersToShowMessage;
         }
 
+        await SendMessageAsync(channel, MessageResources.RankingHeaderMessage);
+
         var headerString = GetRankingHeaderString();
         await SendMessageAsync(channel, $"`##` {headerString}");
 
@@ -80,10 +82,12 @@ internal class GuildActionsService(
         }
         if (lines.Count > RankingMessageChunkSize * RankingLeadersChunkCount)
         {
-            var threadName = $"Full Ranking ({lines.Count} players)";
+            await SendMessageAsync(channel, MessageResources.FullRankingCaptionMessage);
+            var threadName = string.Format(MessageResources.FullRankingThreadNameMessage, lines.Count);
             var threadChannel = await CreateThreadAsync(threadName, channel);
             if (!threadChannel.IsThread)
             {
+                await SendMessageAsync(channel, MessageResources.ThreadCreationFailedMessage);
                 return MessageResources.ThreadCreationFailedMessage;
             }
             await SendMessageAsync(threadChannel, $"`###` {headerString}");
@@ -168,7 +172,6 @@ internal class GuildActionsService(
             }
             else
             {
-                // Create a thread (24h auto-archive). Title includes total count.
                 return await channel.CreateThreadAsync(threadName, DiscordAutoArchiveDuration.Day, DiscordChannelType.PublicThread);
             }
         }
@@ -182,8 +185,9 @@ internal class GuildActionsService(
     private static string GetRankingHeaderString()
     {
         return
-            DoubleSpaceCode + BlankSpace // League emoji
+              DoubleSpaceCode + BlankSpace // League emoji
             + "`RANK`" + BlankSpace
+            + DoubleSpaceCode + BlankSpace // Position emoji
             + $"`{StringLengthCapTool.Default.GetString("NICK")}`" + BlankSpace // Nick
             + "`  WR`" + BlankSpace
             + "`TOTAL`";
@@ -200,14 +204,20 @@ internal class GuildActionsService(
 
         var rankEmoji = await EmojisHelper.GetRankEmojiStringAsync(_botService.Client, member.RankTier);
 
+        string positionEmoji = string.Empty;
+        if (int.TryParse(member.Position, out var positionValue))
+        {
+            positionEmoji = await EmojisHelper.GetPositionEmojiStringAsync(_botService.Client, positionValue);
+        }
+
         var newPlayer = member.PreviousLeaderboardRank == null;
         var total = member.Win + member.Lose ?? 0;
         var winrate = total == 0 ? default : member.Win / total * 100;
-        var winrateString = winrate == null ? " N/A" : $"{StringLengthCapTool.InvertedThreeSpaces.GetString(winrate)}%";
+        var winrateString = winrate == null ? "  --" : $"{StringLengthCapTool.InvertedThreeSpaces.GetString(winrate)}%";
 
         builder.Append($"{rankEmoji} ");
         builder.Append($"`{StringLengthCapTool.InvertedFourSpaces.GetString(member.LeaderboardRank ?? 0)}` ");
-        //builder.Append($"{positionEmoji} ");
+        builder.Append($"|{positionEmoji} ");
         builder.Append($"`{StringLengthCapTool.Default.GetString(member.DisplayName)}` ");
         builder.Append($"`{winrateString}` ");
         builder.Append($"`{StringLengthCapTool.InvertedFiveSpaces.GetString(total)}` ");
