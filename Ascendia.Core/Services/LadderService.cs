@@ -62,7 +62,7 @@ public class LadderService
         using var httpClient = new HttpClient();
         try
         {
-            HttpResponseMessage response = await httpClient.PostAsync(url, null);
+                    value = Json.ToObject<T>(content);
             response.EnsureSuccessStatusCode();
             return response.IsSuccessStatusCode;
         }
