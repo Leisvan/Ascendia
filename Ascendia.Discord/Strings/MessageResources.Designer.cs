@@ -133,11 +133,29 @@ namespace Ascendia.Discord.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cancelando....
+        /// </summary>
+        internal static string ProgressCancelling {
+            get {
+                return ResourceManager.GetString("ProgressCancelling", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ### Ranking Dota 2 - Impacto Solar..
         /// </summary>
         internal static string RankingHeaderMessage {
             get {
                 return ResourceManager.GetString("RankingHeaderMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Actualizando miembros....
+        /// </summary>
+        internal static string RefreshingMembersMessage {
+            get {
+                return ResourceManager.GetString("RefreshingMembersMessage", resourceCulture);
             }
         }
         

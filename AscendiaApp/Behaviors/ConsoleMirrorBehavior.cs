@@ -1,6 +1,7 @@
 ﻿using Ascendia.Core.Interactivity;
 using CommunityToolkit.WinUI.Behaviors;
 using Microsoft.UI;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media;
@@ -11,6 +12,10 @@ namespace AscendiaApp.Behaviors
 {
     public class ConsoleMirrorBehavior : BehaviorBase<RichTextBlock>
     {
+        public static readonly DependencyProperty ScrollViewerProperty =
+            DependencyProperty.Register(nameof(ScrollViewer), typeof(ScrollViewer), typeof(ConsoleMirrorBehavior),
+                new PropertyMetadata(default));
+
         private readonly TextWriterNotifier _notifier;
         private SolidColorBrush _colorBrush;
         private ConsoleColor? _lastConsoleColor;
@@ -21,7 +26,13 @@ namespace AscendiaApp.Behaviors
             _notifier.TextWritten += TextWritten;
             _colorBrush = new SolidColorBrush(Colors.White);
             Console.SetOut(_notifier);
-            ConsoleInteractionsHelper.ClearConsoleRequested += OnConsoleClearRequested;
+            CoreTelemetry.ClearConsoleRequested += OnConsoleClearRequested;
+        }
+
+        public ScrollViewer ScrollViewer
+        {
+            get => (ScrollViewer)GetValue(ScrollViewerProperty);
+            set => SetValue(ScrollViewerProperty, value);
         }
 
         private static Color ConvertConsoleColorToColor(ConsoleColor consoleColor)
@@ -55,7 +66,7 @@ namespace AscendiaApp.Behaviors
 
         private void SetColor()
         {
-            var ccolor = ConsoleInteractionsHelper.ForegroundColor;
+            var ccolor = CoreTelemetry.ForegroundColor;
             if (ccolor != _lastConsoleColor)
             {
                 _lastConsoleColor = ccolor;
@@ -74,6 +85,7 @@ namespace AscendiaApp.Behaviors
                     var r = new Run { Text = e.Text, Foreground = _colorBrush };
                     p.Inlines.Add(r);
                     AssociatedObject.Blocks.Add(p);
+                    ScrollViewer?.ChangeView(null, double.MaxValue, null, true);
                 }
             }
             catch (Exception)

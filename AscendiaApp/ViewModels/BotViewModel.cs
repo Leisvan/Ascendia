@@ -41,7 +41,7 @@ public partial class BotViewModel(DiscordBotService botService, CommunityService
 
     [RelayCommand]
     public void CancelUpdateRank()
-    => _botService.CancelOperation();
+        => _botService.CancelOperation();
 
     [RelayCommand]
     private async Task ConnectBot()

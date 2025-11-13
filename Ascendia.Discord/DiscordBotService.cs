@@ -34,13 +34,13 @@ public class DiscordBotService
     {
         try
         {
-            ConsoleInteractionsHelper.ClearConsole();
+            CoreTelemetry.ClearConsole();
             await _client.ConnectAsync();
             return true;
         }
         catch (Exception e)
         {
-            ConsoleInteractionsHelper.WriteErrorLine(e.Message);
+            CoreTelemetry.WriteErrorLine(e.Message);
             return false;
         }
     }
@@ -50,12 +50,12 @@ public class DiscordBotService
         try
         {
             await _client.DisconnectAsync();
-            ConsoleInteractionsHelper.ClearConsole();
-            ConsoleInteractionsHelper.WriteLine("Bot desconectado");
+            CoreTelemetry.ClearConsole();
+            CoreTelemetry.WriteLine("Bot desconectado");
         }
         catch (Exception e)
         {
-            ConsoleInteractionsHelper.WriteErrorLine(e.Message);
+            CoreTelemetry.WriteErrorLine(e.Message);
         }
     }
 

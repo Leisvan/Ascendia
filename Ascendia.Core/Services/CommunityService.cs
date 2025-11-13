@@ -1,4 +1,5 @@
-﻿using Ascendia.Core.Models;
+﻿using Ascendia.Core.Interactivity;
+using Ascendia.Core.Models;
 using Ascendia.Core.Records;
 using Ascendia.Core.Strings;
 using LCTWorks.Core.Helpers;
@@ -17,7 +18,6 @@ public class CommunityService(
     private const string MembersCacheFileName = "members.json";
     private const int MessageDelayInMilliseconds = 2000;
     private const int RequestLimitWaitTimeInMilliseconds = 65000;
-    private const int RequestRetryLimit = 2;
     private const string SettingsCacheFileName = "settings.json";
     private readonly AirtableHttpService _airtableService = airtableService;
     private readonly CacheService _cacheService = cacheService;
@@ -66,25 +66,28 @@ public class CommunityService(
                 await Task.Delay(messageDelayInMilliseconds);
             }
             notifications?.Invoke(this, Messages.ProgressCheckLadder);
-            player = await _ladderService.GetPlayerAsync(accountId);
+            var playerResult = await _ladderService.GetPlayerAsync(accountId);
+
             await Task.Delay(messageDelayInMilliseconds);
-            if (player == null)
+            if (!playerResult.Valid)
             {
                 notifications?.Invoke(this, Messages.ProgressPlayerNotFound);
                 await Task.Delay(messageDelayInMilliseconds);
             }
             else
             {
+                player = playerResult.Value;
                 if (checkWinLose)
                 {
                     notifications?.Invoke(this, Messages.ProgressCheckWinLose);
-                    winLose = await _ladderService.GetPlayerWinLoseAsync(accountId);
+                    var winLoseResult = await _ladderService.GetPlayerWinLoseAsync(accountId);
                     await Task.Delay(messageDelayInMilliseconds);
-                    if (winLose == null)
+                    if (!winLoseResult.Valid)
                     {
                         notifications?.Invoke(this, Messages.ProgressWinLoseNotFound);
                         await Task.Delay(messageDelayInMilliseconds);
                     }
+                    winLose = winLoseResult.Value;
                 }
             }
         }
@@ -211,9 +214,11 @@ public class CommunityService(
 
     public async Task<int> UpdatePlayersAsync(bool incudeWL = true, EventHandler<string>? notifications = null, int messageDelayInMilliseconds = MessageDelayInMilliseconds, int minutesUpdateThreshold = 0, CancellationToken? cancellationToken = null)
     {
-        //If updates to those > last hour, POST refresh.
+        //Refresh so we have the latest data, including last updated timestamps.
+        var members = await GetAllMembersAsync(true);
+
         IsBusy = true;
-        var membersToUpdate = _members
+        var membersToUpdate = members
             .Where(m => m.IsEnabled)
             .Where(m => minutesUpdateThreshold <= 0 || m.LastUpdated?.AddMinutes(minutesUpdateThreshold) <= DateTimeOffset.UtcNow.DateTime)
             //.Where(m => m.AccountId == "190234148")
@@ -242,10 +247,40 @@ public class CommunityService(
             }
             WinLoseOpenDotaModel? winLoseData = null;
             PlayerOpenDotaModel? playerData = null;
-            int attempts = 1;
-            while ((playerData == null || winLoseData == null) && attempts <= RequestRetryLimit)
+            var retry = true;
+            var refreshed = false;
+            while (retry)
             {
-                if (attempts > 1)
+                if (!refreshed)
+                {
+                    var refreshResults = await _ladderService.RefreshPlayerAsync(member.AccountId);
+                    retry = refreshResults.LimitReached;
+                    refreshed = refreshResults.Valid;
+                }
+                if (!retry && refreshed)
+                {
+                    if (playerData == null)
+                    {
+                        var playerResult = await _ladderService.GetPlayerAsync(member.AccountId);
+                        retry = playerResult.LimitReached;
+                        if (playerResult.Valid && !retry)
+                        {
+                            playerData = playerResult.Value;
+                        }
+                    }
+
+                    if (playerData != null && incudeWL)
+                    {
+                        var winLoseResult = await _ladderService.GetPlayerWinLoseAsync(member.AccountId);
+                        retry = winLoseResult.LimitReached;
+                        if (winLoseResult.Valid && !retry)
+                        {
+                            winLoseData = winLoseResult.Value;
+                        }
+                    }
+                }
+
+                if (retry)
                 {
                     //previous attempt failed. Notify the user and wait before retrying
                     notifications?.Invoke(this, string.Format(Messages.ProgressRequestLimitReached, index, count));
@@ -272,22 +307,30 @@ public class CommunityService(
                     }
                     _telemetryService.LogInformation(GetType(), message: "Waiting finished.");
                 }
-                var refresh = await _ladderService.RefreshPlayerAsync(member.AccountId);
-                if (refresh)
+                else
                 {
-                    playerData = await _ladderService.GetPlayerAsync(member.AccountId);
-                    if (playerData != null && incudeWL)
+                    if (!refreshed)
                     {
-                        winLoseData = await _ladderService.GetPlayerWinLoseAsync(member.AccountId);
+                        CoreTelemetry.WriteErrorLine("Error response from 'Refresh' call");
+                        //Error refreshing player data
+                    }
+                    else
+                    {
+                        if (playerData == null)
+                        {
+                            CoreTelemetry.WriteErrorLine("Error response from 'Player' call");
+                        }
+                        if (incudeWL && winLoseData == null)
+                        {
+                            CoreTelemetry.WriteErrorLine("Error response from 'WL' call");
+                        }
                     }
                 }
-                attempts++;
+
+                var record = CreateMemberRecord(member.Id, member.DisplayName, member.AccountId, member.Team, member.Phone, member.Email, member.Country, member.IsCaptain, member.Position, member.Notes, playerData, winLoseData, member);
+                updatedRecords.Add(record);
             }
-
-            var record = CreateMemberRecord(member.Id, member.DisplayName, member.AccountId, member.Team, member.Phone, member.Email, member.Country, member.IsCaptain, member.Position, member.Notes, playerData, winLoseData, member);
-            updatedRecords.Add(record);
         }
-
         await _airtableService.UpdateMultipleMemberAsync([.. updatedRecords]);
         IsBusy = false;
         return updatedRecords.Count;

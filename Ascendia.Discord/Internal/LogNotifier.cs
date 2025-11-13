@@ -8,5 +8,5 @@ internal static class LogNotifier
         => Console.WriteLine(message);
 
     public static void NotifyError(string message)
-        => ConsoleInteractionsHelper.WriteLine(message, ConsoleColor.Red);
+        => CoreTelemetry.WriteLine(message, ConsoleColor.Red);
 }

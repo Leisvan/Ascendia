@@ -1,9 +1,13 @@
-﻿namespace Ascendia.Core.Interactivity;
+﻿using LCTWorks.Telemetry;
 
-public static class ConsoleInteractionsHelper
+namespace Ascendia.Core.Interactivity;
+
+public static class CoreTelemetry
 {
     private static readonly Lock _lock = new();
     private static ConsoleColor _foregroundColor = ConsoleColor.Gray;
+
+    private static ITelemetryService? _telemetryService;
 
     public static event EventHandler? ClearConsoleRequested;
 
@@ -32,8 +36,14 @@ public static class ConsoleInteractionsHelper
     public static void ResetForegroundColor()
             => ForegroundColor = ConsoleColor.Gray;
 
+    public static void SetTelemetryService(ITelemetryService telemetryService)
+        => _telemetryService = telemetryService;
+
     public static void WriteErrorLine(string message)
-        => WriteLine(message, ConsoleColor.Red);
+    {
+        WriteLine(message, ConsoleColor.Red);
+        _telemetryService?.Log(message, Microsoft.Extensions.Logging.LogLevel.Error);
+    }
 
     public static void WriteLine(string message, ConsoleColor color = ConsoleColor.Gray, bool includeTimeSpan = true)
     {
@@ -45,5 +55,6 @@ public static class ConsoleInteractionsHelper
         ForegroundColor = color;
         Console.WriteLine(message);
         ResetForegroundColor();
+        _telemetryService?.Log(message);
     }
 }

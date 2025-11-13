@@ -1,4 +1,5 @@
-﻿using Ascendia.Core.Services;
+﻿using Ascendia.Core.Interactivity;
+using Ascendia.Core.Services;
 using Ascendia.Discord;
 using AscendiaApp.ViewModels;
 using AscendiaApp.ViewModels.Dialogs;
@@ -68,8 +69,11 @@ public partial class App : Application, IAppExtended
             }).Build();
 
         _telemetryService = GetService<ITelemetryService>();
-
-        _telemetryService?.Log(message: "App started");
+        if (_telemetryService != null)
+        {
+            CoreTelemetry.SetTelemetryService(_telemetryService);
+            CoreTelemetry.WriteLine("App started", ConsoleColor.Green);
+        }
 
         UnhandledException += App_UnhandledException;
         AppDomain.CurrentDomain.UnhandledException += AppDomainUnhandledException;

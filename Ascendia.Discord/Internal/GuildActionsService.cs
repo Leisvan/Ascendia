@@ -6,7 +6,6 @@ using DSharpPlus.Commands;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity;
 using System.Globalization;
-using System.Security.Cryptography;
 using System.Text;
 
 namespace Ascendia.Discord.Internal;
@@ -30,7 +29,11 @@ internal class GuildActionsService(
 
     public void CancelOperation()
     {
-        _cts?.Cancel();
+        if (_cts != null)
+        {
+            WriteToConsole(MessageResources.ProgressCancelling, ConsoleColor.Yellow);
+            _cts.Cancel();
+        }
     }
 
     public async Task<string?> DisplayRankingAsync(
@@ -39,6 +42,7 @@ internal class GuildActionsService(
             CommandContext? context = null)
     {
         var rankComparer = new MemberRecordRankingComparer();
+        WriteToConsole(MessageResources.RefreshingMembersMessage);
         var membersList = await _communityDataService.GetAllMembersAsync();
         var filteredMembers = membersList
             .Where(x => includeBanned || x.IsEnabled)
@@ -194,9 +198,7 @@ internal class GuildActionsService(
     }
 
     private static void WriteToConsole(string message, ConsoleColor foregroundColor = ConsoleColor.White)
-    {
-        ConsoleInteractionsHelper.WriteLine(message, foregroundColor);
-    }
+        => CoreTelemetry.WriteLine(message, foregroundColor);
 
     private async Task<string> GetMemberLineAsync(MemberRecord member)
     {

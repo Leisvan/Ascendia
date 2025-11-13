@@ -10,65 +10,74 @@ public class LadderService
     private const string OpenDotaRefreshPlayerUrl = OpenDotaBaseUrl + "/players/{0}/refresh";
     private const string OpenDotaWinLoseUrl = OpenDotaBaseUrl + "/players/{0}/wl";
 
-    public async Task<PlayerOpenDotaModel?> GetPlayerAsync(string? accountId)
+    public async Task<OpenDotaResponse<PlayerOpenDotaModel?>> GetPlayerAsync(string? accountId)
     {
         if (string.IsNullOrWhiteSpace(accountId))
         {
-            return default;
+            return OpenDotaResponse<PlayerOpenDotaModel?>.Invalid;
         }
         var url = string.Format(OpenDotaPlayerUrl, accountId);
-        return await GetAsync<PlayerOpenDotaModel>(url);
+        return await GetAsync<PlayerOpenDotaModel?>(url);
     }
 
-    public async Task<WinLoseOpenDotaModel?> GetPlayerWinLoseAsync(string? accountId)
+    public async Task<OpenDotaResponse<WinLoseOpenDotaModel?>> GetPlayerWinLoseAsync(string? accountId)
     {
         if (string.IsNullOrWhiteSpace(accountId))
         {
-            return default;
+            return OpenDotaResponse<WinLoseOpenDotaModel?>.Invalid;
         }
         var url = string.Format(OpenDotaWinLoseUrl, accountId);
-        return await GetAsync<WinLoseOpenDotaModel>(url);
+        return await GetAsync<WinLoseOpenDotaModel?>(url);
     }
 
-    public Task<bool> RefreshPlayerAsync(string? accountId)
+    public Task<OpenDotaResponse<object>> RefreshPlayerAsync(string? accountId)
     {
         if (string.IsNullOrWhiteSpace(accountId))
         {
-            return Task.FromResult(false);
+            return Task.FromResult(OpenDotaResponse<object>.Invalid);
         }
         var url = string.Format(OpenDotaRefreshPlayerUrl, accountId);
-        return PostAsync<bool>(url);
+        return PostAsync(url);
     }
 
-    private static async Task<T?> GetAsync<T>(string url)
+    private static async Task<OpenDotaResponse<T>> GetAsync<T>(string url)
     {
         using var httpClient = new HttpClient();
-        try
-        {
-            HttpResponseMessage response = await httpClient.GetAsync(url);
-            response.EnsureSuccessStatusCode();
-            var content = await response.Content.ReadAsStringAsync();
-
-            return Json.ToObject<T>(content);
-        }
-        catch (Exception)
-        {
-        }
-        return default;
+        HttpResponseMessage response = await httpClient.GetAsync(url);
+        return await GetParsedResponseAsync<T>(response);
     }
 
-    private static async Task<bool> PostAsync<T>(string url)
+    private static async Task<OpenDotaResponse<T>> GetParsedResponseAsync<T>(HttpResponseMessage response)
     {
-        using var httpClient = new HttpClient();
-        try
+        var limitReached = response.StatusCode == System.Net.HttpStatusCode.TooManyRequests;
+        var valid = response.StatusCode == System.Net.HttpStatusCode.OK;
+        T? value = default;
+        if (valid)
         {
+            if (response.Content == null)
+            {
+                valid = false;
+            }
+            else
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                try
+                {
                     value = Json.ToObject<T>(content);
-            response.EnsureSuccessStatusCode();
-            return response.IsSuccessStatusCode;
+                }
+                catch (Exception)
+                {
+                    valid = false;
+                }
+            }
         }
-        catch (Exception)
-        {
-            return false;
-        }
+        return new OpenDotaResponse<T>(value, valid, limitReached);
+    }
+
+    private static async Task<OpenDotaResponse<object>> PostAsync(string url)
+    {
+        using var httpClient = new HttpClient();
+        HttpResponseMessage response = await httpClient.PostAsync(url, null);
+        return await GetParsedResponseAsync<object>(response);
     }
 }

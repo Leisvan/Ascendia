@@ -141,8 +141,14 @@
   <data name="OperationCancellingMessage" xml:space="preserve">
     <value>Cancelando operación...</value>
   </data>
+  <data name="ProgressCancelling" xml:space="preserve">
+    <value>Cancelando...</value>
+  </data>
   <data name="RankingHeaderMessage" xml:space="preserve">
     <value>### Ranking Dota 2 - Impacto Solar.</value>
+  </data>
+  <data name="RefreshingMembersMessage" xml:space="preserve">
+    <value>Actualizando miembros...</value>
   </data>
   <data name="StartingOperationMessage" xml:space="preserve">
     <value>Iniciando. Por favor, espere.</value>

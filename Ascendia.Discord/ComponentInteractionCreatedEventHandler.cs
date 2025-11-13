@@ -8,14 +8,9 @@ using System.Threading.Tasks;
 
 namespace Ascendia.Discord
 {
-    public class ComponentInteractionCreatedEventHandler : IEventHandler<ComponentInteractionCreatedEventArgs>
+    public class ComponentInteractionCreatedEventHandler(DiscordBotService service) : IEventHandler<ComponentInteractionCreatedEventArgs>
     {
-        private readonly DiscordBotService _service;
-
-        public ComponentInteractionCreatedEventHandler(DiscordBotService service)
-        {
-            _service = service;
-        }
+        private readonly DiscordBotService _service = service;
 
         public Task HandleEventAsync(DiscordClient sender, ComponentInteractionCreatedEventArgs eventArgs)
             => _service.RespondToInteractionAsync(eventArgs);
