@@ -117,43 +117,46 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AccessingMembersListMessage" xml:space="preserve">
+  <data name="AccessingMembersList" xml:space="preserve">
     <value>Accediendo a la lista de miembros.</value>
   </data>
-  <data name="ChannelIdNotFoundErrorMessage" xml:space="preserve">
+  <data name="BotConnected" xml:space="preserve">
+    <value>Bot conectado.</value>
+  </data>
+  <data name="BotDisconnected" xml:space="preserve">
+    <value>Bot desconectado.</value>
+  </data>
+  <data name="ChannelIdNotFoundError" xml:space="preserve">
     <value>Id del canal no encontrado.</value>
   </data>
-  <data name="FullRankingCaptionMessage" xml:space="preserve">
+  <data name="FullRankingCaption" xml:space="preserve">
     <value>&gt; Puede encontrar el ranking completo en el siguiente Hilo :point_down:</value>
   </data>
-  <data name="FullRankingThreadNameMessage" xml:space="preserve">
+  <data name="FullRankingThreadNameFormat" xml:space="preserve">
     <value>Ranking completo {0} perfiles.</value>
   </data>
-  <data name="NoMembersToShowMessage" xml:space="preserve">
+  <data name="NoMembersToShow" xml:space="preserve">
     <value>No hay suficientes perfiles para mostrar el ranking.</value>
   </data>
-  <data name="OperationAlredyInProgressMessage" xml:space="preserve">
+  <data name="OperationAlredyInProgress" xml:space="preserve">
     <value>La operación ya está en progreso.</value>
   </data>
-  <data name="OperationCancelledMessage" xml:space="preserve">
+  <data name="OperationCancelled" xml:space="preserve">
     <value>Operación cancelada.</value>
   </data>
-  <data name="OperationCancellingMessage" xml:space="preserve">
+  <data name="OperationCancelling" xml:space="preserve">
     <value>Cancelando operación...</value>
   </data>
-  <data name="ProgressCancelling" xml:space="preserve">
-    <value>Cancelando...</value>
-  </data>
-  <data name="RankingHeaderMessage" xml:space="preserve">
+  <data name="RankingHeader" xml:space="preserve">
     <value>### Ranking Dota 2 - Impacto Solar.</value>
   </data>
-  <data name="RefreshingMembersMessage" xml:space="preserve">
-    <value>Actualizando miembros...</value>
+  <data name="RefreshingMembers" xml:space="preserve">
+    <value>Obteniendo información actualizada de perfiles...</value>
   </data>
-  <data name="StartingOperationMessage" xml:space="preserve">
+  <data name="StartingOperation" xml:space="preserve">
     <value>Iniciando. Por favor, espere.</value>
   </data>
-  <data name="ThreadCreationFailedMessage" xml:space="preserve">
+  <data name="ThreadCreationFailed" xml:space="preserve">
     <value>No se pudo crear el Hilo en este canal.</value>
   </data>
   <data name="UpdatedProfilesCountFormat" xml:space="preserve">

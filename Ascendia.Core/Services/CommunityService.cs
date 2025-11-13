@@ -214,6 +214,7 @@ public class CommunityService(
 
     public async Task<int> UpdatePlayersAsync(bool incudeWL = true, EventHandler<string>? notifications = null, int messageDelayInMilliseconds = MessageDelayInMilliseconds, int minutesUpdateThreshold = 0, CancellationToken? cancellationToken = null)
     {
+        CoreTelemetry.WriteLine(Messages.RefreshingMembers);
         //Refresh so we have the latest data, including last updated timestamps.
         var members = await GetAllMembersAsync(true);
 
@@ -225,6 +226,15 @@ public class CommunityService(
             .OrderBy(m => m.LastUpdated)
             //.Take(2)
             .ToList();
+
+        if (minutesUpdateThreshold > 0)
+        {
+            int skipped = members.Count - membersToUpdate.Count;
+            if (skipped > 0)
+            {
+                CoreTelemetry.WriteLine(Messages.UpToDateMembersSkippedFormat);
+            }
+        }
 
         var count = membersToUpdate.Count;
         int index = 0;
@@ -283,7 +293,7 @@ public class CommunityService(
                 if (retry)
                 {
                     //previous attempt failed. Notify the user and wait before retrying
-                    notifications?.Invoke(this, string.Format(Messages.ProgressRequestLimitReached, index, count));
+                    notifications?.Invoke(this, string.Format(Messages.ProgressRequestLimitReachedFormat, index, count));
                     _telemetryService.LogInformation(GetType(), message: $"Request limit reached. Waiting {RequestLimitWaitTimeInMilliseconds}ms.");
                     if (cancellationToken == null)
                     {
@@ -311,18 +321,17 @@ public class CommunityService(
                 {
                     if (!refreshed)
                     {
-                        CoreTelemetry.WriteErrorLine("Error response from 'Refresh' call");
-                        //Error refreshing player data
+                        CoreTelemetry.WriteErrorLine(string.Format(Messages.ErrorResponseFormat, "/Refresh"));
                     }
                     else
                     {
                         if (playerData == null)
                         {
-                            CoreTelemetry.WriteErrorLine("Error response from 'Player' call");
+                            CoreTelemetry.WriteErrorLine(string.Format(Messages.ErrorResponseFormat, "/Player"));
                         }
                         if (incudeWL && winLoseData == null)
                         {
-                            CoreTelemetry.WriteErrorLine("Error response from 'WL' call");
+                            CoreTelemetry.WriteErrorLine(string.Format(Messages.ErrorResponseFormat, "/WL"));
                         }
                     }
                 }

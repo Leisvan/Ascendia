@@ -29,9 +29,9 @@ internal class GuildActionsService(
 
     public void CancelOperation()
     {
-        if (_cts != null)
+        if (_cts != null && !_cts.IsCancellationRequested)
         {
-            WriteToConsole(MessageResources.ProgressCancelling, ConsoleColor.Yellow);
+            WriteToConsole(Messages.OperationCancelling);
             _cts.Cancel();
         }
     }
@@ -42,8 +42,10 @@ internal class GuildActionsService(
             CommandContext? context = null)
     {
         var rankComparer = new MemberRecordRankingComparer();
-        WriteToConsole(MessageResources.RefreshingMembersMessage);
-        var membersList = await _communityDataService.GetAllMembersAsync();
+
+        WriteToConsole(Messages.RefreshingMembers);
+
+        var membersList = await _communityDataService.GetAllMembersAsync(true);
         var filteredMembers = membersList
             .Where(x => includeBanned || x.IsEnabled)
             .Where(x => x.RankTier > 0 && x.LeaderboardRank > 0)
@@ -60,11 +62,11 @@ internal class GuildActionsService(
 
         if (lines.Count == 0)
         {
-            await SendMessageAsync(channel, MessageResources.NoMembersToShowMessage);
-            return MessageResources.NoMembersToShowMessage;
+            await SendMessageAsync(channel, Messages.NoMembersToShow);
+            return Messages.NoMembersToShow;
         }
 
-        await SendMessageAsync(channel, MessageResources.RankingHeaderMessage);
+        await SendMessageAsync(channel, Messages.RankingHeader);
 
         var headerString = GetRankingHeaderString();
         await SendMessageAsync(channel, $"`##` {headerString}");
@@ -86,13 +88,13 @@ internal class GuildActionsService(
         }
         if (lines.Count > RankingMessageChunkSize * RankingLeadersChunkCount)
         {
-            await SendMessageAsync(channel, MessageResources.FullRankingCaptionMessage);
-            var threadName = string.Format(MessageResources.FullRankingThreadNameMessage, lines.Count);
+            await SendMessageAsync(channel, Messages.FullRankingCaption);
+            var threadName = string.Format(Messages.FullRankingThreadNameFormat, lines.Count);
             var threadChannel = await CreateThreadAsync(threadName, channel);
             if (!threadChannel.IsThread)
             {
-                await SendMessageAsync(channel, MessageResources.ThreadCreationFailedMessage);
-                return MessageResources.ThreadCreationFailedMessage;
+                await SendMessageAsync(channel, Messages.ThreadCreationFailed);
+                return Messages.ThreadCreationFailed;
             }
             await SendMessageAsync(threadChannel, $"`###` {headerString}");
             int seqx = 1;
@@ -121,7 +123,7 @@ internal class GuildActionsService(
     {
         if (_cts != null)
         {
-            return MessageResources.OperationAlredyInProgressMessage;
+            return Messages.OperationAlredyInProgress;
         }
         _cts = new CancellationTokenSource();
 
@@ -135,7 +137,7 @@ internal class GuildActionsService(
         DiscordMessage? message = null;
         if (context != null)
         {
-            string messageContent = MessageResources.AccessingMembersListMessage;
+            string messageContent = Messages.AccessingMembersList;
             var builder = new DiscordMessageBuilder()
                 .WithContent(messageContent)
                 .AddActionRowComponent(InteractionsHelper.GetCancelUpdateRankButton());
@@ -154,13 +156,13 @@ internal class GuildActionsService(
 
         if (result == -1 || _cts?.Token.IsCancellationRequested == true)
         {
-            await UpdateMessageAsync(MessageResources.OperationCancelledMessage, channelId, message);
+            await UpdateMessageAsync(Messages.OperationCancelled, channelId, message);
             _cts = null;
-            return MessageResources.OperationCancelledMessage;
+            return Messages.OperationCancelled;
         }
         else
         {
-            await UpdateMessageAsync(string.Format(MessageResources.UpdatedProfilesCountFormat, result.ToString()), channelId, message, true);
+            await UpdateMessageAsync(string.Format(Messages.UpdatedProfilesCountFormat, result.ToString()), channelId, message, true);
         }
         _cts = null;
         return null;
@@ -181,7 +183,7 @@ internal class GuildActionsService(
         }
         catch (Exception ex)
         {
-            WriteToConsole($"{MessageResources.ThreadCreationFailedMessage}: {ex.Message}", ConsoleColor.Red);
+            WriteToConsole($"{Messages.ThreadCreationFailed}: {ex.Message}", ConsoleColor.Red);
             return channel;
         }
     }
@@ -212,10 +214,17 @@ internal class GuildActionsService(
             positionEmoji = await EmojisHelper.GetPositionEmojiStringAsync(_botService.Client, positionValue);
         }
 
-        var newPlayer = member.PreviousLeaderboardRank == null;
-        var total = member.Win + member.Lose ?? 0;
-        var winrate = total == 0 ? default : member.Win / total * 100;
-        var winrateString = winrate == null ? "  --" : $"{StringLengthCapTool.InvertedThreeSpaces.GetString(winrate)}%";
+        //var isNewPlayer = member.PreviousLeaderboardRank == null;
+
+        // Correctly handle nullable Win/Lose, avoid integer division and handle zero-total.
+        var total = (member.Win ?? 0) + (member.Lose ?? 0);
+        int? winratePercent = total == 0
+            ? null
+            : (int)Math.Round(((member.Win ?? 0) / (double)total) * 100);
+
+        var winrateString = winratePercent == null
+            ? "  --"
+            : $"{StringLengthCapTool.InvertedThreeSpaces.GetString(winratePercent.Value)}%";
 
         builder.Append($"{rankEmoji} ");
         builder.Append($"`{StringLengthCapTool.InvertedFourSpaces.GetString(member.LeaderboardRank ?? 0)}` ");

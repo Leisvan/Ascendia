@@ -19,7 +19,7 @@ public class PlayersCommand(DiscordBotService service)
     {
         var guildId = context.Guild?.Id ?? 0;
 
-        await context.RespondAsync(MessageResources.StartingOperationMessage);
+        await context.RespondAsync(Messages.StartingOperation);
 
         var result = await _service.Actions.DisplayRankingAsync(includeBanned, context: context);
         if (result != null)
@@ -34,7 +34,7 @@ public class PlayersCommand(DiscordBotService service)
     {
         var guildId = context.Guild?.Id ?? 0;
 
-        await context.RespondAsync(MessageResources.StartingOperationMessage);
+        await context.RespondAsync(Messages.StartingOperation);
 
         var result = await _service.Actions.UpdateMemberRegionsAsync(forceUpdate, incudeWL, guildId, context.Channel.Id, context);
         if (result != null)

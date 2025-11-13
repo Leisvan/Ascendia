@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media;
 using System;
+using System.Threading.Tasks;
 using Windows.UI;
 
 namespace AscendiaApp.Behaviors
@@ -74,7 +75,7 @@ namespace AscendiaApp.Behaviors
             }
         }
 
-        private void TextWritten(object? sender, TextWriterEventArgs e)
+        private async void TextWritten(object? sender, TextWriterEventArgs e)
         {
             try
             {
@@ -85,6 +86,7 @@ namespace AscendiaApp.Behaviors
                     var r = new Run { Text = e.Text, Foreground = _colorBrush };
                     p.Inlines.Add(r);
                     AssociatedObject.Blocks.Add(p);
+                    await Task.Delay(100);
                     ScrollViewer?.ChangeView(null, double.MaxValue, null, true);
                 }
             }

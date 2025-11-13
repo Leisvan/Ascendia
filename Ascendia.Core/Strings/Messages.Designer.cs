@@ -79,6 +79,15 @@ namespace Ascendia.Core.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error en la llamada a &apos;{0}&apos;..
+        /// </summary>
+        internal static string ErrorResponseFormat {
+            get {
+                return ResourceManager.GetString("ErrorResponseFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Guardando nuevo perfil.
         /// </summary>
         internal static string ProgressAddToDb {
@@ -136,9 +145,9 @@ namespace Ascendia.Core.Strings {
         ///   Looks up a localized string similar to Se llegó al límite de pedidos. Esperando para continuar (~1min).
         ///({0}/{1})..
         /// </summary>
-        internal static string ProgressRequestLimitReached {
+        internal static string ProgressRequestLimitReachedFormat {
             get {
-                return ResourceManager.GetString("ProgressRequestLimitReached", resourceCulture);
+                return ResourceManager.GetString("ProgressRequestLimitReachedFormat", resourceCulture);
             }
         }
         
@@ -152,11 +161,29 @@ namespace Ascendia.Core.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Obteniendo información actualizada de perfiles....
+        /// </summary>
+        internal static string RefreshingMembers {
+            get {
+                return ResourceManager.GetString("RefreshingMembers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Obteniendo perfiles. {0} de {1}. `{2}`.
         /// </summary>
         internal static string UpdateMemberProgressFormat {
             get {
                 return ResourceManager.GetString("UpdateMemberProgressFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} pefiles omitidos dado que ya están actualizados..
+        /// </summary>
+        internal static string UpToDateMembersSkippedFormat {
+            get {
+                return ResourceManager.GetString("UpToDateMembersSkippedFormat", resourceCulture);
             }
         }
     }

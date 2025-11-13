@@ -123,6 +123,9 @@
   <data name="ErrorPlayerDuplicated" xml:space="preserve">
     <value>El perfil que intenta agregar ya existe.</value>
   </data>
+  <data name="ErrorResponseFormat" xml:space="preserve">
+    <value>Error en la llamada a '{0}'.</value>
+  </data>
   <data name="ProgressAddToDb" xml:space="preserve">
     <value>Guardando nuevo perfil</value>
   </data>
@@ -141,14 +144,20 @@
   <data name="ProgressRefreshPlayer" xml:space="preserve">
     <value>Actualizando cuenta (Refresh)</value>
   </data>
-  <data name="ProgressRequestLimitReached" xml:space="preserve">
+  <data name="ProgressRequestLimitReachedFormat" xml:space="preserve">
     <value>Se llegó al límite de pedidos. Esperando para continuar (~1min).
 ({0}/{1}).</value>
   </data>
   <data name="ProgressWinLoseNotFound" xml:space="preserve">
     <value>No se pudo acceder a W/L</value>
   </data>
+  <data name="RefreshingMembers" xml:space="preserve">
+    <value>Obteniendo información actualizada de perfiles...</value>
+  </data>
   <data name="UpdateMemberProgressFormat" xml:space="preserve">
     <value>Obteniendo perfiles. {0} de {1}. `{2}`</value>
+  </data>
+  <data name="UpToDateMembersSkippedFormat" xml:space="preserve">
+    <value>{0} pefiles omitidos dado que ya están actualizados.</value>
   </data>
 </root>

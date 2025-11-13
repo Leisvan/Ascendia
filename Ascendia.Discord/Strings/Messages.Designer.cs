@@ -22,14 +22,14 @@ namespace Ascendia.Discord.Strings {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class MessageResources {
+    internal class Messages {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal MessageResources() {
+        internal Messages() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Ascendia.Discord.Strings {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Ascendia.Discord.Strings.MessageResources", typeof(MessageResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Ascendia.Discord.Strings.Messages", typeof(Messages).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -63,117 +63,126 @@ namespace Ascendia.Discord.Strings {
         /// <summary>
         ///   Looks up a localized string similar to Accediendo a la lista de miembros..
         /// </summary>
-        internal static string AccessingMembersListMessage {
+        internal static string AccessingMembersList {
             get {
-                return ResourceManager.GetString("AccessingMembersListMessage", resourceCulture);
+                return ResourceManager.GetString("AccessingMembersList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bot conectado..
+        /// </summary>
+        internal static string BotConnected {
+            get {
+                return ResourceManager.GetString("BotConnected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bot desconectado..
+        /// </summary>
+        internal static string BotDisconnected {
+            get {
+                return ResourceManager.GetString("BotDisconnected", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Id del canal no encontrado..
         /// </summary>
-        internal static string ChannelIdNotFoundErrorMessage {
+        internal static string ChannelIdNotFoundError {
             get {
-                return ResourceManager.GetString("ChannelIdNotFoundErrorMessage", resourceCulture);
+                return ResourceManager.GetString("ChannelIdNotFoundError", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to &gt; Puede encontrar el ranking completo en el siguiente Hilo :point_down:.
         /// </summary>
-        internal static string FullRankingCaptionMessage {
+        internal static string FullRankingCaption {
             get {
-                return ResourceManager.GetString("FullRankingCaptionMessage", resourceCulture);
+                return ResourceManager.GetString("FullRankingCaption", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Ranking completo {0} perfiles..
         /// </summary>
-        internal static string FullRankingThreadNameMessage {
+        internal static string FullRankingThreadNameFormat {
             get {
-                return ResourceManager.GetString("FullRankingThreadNameMessage", resourceCulture);
+                return ResourceManager.GetString("FullRankingThreadNameFormat", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to No hay suficientes perfiles para mostrar el ranking..
         /// </summary>
-        internal static string NoMembersToShowMessage {
+        internal static string NoMembersToShow {
             get {
-                return ResourceManager.GetString("NoMembersToShowMessage", resourceCulture);
+                return ResourceManager.GetString("NoMembersToShow", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to La operación ya está en progreso..
         /// </summary>
-        internal static string OperationAlredyInProgressMessage {
+        internal static string OperationAlredyInProgress {
             get {
-                return ResourceManager.GetString("OperationAlredyInProgressMessage", resourceCulture);
+                return ResourceManager.GetString("OperationAlredyInProgress", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Operación cancelada..
         /// </summary>
-        internal static string OperationCancelledMessage {
+        internal static string OperationCancelled {
             get {
-                return ResourceManager.GetString("OperationCancelledMessage", resourceCulture);
+                return ResourceManager.GetString("OperationCancelled", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Cancelando operación....
         /// </summary>
-        internal static string OperationCancellingMessage {
+        internal static string OperationCancelling {
             get {
-                return ResourceManager.GetString("OperationCancellingMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cancelando....
-        /// </summary>
-        internal static string ProgressCancelling {
-            get {
-                return ResourceManager.GetString("ProgressCancelling", resourceCulture);
+                return ResourceManager.GetString("OperationCancelling", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to ### Ranking Dota 2 - Impacto Solar..
         /// </summary>
-        internal static string RankingHeaderMessage {
+        internal static string RankingHeader {
             get {
-                return ResourceManager.GetString("RankingHeaderMessage", resourceCulture);
+                return ResourceManager.GetString("RankingHeader", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Actualizando miembros....
+        ///   Looks up a localized string similar to Obteniendo información actualizada de perfiles....
         /// </summary>
-        internal static string RefreshingMembersMessage {
+        internal static string RefreshingMembers {
             get {
-                return ResourceManager.GetString("RefreshingMembersMessage", resourceCulture);
+                return ResourceManager.GetString("RefreshingMembers", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Iniciando. Por favor, espere..
         /// </summary>
-        internal static string StartingOperationMessage {
+        internal static string StartingOperation {
             get {
-                return ResourceManager.GetString("StartingOperationMessage", resourceCulture);
+                return ResourceManager.GetString("StartingOperation", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to No se pudo crear el Hilo en este canal..
         /// </summary>
-        internal static string ThreadCreationFailedMessage {
+        internal static string ThreadCreationFailed {
             get {
-                return ResourceManager.GetString("ThreadCreationFailedMessage", resourceCulture);
+                return ResourceManager.GetString("ThreadCreationFailed", resourceCulture);
             }
         }
         

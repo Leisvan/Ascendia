@@ -23,10 +23,10 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>EmojiResources.resx</DependentUpon>
     </Compile>
-    <Compile Update="Strings\MessageResources.Designer.cs">
+    <Compile Update="Strings\Messages.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>MessageResources.resx</DependentUpon>
+      <DependentUpon>Messages.resx</DependentUpon>
     </Compile>
   </ItemGroup>
 
@@ -35,9 +35,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>EmojiResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="Strings\MessageResources.resx">
+    <EmbeddedResource Update="Strings\Messages.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>MessageResources.Designer.cs</LastGenOutput>
+      <LastGenOutput>Messages.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 

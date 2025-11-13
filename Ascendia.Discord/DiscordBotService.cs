@@ -34,8 +34,8 @@ public class DiscordBotService
     {
         try
         {
-            CoreTelemetry.ClearConsole();
             await _client.ConnectAsync();
+            CoreTelemetry.WriteLine(Messages.BotConnected, ConsoleColor.Green);
             return true;
         }
         catch (Exception e)
@@ -50,8 +50,7 @@ public class DiscordBotService
         try
         {
             await _client.DisconnectAsync();
-            CoreTelemetry.ClearConsole();
-            CoreTelemetry.WriteLine("Bot desconectado");
+            CoreTelemetry.WriteLine(Messages.BotDisconnected, ConsoleColor.Green);
         }
         catch (Exception e)
         {
@@ -64,7 +63,7 @@ public class DiscordBotService
         var guildSettings = _communityService.GetGuildSettings(guildId);
         if (guildSettings == null || !ulong.TryParse(guildSettings.RankingChannelId, out ulong channelId) || channelId == 0)
         {
-            var errorMessage = MessageResources.ChannelIdNotFoundErrorMessage;
+            var errorMessage = Messages.ChannelIdNotFoundError;
             LogNotifier.NotifyError(errorMessage);
             return;
         }
@@ -86,7 +85,7 @@ public class DiscordBotService
         var guildSettings = _communityService.GetGuildSettings(guildId);
         if (guildSettings == null || !ulong.TryParse(guildSettings.RankingChannelId, out ulong channelId) || channelId == 0)
         {
-            var errorMessage = MessageResources.ChannelIdNotFoundErrorMessage;
+            var errorMessage = Messages.ChannelIdNotFoundError;
             LogNotifier.NotifyError(errorMessage);
             return false;
         }
@@ -100,7 +99,7 @@ public class DiscordBotService
         {
             CancelOperation();
             var builder = new DiscordInteractionResponseBuilder()
-                .WithContent(MessageResources.OperationCancellingMessage);
+                .WithContent(Messages.OperationCancelling);
 
             await args.Interaction.CreateResponseAsync(DiscordInteractionResponseType.UpdateMessage, builder);
         }
