@@ -21,10 +21,9 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <StackPanel Margin="24,32"
+        <StackPanel Margin="24,32,24,8"
                     Orientation="Vertical"
                     Spacing="8">
-
             <TextBlock x:Uid="Members-NewTitleBlock"
                        HorizontalAlignment="Center"
                        Style="{ThemeResource SmoothTitleTextBlockStyle}"
@@ -41,12 +40,20 @@
             <Rectangle Height="2"
                        Fill="{ThemeResource SystemChromeGrayColor}"
                        Opacity=".2" />
+
+            <tkc:Segmented Margin="0,8"
+                           HorizontalAlignment="Stretch"
+                           SelectedIndex="{x:Bind ViewModel.HeaderSelectedIndex, Mode=TwoWay}">
+                <x:String>Perfil</x:String>
+                <x:String>Social</x:String>
+            </tkc:Segmented>
         </StackPanel>
         <ScrollViewer Grid.Row="1"
                       Padding="24,0,24,24"
                       HorizontalScrollBarVisibility="Disabled"
                       HorizontalScrollMode="Disabled"
-                      IsVerticalScrollChainingEnabled="False">
+                      IsVerticalScrollChainingEnabled="False"
+                      Visibility="{x:Bind ViewModel.IsProfileTabSelected, Mode=OneWay}">
             <StackPanel Orientation="Vertical"
                         Spacing="8">
                 <NumberBox x:Uid="Members-AddIdBox"
@@ -83,10 +90,6 @@
                     </tkc:Segmented>
                 </tkc:HeaderedContentControl>
 
-                <TextBox x:Uid="Members-AddPhoneBox"
-                         Text="{x:Bind ViewModel.Phone, Mode=TwoWay}" />
-                <TextBox x:Uid="Members-AddEmailBox"
-                         Text="{x:Bind ViewModel.EMail, Mode=TwoWay}" />
                 <TextBox x:Uid="Members-AddCountryBox"
                          Text="{x:Bind ViewModel.Country, Mode=TwoWay}" />
 
@@ -115,6 +118,41 @@
                           Visibility="{x:Bind ViewModel.IsNew, Mode=OneWay}" />
             </StackPanel>
         </ScrollViewer>
+        <ScrollViewer Grid.Row="1"
+                      Padding="24,0,24,24"
+                      HorizontalScrollBarVisibility="Disabled"
+                      HorizontalScrollMode="Disabled"
+                      IsVerticalScrollChainingEnabled="False"
+                      Visibility="{x:Bind ViewModel.IsSocialTabSelected, Mode=OneWay}">
+            <Grid ColumnSpacing="8"
+                  RowSpacing="4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <TextBox x:Uid="Members-AddPhoneBox"
+                         Grid.ColumnSpan="2"
+                         Text="{x:Bind ViewModel.Phone, Mode=TwoWay}" />
+                <TextBox x:Uid="Members-AddEmailBox"
+                         Grid.Row="1"
+                         Grid.ColumnSpan="2"
+                         Text="{x:Bind ViewModel.EMail, Mode=TwoWay}" />
+                <TextBox x:Uid="Members-AddCountryBox"
+                         Grid.Row="2"
+                         Grid.ColumnSpan="2"
+                         Text="{x:Bind ViewModel.Country, Mode=TwoWay}" />
+                <TextBlock FontFamily="{StaticResource FontAwesomeBrandsFontFamily}"
+                           Text="facebook" />
+            </Grid>
+        </ScrollViewer>
+
         <Rectangle Grid.Row="2"
                    Height="2"
                    Margin="24,0"
@@ -212,7 +250,6 @@
                             Command="{x:Bind ViewModel.AcceptFinishedCommand}"
                             Style="{StaticResource AccentButtonStyle}" />
                 </StackPanel>
-
             </Grid>
         </Grid>
     </Grid>

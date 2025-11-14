@@ -6,6 +6,7 @@ using LCTWorks.Core.Helpers;
 using LCTWorks.Core.Services;
 using LCTWorks.Telemetry;
 using Microsoft.Extensions.Logging;
+using System.Security.AccessControl;
 
 namespace Ascendia.Core.Services;
 
@@ -212,7 +213,7 @@ public class CommunityService(
         return results;
     }
 
-    public async Task<int> UpdatePlayersAsync(bool incudeWL = true, EventHandler<string>? notifications = null, int messageDelayInMilliseconds = MessageDelayInMilliseconds, int minutesUpdateThreshold = 0, CancellationToken? cancellationToken = null)
+    public async Task<int> UpdatePlayersAsync(bool incudeWL = true, EventHandler<string>? notifications = null, int minutesUpdateThreshold = 0, CancellationToken? cancellationToken = null)
     {
         CoreTelemetry.WriteLine(Messages.RefreshingMembers);
         //Refresh so we have the latest data, including last updated timestamps.
@@ -247,9 +248,9 @@ public class CommunityService(
             }
             var displayName = $"{member.DisplayName ?? "?"}";
 
-            notifications?.Invoke(this, string.Format(Messages.UpdateMemberProgressFormat, ++index, count, displayName));
-            await Task.Delay(messageDelayInMilliseconds);
-            _telemetryService.LogInformation(GetType(), message: $"Updating user {index} of {count}: {member.DisplayName} ({member.AccountId})");
+            var progressMessage = string.Format(Messages.UpdateMemberProgressFormat, ++index, count, displayName);
+            notifications?.Invoke(this, progressMessage);
+            CoreTelemetry.WriteLine(progressMessage);
 
             if (member.DisplayName == null || member.AccountId == null)
             {
@@ -261,13 +262,15 @@ public class CommunityService(
             var refreshed = false;
             while (retry)
             {
+                retry = !refreshed;
+
                 if (!refreshed)
                 {
                     var refreshResults = await _ladderService.RefreshPlayerAsync(member.AccountId);
                     retry = refreshResults.LimitReached;
                     refreshed = refreshResults.Valid;
                 }
-                if (!retry && refreshed)
+                if (!retry)
                 {
                     if (playerData == null)
                     {
@@ -293,8 +296,10 @@ public class CommunityService(
                 if (retry)
                 {
                     //previous attempt failed. Notify the user and wait before retrying
-                    notifications?.Invoke(this, string.Format(Messages.ProgressRequestLimitReachedFormat, index, count));
-                    _telemetryService.LogInformation(GetType(), message: $"Request limit reached. Waiting {RequestLimitWaitTimeInMilliseconds}ms.");
+                    var waitMessage = string.Format(Messages.ProgressRequestLimitReachedFormat, index, count);
+                    notifications?.Invoke(this, waitMessage);
+                    CoreTelemetry.WriteLine(waitMessage);
+
                     if (cancellationToken == null)
                     {
                         await Task.Delay(RequestLimitWaitTimeInMilliseconds);
@@ -312,10 +317,10 @@ public class CommunityService(
                                 notifications?.Invoke(this, Messages.ProgressCancelling);
                                 break;
                             }
-                            _telemetryService.LogInformation(GetType(), message: $"Error: {e.Message}");
+                            CoreTelemetry.WriteErrorLine(string.Format(Messages.ExceptionMessageFormat, e.Message));
                         }
                     }
-                    _telemetryService.LogInformation(GetType(), message: "Waiting finished.");
+                    _telemetryService.LogInformation(GetType(), message: Messages.ProgressWaitingFinished);
                 }
                 else
                 {
@@ -336,8 +341,11 @@ public class CommunityService(
                     }
                 }
 
-                var record = CreateMemberRecord(member.Id, member.DisplayName, member.AccountId, member.Team, member.Phone, member.Email, member.Country, member.IsCaptain, member.Position, member.Notes, playerData, winLoseData, member);
-                updatedRecords.Add(record);
+                if (!retry)
+                {
+                    var record = CreateMemberRecord(member.Id, member.DisplayName, member.AccountId, member.Team, member.Phone, member.Email, member.Country, member.IsCaptain, member.Position, member.Notes, playerData, winLoseData, member);
+                    updatedRecords.Add(record);
+                }
             }
         }
         await _airtableService.UpdateMultipleMemberAsync([.. updatedRecords]);

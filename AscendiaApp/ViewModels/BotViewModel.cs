@@ -1,9 +1,12 @@
-﻿using Ascendia.Core.Models;
+﻿using Ascendia.Core.Interactivity;
+using Ascendia.Core.Models;
 using Ascendia.Core.Records;
 using Ascendia.Core.Services;
 using Ascendia.Discord;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using LCTWorks.Core.Extensions;
+using LCTWorks.Core.Helpers;
 using LCTWorks.WinUI.Helpers;
 using Microsoft.UI.Dispatching;
 using System;
@@ -13,6 +16,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
+using Windows.Storage.Pickers;
 
 namespace AscendiaApp.ViewModels;
 
@@ -21,6 +25,9 @@ public partial class BotViewModel(DiscordBotService botService, CommunityService
     private readonly DiscordBotService _botService = botService;
     private readonly CommunityService _communityService = communityService;
     private readonly DispatcherQueue _dispatcher = DispatcherQueue.GetForCurrentThread();
+
+    [ObservableProperty]
+    public partial bool? ForceUpdate { get; set; } = false;
 
     public ObservableCollection<GuildSettingsModel> Guilds { get; } = [];
 
@@ -37,7 +44,13 @@ public partial class BotViewModel(DiscordBotService botService, CommunityService
     public bool IsRankingIdle => !IsRankingBusy;
 
     [ObservableProperty]
+    public partial bool? NotifyGuild { get; set; } = true;
+
+    [ObservableProperty]
     public partial GuildSettingsModel? SelectedGuild { get; set; }
+
+    [ObservableProperty]
+    public partial bool? UpdateWL { get; set; } = true;
 
     [RelayCommand]
     public void CancelUpdateRank()
@@ -66,10 +79,8 @@ public partial class BotViewModel(DiscordBotService botService, CommunityService
         => ExecuteRankingActionAsync(false, true, false);
 
     private async Task ExecuteRankingActionAsync(bool updateMembers,
-            bool displayRank,
-        bool forceUpdate = false,
-        bool includeBanned = false,
-        bool includeWL = true)
+        bool displayRank,
+        bool includeBanned = false)
     {
         if (SelectedGuild == null)
         {
@@ -78,7 +89,7 @@ public partial class BotViewModel(DiscordBotService botService, CommunityService
         await UIDispatchAsync(() => IsRankingBusy = true);
         if (updateMembers)
         {
-            if (!await _botService.UpdateMemberRegionsAsync(forceUpdate, includeWL, SelectedGuild.GuildId))
+            if (!await _botService.UpdateMemberRegionsAsync(ForceUpdate ?? false, UpdateWL ?? true, NotifyGuild ?? true, SelectedGuild.GuildId))
             {
                 await UIDispatchAsync(() => IsRankingBusy = false);
                 return;
@@ -131,5 +142,5 @@ public partial class BotViewModel(DiscordBotService botService, CommunityService
 
     [RelayCommand]
     private Task UpdateAllMembersAsync()
-        => ExecuteRankingActionAsync(true, false, false, false);
+        => ExecuteRankingActionAsync(true, false);
 }

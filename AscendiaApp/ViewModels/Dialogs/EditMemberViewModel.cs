@@ -33,14 +33,16 @@ public partial class EditMemberViewModel(CommunityService communityService) : Ob
     [ObservableProperty]
     public partial string? EMail { get; set; }
 
-    [ObservableProperty]
-    public partial string? Notes { get; set; }
-
     public string? ErrorMessage
     {
         get => _errorMessage ?? "AddMember-FailedDefaultMessage".GetTextLocalized();
         set => SetProperty(ref _errorMessage, value);
     }
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsProfileTabSelected))]
+    [NotifyPropertyChangedFor(nameof(IsSocialTabSelected))]
+    public partial int HeaderSelectedIndex { get; set; } = 0;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsValid))]
@@ -64,6 +66,10 @@ public partial class EditMemberViewModel(CommunityService communityService) : Ob
 
     public bool IsNotifying => IsBusy || IsSuccess || IsFailure;
 
+    public bool IsProfileTabSelected => HeaderSelectedIndex == 0;
+
+    public bool IsSocialTabSelected => HeaderSelectedIndex == 1;
+
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsNotifying))]
     [NotifyPropertyChangedFor(nameof(IsFinished))]
@@ -73,6 +79,9 @@ public partial class EditMemberViewModel(CommunityService communityService) : Ob
 
     [ObservableProperty]
     public partial string? Name { get; set; }
+
+    [ObservableProperty]
+    public partial string? Notes { get; set; }
 
     [ObservableProperty]
     public partial string? Phone { get; set; }

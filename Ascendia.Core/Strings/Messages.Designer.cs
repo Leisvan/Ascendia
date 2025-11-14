@@ -88,6 +88,15 @@ namespace Ascendia.Core.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error: {0}..
+        /// </summary>
+        internal static string ExceptionMessageFormat {
+            get {
+                return ResourceManager.GetString("ExceptionMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Guardando nuevo perfil.
         /// </summary>
         internal static string ProgressAddToDb {
@@ -148,6 +157,15 @@ namespace Ascendia.Core.Strings {
         internal static string ProgressRequestLimitReachedFormat {
             get {
                 return ResourceManager.GetString("ProgressRequestLimitReachedFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ha terminado la espera..
+        /// </summary>
+        internal static string ProgressWaitingFinished {
+            get {
+                return ResourceManager.GetString("ProgressWaitingFinished", resourceCulture);
             }
         }
         

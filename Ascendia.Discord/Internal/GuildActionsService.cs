@@ -117,6 +117,7 @@ internal class GuildActionsService(
     public async Task<string?> UpdateMemberRegionsAsync(
                     bool forceUpdate = false,
                     bool includeWL = true,
+                    bool notify = true,
                     ulong guildId = 0,
                     ulong channelId = 0,
                     CommandContext? context = null)
@@ -149,20 +150,29 @@ internal class GuildActionsService(
             includeWL,
             async (s, e) =>
             {
-                message = await UpdateMessageAsync(e, channelId, message);
+                if (notify)
+                {
+                    message = await UpdateMessageAsync(e, channelId, message);
+                }
             },
             minutesUpdateThreshold: minutesUpdateThreshold,
             cancellationToken: _cts.Token);
 
         if (result == -1 || _cts?.Token.IsCancellationRequested == true)
         {
-            await UpdateMessageAsync(Messages.OperationCancelled, channelId, message);
+            if (notify)
+            {
+                await UpdateMessageAsync(Messages.OperationCancelled, channelId, message);
+            }
             _cts = null;
             return Messages.OperationCancelled;
         }
         else
         {
-            await UpdateMessageAsync(string.Format(Messages.UpdatedProfilesCountFormat, result.ToString()), channelId, message, true);
+            if (notify)
+            {
+                await UpdateMessageAsync(string.Format(Messages.UpdatedProfilesCountFormat, result.ToString()), channelId, message, true);
+            }
         }
         _cts = null;
         return null;

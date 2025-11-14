@@ -117,9 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="DefaultPlayerName" xml:space="preserve">
-    <value>Jugador sin nombre</value>
-  </data>
   <data name="ErrorPlayerDuplicated" xml:space="preserve">
     <value>El perfil que intenta agregar ya existe.</value>
   </data>
@@ -159,5 +156,14 @@
   </data>
   <data name="UpToDateMembersSkippedFormat" xml:space="preserve">
     <value>{0} pefiles omitidos dado que ya están actualizados.</value>
+  </data>
+  <data name="DefaultPlayerName" xml:space="preserve">
+    <value>Jugador sin nombre</value>
+  </data>
+  <data name="ExceptionMessageFormat" xml:space="preserve">
+    <value>Error: {0}.</value>
+  </data>
+  <data name="ProgressWaitingFinished" xml:space="preserve">
+    <value>Ha terminado la espera.</value>
   </data>
 </root>
