@@ -48,14 +48,13 @@ internal class GuildActionsService(
         var membersList = await _communityDataService.GetAllMembersAsync(true);
         var filteredMembers = membersList
             .Where(x => includeBanned || x.IsEnabled)
-            .Where(x => x.RankTier > 0 && x.LeaderboardRank > 0)
+            .Where(x => x.LeaderboardRank > 0 || x.RankTier != 80)
             .Order(rankComparer);
         var lines = new List<string>();
         foreach (var member in filteredMembers)
         {
             lines.Add(await GetMemberLineAsync(member));
         }
-
         var channel = context == null
                ? await _botService.Client.GetChannelAsync(channelId)
                : context.Channel;
