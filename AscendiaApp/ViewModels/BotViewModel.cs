@@ -89,7 +89,7 @@ public partial class BotViewModel(DiscordBotService botService, CommunityService
         await UIDispatchAsync(() => IsRankingBusy = true);
         if (updateMembers)
         {
-            if (!await _botService.UpdateMemberRegionsAsync(ForceUpdate ?? false, UpdateWL ?? true, NotifyGuild ?? true, SelectedGuild.GuildId))
+            if (!await _botService.UpdateMembersLadderAsync(ForceUpdate ?? false, UpdateWL ?? true, NotifyGuild ?? true, SelectedGuild.GuildId))
             {
                 await UIDispatchAsync(() => IsRankingBusy = false);
                 return;
@@ -97,7 +97,7 @@ public partial class BotViewModel(DiscordBotService botService, CommunityService
         }
         if (displayRank)
         {
-            await _botService.DisplayRankAsync(includeBanned, SelectedGuild.GuildId);
+            await _botService.DisplayRankingAsync(includeBanned, SelectedGuild.GuildId);
         }
         await UIDispatchAsync(() => IsRankingBusy = false);
     }

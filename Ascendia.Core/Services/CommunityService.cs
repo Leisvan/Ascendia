@@ -6,7 +6,6 @@ using LCTWorks.Core.Helpers;
 using LCTWorks.Core.Services;
 using LCTWorks.Telemetry;
 using Microsoft.Extensions.Logging;
-using System.Security.AccessControl;
 
 namespace Ascendia.Core.Services;
 
@@ -348,7 +347,7 @@ public class CommunityService(
                 }
             }
         }
-        await _airtableService.UpdateMultipleMemberAsync([.. updatedRecords]);
+        await _airtableService.UpdateMultipleMembersAsync([.. updatedRecords]);
         IsBusy = false;
         return updatedRecords.Count;
     }

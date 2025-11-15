@@ -64,7 +64,7 @@ public class AirtableHttpService(string? airtableToken, string? baseId)
         return await RemoveRecordAsync(MembersTableName, id);
     }
 
-    public async Task<bool> UpdateMultipleMemberAsync(MemberRecord[]? records)
+    public async Task<bool> UpdateMultipleMembersAsync(MemberRecord[]? records)
     {
         if (!IsConfigured || records == null || records.Length == 0)
         {

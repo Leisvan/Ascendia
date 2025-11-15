@@ -31,7 +31,7 @@ internal class GuildActionsService(
     {
         if (_cts != null && !_cts.IsCancellationRequested)
         {
-            WriteToConsole(Messages.OperationCancelling);
+            CoreTelemetry.WriteLine(Messages.OperationCancelling);
             _cts.Cancel();
         }
     }
@@ -43,12 +43,12 @@ internal class GuildActionsService(
     {
         var rankComparer = new MemberRecordRankingComparer();
 
-        WriteToConsole(Messages.RefreshingMembers);
+        CoreTelemetry.WriteLine(Messages.RefreshingMembers);
 
         var membersList = await _communityDataService.GetAllMembersAsync(true);
         var filteredMembers = membersList
             .Where(x => includeBanned || x.IsEnabled)
-            .Where(x => x.LeaderboardRank > 0 || x.RankTier != 80)
+            .Where(x => x.LeaderboardRank > 0 || (x.RankTier != 80 && x.RankTier > 0))
             .Order(rankComparer);
         var lines = new List<string>();
         foreach (var member in filteredMembers)
@@ -113,7 +113,7 @@ internal class GuildActionsService(
         return null;
     }
 
-    public async Task<string?> UpdateMemberRegionsAsync(
+    public async Task<string?> UpdateMembersLadderAsync(
                     bool forceUpdate = false,
                     bool includeWL = true,
                     bool notify = true,
@@ -141,7 +141,7 @@ internal class GuildActionsService(
             var builder = new DiscordMessageBuilder()
                 .WithContent(messageContent)
                 .AddActionRowComponent(InteractionsHelper.GetCancelUpdateRankButton());
-            WriteToConsole(messageContent);
+            CoreTelemetry.WriteLine(messageContent);
             message = await context.EditResponseAsync(builder);
         }
 
@@ -151,7 +151,7 @@ internal class GuildActionsService(
             {
                 if (notify)
                 {
-                    message = await UpdateMessageAsync(e, channelId, message);
+                    message = await UpdateMessageAsync(e, channelId, message, false);
                 }
             },
             minutesUpdateThreshold: minutesUpdateThreshold,
@@ -192,7 +192,7 @@ internal class GuildActionsService(
         }
         catch (Exception ex)
         {
-            WriteToConsole($"{Messages.ThreadCreationFailed}: {ex.Message}", ConsoleColor.Red);
+            CoreTelemetry.WriteLine($"{Messages.ThreadCreationFailed}: {ex.Message}", ConsoleColor.Red);
             return channel;
         }
     }
@@ -207,9 +207,6 @@ internal class GuildActionsService(
             + "`  WR`" + BlankSpace
             + "`TOTAL`";
     }
-
-    private static void WriteToConsole(string message, ConsoleColor foregroundColor = ConsoleColor.White)
-        => CoreTelemetry.WriteLine(message, foregroundColor);
 
     private async Task<string> GetMemberLineAsync(MemberRecord member)
     {
@@ -245,11 +242,14 @@ internal class GuildActionsService(
         return builder.ToString();
     }
 
-    private async Task SendMessageAsync(DiscordChannel channel, string content)
+    private async Task SendMessageAsync(DiscordChannel channel, string content, bool writeTelemetry = true)
     {
         try
         {
-            WriteToConsole(content);
+            if (writeTelemetry)
+            {
+                CoreTelemetry.WriteLine(content);
+            }
             await channel.SendMessageAsync(content);
         }
         catch (Exception e)
@@ -262,7 +262,7 @@ internal class GuildActionsService(
     {
         try
         {
-            WriteToConsole(content);
+            CoreTelemetry.WriteLine(content);
             if (message == null)
             {
                 var channel = await _botService.Client.GetChannelAsync(channelId);
