@@ -64,3 +64,5 @@ jobs:
           client-secret: ${{ secrets.ENTRA_APPLICATION_SECRET }}
           app-id: ${{ secrets.STORE_APP_ID }}
           package-path: "${{ env.PACKAGE_DIRECTORY }}"
+          delete-pending-submissions: true
+          number-of-packages-to-keep: 1

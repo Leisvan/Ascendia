@@ -9,14 +9,16 @@
       mc:Ignorable="d">
 
     <Grid Margin="0,8"
-          Background="{StaticResource AppColor3}"
           CornerRadius="8"
           RowSpacing="8">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Grid>
+        <Grid Margin="0,8"
+              Background="{StaticResource AppColor3}"
+              CornerRadius="8"
+              RowSpacing="8">
             <Grid.RowDefinitions>
                 <RowDefinition />
                 <RowDefinition />
@@ -47,8 +49,10 @@
                     Margin="8,0"
                     Orientation="Vertical"
                     Spacing="4">
-            <HyperlinkButton Content="Github repository"
-                             NavigateUri="https://github.com/Leisvan/ascendia" />
+            <HyperlinkButton Content="Github repo"
+                             NavigateUri="{x:Bind ViewModel.GitHubUrl}" />
+            <HyperlinkButton Content="Airtable workspace"
+                             NavigateUri="{x:Bind ViewModel.AirtableUrl}" />
         </StackPanel>
     </Grid>
 </Page> 

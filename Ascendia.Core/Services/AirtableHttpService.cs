@@ -13,8 +13,10 @@ public class AirtableHttpService(string? airtableToken, string? baseId)
     private readonly string? _airtableToken = airtableToken;
     private readonly string? _baseId = baseId;
 
+    public string AirtableUrl => IsConfigured ? $"https://airtable.com/{_baseId}" : "about:blank";
+
     public bool IsConfigured
-    => !string.IsNullOrEmpty(_airtableToken) && !string.IsNullOrEmpty(_baseId);
+        => !string.IsNullOrEmpty(_airtableToken) && !string.IsNullOrEmpty(_baseId);
 
     public async Task<bool> CreateOrEditMemberAsync(MemberRecord? record)
     {
