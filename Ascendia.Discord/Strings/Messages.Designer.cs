@@ -151,7 +151,7 @@ namespace Ascendia.Discord.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ### Ranking Dota 2 - Impacto Solar..
+        ///   Looks up a localized string similar to ### Ranking Dota 2 - Impacto Solar (BETA)..
         /// </summary>
         internal static string RankingHeader {
             get {

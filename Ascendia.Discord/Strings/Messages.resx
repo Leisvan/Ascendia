@@ -148,7 +148,7 @@
     <value>Cancelando operación...</value>
   </data>
   <data name="RankingHeader" xml:space="preserve">
-    <value>### Ranking Dota 2 - Impacto Solar.</value>
+    <value>### Ranking Dota 2 - Impacto Solar (BETA).</value>
   </data>
   <data name="RefreshingMembers" xml:space="preserve">
     <value>Obteniendo información actualizada de perfiles...</value>
