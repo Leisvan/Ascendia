@@ -6,9 +6,11 @@
     <Color x:Key="AppColor2">#FF2D2D2D</Color>
     <Color x:Key="AppColor3">#FF393939</Color>
     <Color x:Key="AppColor4">#FF4A4A4A</Color>
+
     <Color x:Key="TextColor1">#FFF2F2F2</Color>
     <Color x:Key="TextColor2">#FFD1D1D1</Color>
     <Color x:Key="TextColor3">#FFB2B2B2</Color>
+
     <Color x:Key="TextColorDark1">#FF1D1D1D</Color>
 
     <Color x:Key="Tag1Color">#FF76f480</Color>

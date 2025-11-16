@@ -44,8 +44,9 @@
             <tkc:Segmented Margin="0,8"
                            HorizontalAlignment="Stretch"
                            SelectedIndex="{x:Bind ViewModel.HeaderSelectedIndex, Mode=TwoWay}">
-                <x:String>Perfil</x:String>
-                <x:String>Social</x:String>
+                <tkc:SegmentedItem Content="Perfil" />
+                <tkc:SegmentedItem Content="Social"
+                                   IsEnabled="False" />
             </tkc:Segmented>
         </StackPanel>
         <ScrollViewer Grid.Row="1"

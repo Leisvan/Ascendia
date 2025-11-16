@@ -1,22 +1,14 @@
-﻿using Ascendia.Core.Interactivity;
-using Ascendia.Core.Models;
-using Ascendia.Core.Records;
+﻿using Ascendia.Core.Models;
 using Ascendia.Core.Services;
 using Ascendia.Discord;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using LCTWorks.Core.Extensions;
-using LCTWorks.Core.Helpers;
 using LCTWorks.WinUI.Helpers;
 using Microsoft.UI.Dispatching;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.Storage.Pickers;
 
 namespace AscendiaApp.ViewModels;
 

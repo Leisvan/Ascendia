@@ -31,7 +31,24 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="Assets\App\DefaultProfile.png" />
+    <None Remove="Assets\Ladder\pos_hardsupport.png" />
+    <None Remove="Assets\Ladder\pos_midlane.png" />
+    <None Remove="Assets\Ladder\pos_offlane.png" />
+    <None Remove="Assets\Ladder\pos_safelane.png" />
+    <None Remove="Assets\Ladder\pos_softsupport.png" />
+    <None Remove="Assets\Ladder\Pos_unknown.png" />
+    <None Remove="Assets\Ladder\rank0.png" />
+    <None Remove="Assets\Ladder\rank1.png" />
+    <None Remove="Assets\Ladder\rank2.png" />
+    <None Remove="Assets\Ladder\rank3.png" />
+    <None Remove="Assets\Ladder\rank4.png" />
+    <None Remove="Assets\Ladder\rank5.png" />
+    <None Remove="Assets\Ladder\rank6.png" />
+    <None Remove="Assets\Ladder\rank7.png" />
+    <None Remove="Assets\Ladder\rank8.png" />
     <None Remove="Styles\Colors.xaml" />
+    <None Remove="Styles\Generic.xaml" />
+    <None Remove="Styles\TextBlocks.xaml" />
     <None Remove="Views\AboutPage.xaml" />
     <None Remove="Views\BotPage.xaml" />
     <None Remove="Views\Dialogs\EditMemberContentDialog.xaml" />
@@ -87,6 +104,33 @@
     <Content Update="Assets\Config\appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Update="Assets\Ladder\rank0.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Assets\Ladder\rank1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Assets\Ladder\rank2.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Assets\Ladder\rank3.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Assets\Ladder\rank4.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Assets\Ladder\rank5.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Assets\Ladder\rank6.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Assets\Ladder\rank7.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Assets\Ladder\rank8.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Resources\Colors.xaml">
@@ -139,6 +183,36 @@
   </ItemGroup>
   <ItemGroup>
     <PRIResource Remove="AppPackages\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Update="Assets\Ladder\pos_hardsupport.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Assets\Ladder\pos_midlane.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Assets\Ladder\pos_offlane.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Assets\Ladder\pos_safelane.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Assets\Ladder\pos_softsupport.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Assets\Ladder\Pos_unknown.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Styles\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Styles\TextBlocks.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Views\AboutPage.xaml">

@@ -36,6 +36,7 @@
                     CornerRadius="4"
                     Visibility="{x:Bind HasCaption}">
                 <TextBlock VerticalAlignment="Center"
+                           FontSize="12"
                            Foreground="{StaticResource TextColorDark1}"
                            Text="{x:Bind BuildCaption}"
                            TextLineBounds="Tight" />
