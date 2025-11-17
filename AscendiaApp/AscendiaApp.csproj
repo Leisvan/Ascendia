@@ -177,6 +177,7 @@
 	<GenerateTemporaryStoreCertificate>False</GenerateTemporaryStoreCertificate>
 	<HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
 	<PlatformTarget>x64</PlatformTarget>
+	<UserSecretsId>637471f3-977a-4a75-ab53-d5eef9e7296c</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
     <PRIResource Remove="BundleArtifacts\**" />

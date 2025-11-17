@@ -9,7 +9,6 @@ public class AirtableHttpService(string? airtableToken, string? baseId)
     private const string GuildSettingsTableName = "GuildSettings";
     private const string MembersTableName = "Members";
     private const int RecordsChunkSize = 10;
-    private const string TeamsTableName = "Teams";
     private readonly string? _airtableToken = airtableToken;
     private readonly string? _baseId = baseId;
 
