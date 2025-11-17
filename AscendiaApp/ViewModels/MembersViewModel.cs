@@ -105,6 +105,18 @@ public partial class MembersViewModel : ObservableObject
         return Task.CompletedTask;
     }
 
+    [RelayCommand]
+    private async Task EditMemberAsync(MemberObservable member)
+    {
+        var dialog = new EditMemberContentDialog();
+        if (dialog.ViewModel != null)
+        {
+            dialog.ViewModel.Finished += EditMemberDialogFinished;
+            dialog.ViewModel.SetEditProperties(member);
+            await _dialogService.ShowDialogAsync(dialog, true, App.MainWindow?.Content?.XamlRoot);
+        }
+    }
+
     private void EditMemberDialogFinished(object? sender, EditOperationResult result)
     {
         if (sender is EditMemberViewModel viewModel)
@@ -118,22 +130,6 @@ public partial class MembersViewModel : ObservableObject
                 RefreshInternal(true);
             }
             viewModel.Finished -= EditMemberDialogFinished;
-        }
-    }
-
-    [RelayCommand]
-    private async Task EditSelectedMemberAsync()
-    {
-        if (SelectedMember == null)
-        {
-            return;
-        }
-        var dialog = new EditMemberContentDialog();
-        if (dialog.ViewModel != null)
-        {
-            dialog.ViewModel.Finished += EditMemberDialogFinished;
-            dialog.ViewModel.SetEditProperties(SelectedMember);
-            await _dialogService.ShowDialogAsync(dialog, true, App.MainWindow?.Content?.XamlRoot);
         }
     }
 
@@ -174,12 +170,8 @@ public partial class MembersViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task RemoveSelectedMemberAsync()
+    private async Task RemoveMemberAsync(MemberObservable member)
     {
-        if (SelectedMember == null)
-        {
-            return;
-        }
         var results = await _dialogService.ShowDialogAsync(new ContentDialog
         {
             Title = "Dialog-RemoveMemberTitle".GetTextLocalized(),
@@ -193,10 +185,10 @@ public partial class MembersViewModel : ObservableObject
         }
         IsLoading = true;
 
-        var success = await _communityService.RemoveMemberAsync(SelectedMember.Record.Id!);
+        var success = await _communityService.RemoveMemberAsync(member.Record.Id!);
         if (success)
         {
-            _members.Remove(SelectedMember);
+            _members.Remove(member);
         }
         IsLoading = false;
     }

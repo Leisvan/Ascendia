@@ -6,6 +6,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:helpers="using:AscendiaApp.Helpers"
       xmlns:i="using:Microsoft.Xaml.Interactivity"
+      xmlns:lctWorks="using:LCTWorks.WinUI.Controls"
       xmlns:local="using:AscendiaApp.Views"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:observable="using:AscendiaApp.Observable"
@@ -19,6 +20,10 @@
             <Setter Property="HorizontalContentAlignment"
                     Value="Stretch" />
         </Style>
+        <XamlUICommand x:Key="EditMemberXamlUICommand"
+                       Command="{x:Bind ViewModel.EditMemberCommand}" />
+        <XamlUICommand x:Key="RemoveMemberXamlUICommand"
+                       Command="{x:Bind ViewModel.RemoveMemberCommand}" />
     </Page.Resources>
     <i:Interaction.Behaviors>
         <core:EventTriggerBehavior EventName="Loaded">
@@ -49,25 +54,13 @@
             <StackPanel Grid.Column="2"
                         Orientation="Horizontal"
                         Spacing="8">
+                <lctWorks:ThemedButton Command="{x:Bind ViewModel.AddMemberCommand}"
+                                       Content="Nuevo"
+                                       Glyph="Add"
+                                       GlyphFontFamily="{StaticResource MaterialSymbolsFontFamily}"
+                                       IsEnabled="{x:Bind ViewModel.NotLoading, Mode=OneWay}"
+                                       Style="{StaticResource AccentThemedButtonStyle}" />
 
-                <Button VerticalAlignment="Stretch"
-                        Command="{x:Bind ViewModel.AddMemberCommand}"
-                        IsEnabled="{x:Bind ViewModel.NotLoading, Mode=OneWay}">
-                    <FontIcon FontFamily="{StaticResource MaterialSymbolsFontFamily}"
-                              Glyph="Add" />
-                </Button>
-                <Button VerticalAlignment="Stretch"
-                        Command="{x:Bind ViewModel.EditSelectedMemberCommand}"
-                        IsEnabled="{x:Bind ViewModel.NotLoading, Mode=OneWay}">
-                    <FontIcon FontFamily="{StaticResource MaterialSymbolsFontFamily}"
-                              Glyph="edit" />
-                </Button>
-                <Button VerticalAlignment="Stretch"
-                        Command="{x:Bind ViewModel.RemoveSelectedMemberCommand}"
-                        IsEnabled="{x:Bind ViewModel.NotLoading, Mode=OneWay}">
-                    <FontIcon FontFamily="{StaticResource MaterialSymbolsFontFamily}"
-                              Glyph="delete_forever" />
-                </Button>
                 <Button VerticalAlignment="Stretch"
                         Command="{x:Bind ViewModel.RefreshCommand}"
                         IsEnabled="{x:Bind ViewModel.NotLoading, Mode=OneWay}">
@@ -80,13 +73,52 @@
               Background="{StaticResource AppColor3}"
               CornerRadius="8">
             <ListView Background="Transparent"
+                      IsItemClickEnabled="True"
                       ItemsSource="{x:Bind ViewModel.Members, Mode=OneWay}"
-                      SelectedItem="{x:Bind ViewModel.SelectedMember, Mode=TwoWay}">
+                      SelectedItem="{x:Bind ViewModel.SelectedMember, Mode=TwoWay}"
+                      SelectionMode="None">
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="observable:MemberObservable">
-                        <Grid Margin="0,8"
+                        <Grid Padding="0,8"
+                              Background="Transparent"
                               ColumnSpacing="8"
                               RowSpacing="2">
+                            <Grid.ContextFlyout>
+                                <MenuFlyout>
+                                    <MenuFlyoutItem MinWidth="160"
+                                                    Command="{StaticResource EditMemberXamlUICommand}"
+                                                    CommandParameter="{x:Bind}"
+                                                    Text="Editar">
+                                        <MenuFlyoutItem.Icon>
+                                            <FontIcon Glyph="&#xE70F;" />
+                                        </MenuFlyoutItem.Icon>
+                                    </MenuFlyoutItem>
+                                    <MenuFlyoutItem CommandParameter="{x:Bind}"
+                                                    IsEnabled="False"
+                                                    Text="Copiar Id">
+                                        <MenuFlyoutItem.Icon>
+                                            <FontIcon Glyph="&#xE8C8;" />
+                                        </MenuFlyoutItem.Icon>
+                                    </MenuFlyoutItem>
+
+                                    <MenuFlyoutSubItem IsEnabled="False"
+                                                       Text="Abrir...">
+                                        <MenuFlyoutSubItem.Icon>
+                                            <FontIcon Glyph="&#xE8A7;" />
+                                        </MenuFlyoutSubItem.Icon>
+                                        <MenuFlyoutItem MinWidth="160"
+                                                        Text="Perfil de OpenDota" />
+                                    </MenuFlyoutSubItem>
+                                    <MenuFlyoutSeparator />
+                                    <MenuFlyoutItem Command="{StaticResource RemoveMemberXamlUICommand}"
+                                                    CommandParameter="{x:Bind}"
+                                                    Text="Eliminar">
+                                        <MenuFlyoutItem.Icon>
+                                            <FontIcon Glyph="&#xE74D;" />
+                                        </MenuFlyoutItem.Icon>
+                                    </MenuFlyoutItem>
+                                </MenuFlyout>
+                            </Grid.ContextFlyout>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width=".5*"
@@ -127,7 +159,7 @@
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
+                                    <!--<RowDefinition Height="Auto" />-->
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
@@ -137,15 +169,14 @@
                                            Margin="0,0,0,4"
                                            HorizontalTextAlignment="Left"
                                            Style="{StaticResource AppItemTitleTextBlockStyle}"
-                                           Text="{x:Bind DisplayName, Mode=OneWay}"
-                                           TextLineBounds="Tight" />
+                                           Text="{x:Bind DisplayName, Mode=OneWay}" />
                                 <TextBlock Grid.Row="1"
                                            Grid.ColumnSpan="2"
                                            HorizontalTextAlignment="Left"
                                            Opacity=".6"
                                            Style="{StaticResource SmoothItemCaptionTextBlockStyle}"
                                            Text="{x:Bind AccountName, Mode=OneWay}" />
-                                <TextBlock Grid.Row="2"
+                                <!--<TextBlock Grid.Row="2"
                                            Margin="0,4,4,0"
                                            FontFamily="{StaticResource MaterialSymbolsFontFamily}"
                                            Foreground="{StaticResource HighlightColor}"
@@ -159,7 +190,7 @@
                                            HorizontalTextAlignment="Left"
                                            Style="{StaticResource SmoothItemCaptionTextBlockStyle}"
                                            Text="{x:Bind Team, Mode=OneWay}"
-                                           TextLineBounds="Tight" />
+                                           TextLineBounds="Tight" />-->
                             </Grid>
                             <Border Grid.Column="2"
                                     Width="120"
@@ -189,20 +220,24 @@
                                 </StackPanel>
                             </Border>
                             <StackPanel Grid.Column="5"
-                                        Margin="0,0,0,8"
+                                        Margin="0,0,8,0"
                                         HorizontalAlignment="Right"
-                                        VerticalAlignment="Bottom"
+                                        VerticalAlignment="Center"
                                         Orientation="Horizontal"
                                         Spacing="4">
                                 <TextBlock Foreground="{StaticResource WarningColor}"
                                            Style="{StaticResource MaterialSymbolsTextBlockStyle}"
                                            Text="schedule"
+                                           TextLineBounds="Tight"
                                            Visibility="{x:Bind IsOutDated}" />
                                 <TextBlock Foreground="{StaticResource SuccessColor}"
                                            Style="{StaticResource MaterialSymbolsTextBlockStyle}"
                                            Text="check_circle"
+                                           TextLineBounds="Tight"
                                            Visibility="{x:Bind IsUpToDate}" />
                             </StackPanel>
+                            <!--<Button Grid.Column="6"
+                                    Content="..." />-->
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
