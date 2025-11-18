@@ -24,6 +24,8 @@
                        Command="{x:Bind ViewModel.EditMemberCommand}" />
         <XamlUICommand x:Key="RemoveMemberXamlUICommand"
                        Command="{x:Bind ViewModel.RemoveMemberCommand}" />
+        <XamlUICommand x:Key="UpdateMemberXamlUICommand"
+                       Command="{x:Bind ViewModel.UpdateMemberCommand}" />
     </Page.Resources>
     <i:Interaction.Behaviors>
         <core:EventTriggerBehavior EventName="Loaded">
@@ -73,6 +75,7 @@
               Background="{StaticResource AppColor3}"
               CornerRadius="8">
             <ListView Background="Transparent"
+                      IsEnabled="{x:Bind ViewModel.NotLoading, Mode=OneWay}"
                       IsItemClickEnabled="True"
                       ItemsSource="{x:Bind ViewModel.Members, Mode=OneWay}"
                       SelectedItem="{x:Bind ViewModel.SelectedMember, Mode=TwoWay}"
@@ -91,6 +94,14 @@
                                                     Text="Editar">
                                         <MenuFlyoutItem.Icon>
                                             <FontIcon Glyph="&#xE70F;" />
+                                        </MenuFlyoutItem.Icon>
+                                    </MenuFlyoutItem>
+                                    <MenuFlyoutItem MinWidth="160"
+                                                    Command="{StaticResource UpdateMemberXamlUICommand}"
+                                                    CommandParameter="{x:Bind}"
+                                                    Text="Actualizar ladder">
+                                        <MenuFlyoutItem.Icon>
+                                            <FontIcon Glyph="&#xE895;" />
                                         </MenuFlyoutItem.Icon>
                                     </MenuFlyoutItem>
                                     <MenuFlyoutItem CommandParameter="{x:Bind}"
@@ -224,45 +235,51 @@
                                         HorizontalAlignment="Right"
                                         VerticalAlignment="Center"
                                         Orientation="Horizontal"
-                                        Spacing="4">
-                                <TextBlock Foreground="{StaticResource WarningColor}"
-                                           Style="{StaticResource MaterialSymbolsTextBlockStyle}"
-                                           Text="schedule"
+                                        Spacing="8">
+                                <TextBlock VerticalAlignment="Center"
+                                           Opacity=".4"
+                                           Text="{x:Bind LastUpdated, Mode=OneWay}"
+                                           TextLineBounds="Tight" />
+                                <TextBlock FontSize="18"
+                                           Foreground="{StaticResource WarningColor}"
+                                           Style="{StaticResource FluentIconsTextBlockStyle}"
+                                           Text="&#xE823;"
                                            TextLineBounds="Tight"
-                                           Visibility="{x:Bind IsOutDated}" />
-                                <TextBlock Foreground="{StaticResource SuccessColor}"
-                                           Style="{StaticResource MaterialSymbolsTextBlockStyle}"
-                                           Text="check_circle"
+                                           Visibility="{x:Bind IsOutDated, Mode=OneWay}" />
+                                <TextBlock FontSize="18"
+                                           Foreground="{StaticResource SuccessColor}"
+                                           Style="{StaticResource FluentIconsTextBlockStyle}"
+                                           Text="&#xEC61;"
                                            TextLineBounds="Tight"
-                                           Visibility="{x:Bind IsUpToDate}" />
+                                           Visibility="{x:Bind IsUpToDate, Mode=OneWay}" />
                             </StackPanel>
-                            <!--<Button Grid.Column="6"
-                                    Content="..." />-->
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
 
-            <Border VerticalAlignment="Stretch"
-                    Background="{StaticResource AppColor3}"
-                    Opacity=".4"
-                    Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay}">
-                <StackPanel VerticalAlignment="Center"
-                            Orientation="Vertical"
-                            Spacing="16">
-                    <ProgressRing IsActive="True" />
-                    <TextBlock MaxWidth="320"
-                               HorizontalAlignment="Center"
-                               Text="{x:Bind ViewModel.LoadingNotification, Mode=OneWay}"
-                               TextAlignment="Center"
-                               TextWrapping="WrapWholeWords" />
-                    <Button x:Uid="Members-CancelButton"
-                            HorizontalAlignment="Center"
-                            Command="{x:Bind ViewModel.CancelCommand}"
-                            IsEnabled="{x:Bind ViewModel.CancelEnabled, Mode=OneWay}"
-                            Visibility="{x:Bind ViewModel.CancelVisibile, Mode=OneWay}" />
-                </StackPanel>
-            </Border>
+            <Grid VerticalAlignment="Stretch"
+                  Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay}">
+                <Rectangle Fill="{StaticResource AppColor2}"
+                           Opacity=".4" />
+                <Border Width="360"
+                        Height="360"
+                        Background="{StaticResource AppColor1}"
+                        CornerRadius="8">
+                    <StackPanel HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Orientation="Vertical"
+                                Spacing="16">
+                        <ProgressRing HorizontalAlignment="Center"
+                                      IsActive="True" />
+                        <TextBlock MaxWidth="320"
+                                   HorizontalAlignment="Center"
+                                   Text="{x:Bind ViewModel.LoadingNotification, Mode=OneWay}"
+                                   TextAlignment="Center"
+                                   TextWrapping="WrapWholeWords" />
+                    </StackPanel>
+                </Border>
+            </Grid>
         </Grid>
     </Grid>
 </Page>

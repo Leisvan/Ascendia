@@ -28,7 +28,9 @@ public partial class MemberObservable(MemberRecord record) : ObservableObject
         => !IsUpToDate;
 
     public bool IsUpToDate
-        => _record.LastUpdated.HasValue && (DateTimeOffset.UtcNow - _record.LastUpdated.Value).TotalHours < 1;
+        => _record.LastUpdated.HasValue && (DateTime.Now - _record.LastUpdated.Value).TotalHours < 1;
+
+    public string LastUpdated => _record.LastUpdated.HasValue ? _record.LastUpdated.Value.ToLocalTime().ToString("g") : "--";
 
     public string Leaderboard => $"{(_record.LeaderboardRank ?? 0):0000}";
 

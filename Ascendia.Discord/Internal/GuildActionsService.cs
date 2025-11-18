@@ -153,6 +153,10 @@ internal class GuildActionsService(
                 {
                     message = await UpdateMessageAsync(e, channelId, message, false);
                 }
+                else
+                {
+                    CoreTelemetry.WriteLine(e);
+                }
             },
             minutesUpdateThreshold: minutesUpdateThreshold,
             cancellationToken: _cts.Token);
@@ -163,14 +167,23 @@ internal class GuildActionsService(
             {
                 await UpdateMessageAsync(Messages.OperationCancelled, channelId, message);
             }
+            else
+            {
+                CoreTelemetry.WriteLine(Messages.OperationCancelled);
+            }
             _cts = null;
             return Messages.OperationCancelled;
         }
         else
         {
+            var updateMsg = string.Format(Messages.UpdatedProfilesCountFormat, result.ToString());
             if (notify)
             {
-                await UpdateMessageAsync(string.Format(Messages.UpdatedProfilesCountFormat, result.ToString()), channelId, message, true);
+                await UpdateMessageAsync(updateMsg, channelId, message, true);
+            }
+            else
+            {
+                CoreTelemetry.WriteLine(updateMsg);
             }
         }
         _cts = null;
@@ -242,7 +255,7 @@ internal class GuildActionsService(
         return builder.ToString();
     }
 
-    private async Task SendMessageAsync(DiscordChannel channel, string content, bool writeTelemetry = true)
+    private async Task SendMessageAsync(DiscordChannel channel, string content, bool writeTelemetry = false)
     {
         try
         {
@@ -254,7 +267,7 @@ internal class GuildActionsService(
         }
         catch (Exception e)
         {
-            LogNotifier.Notify(e.Message);
+            LogNotifier.NotifyError(e.Message);
         }
     }
 
@@ -262,7 +275,6 @@ internal class GuildActionsService(
     {
         try
         {
-            CoreTelemetry.WriteLine(content);
             if (message == null)
             {
                 var channel = await _botService.Client.GetChannelAsync(channelId);

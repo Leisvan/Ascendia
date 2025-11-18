@@ -7,6 +7,9 @@ public class PlayerOpenDotaModel
     [JsonPropertyName("competitive_rank")]
     public int? CompetitiveRank { get; set; }
 
+    [JsonPropertyName("computed_mmr")]
+    public double? ComputerMMR { get; set; }
+
     [JsonPropertyName("leaderboard_rank")]
     public int? LeaderboardRank { get; set; }
 

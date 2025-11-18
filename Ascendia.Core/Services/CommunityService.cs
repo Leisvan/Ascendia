@@ -6,6 +6,9 @@ using LCTWorks.Core.Helpers;
 using LCTWorks.Core.Services;
 using LCTWorks.Telemetry;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics.Metrics;
+using System.Numerics;
+using System.Xml.Linq;
 
 namespace Ascendia.Core.Services;
 
@@ -58,57 +61,7 @@ public class CommunityService(
         {
             throw new DuplicateWaitObjectException(accountId, Messages.ErrorPlayerDuplicated);
         }
-        IsBusy = true;
-
-        PlayerOpenDotaModel? player = null;
-        WinLoseOpenDotaModel? winLose = null;
-
-        if (checkLadder)
-        {
-            if (refreshPlayer)
-            {
-                notifications?.Invoke(this, Messages.ProgressRefreshPlayer);
-                await _ladderService.RefreshPlayerAsync(accountId);
-                await Task.Delay(messageDelayInMilliseconds);
-            }
-            notifications?.Invoke(this, Messages.ProgressCheckLadder);
-            var playerResult = await _ladderService.GetPlayerAsync(accountId);
-
-            await Task.Delay(messageDelayInMilliseconds);
-            if (!playerResult.Valid)
-            {
-                notifications?.Invoke(this, Messages.ProgressPlayerNotFound);
-                await Task.Delay(messageDelayInMilliseconds);
-            }
-            else
-            {
-                player = playerResult.Value;
-                if (checkWinLose)
-                {
-                    notifications?.Invoke(this, Messages.ProgressCheckWinLose);
-                    var winLoseResult = await _ladderService.GetPlayerWinLoseAsync(accountId);
-                    await Task.Delay(messageDelayInMilliseconds);
-                    if (!winLoseResult.Valid)
-                    {
-                        notifications?.Invoke(this, Messages.ProgressWinLoseNotFound);
-                        await Task.Delay(messageDelayInMilliseconds);
-                    }
-                    winLose = winLoseResult.Value;
-                }
-            }
-        }
-
-        notifications?.Invoke(this, Messages.ProgressAddToDb);
-        if (string.IsNullOrWhiteSpace(name))
-        {
-            name = player?.Profile?.PersonaName ?? Messages.DefaultPlayerName;
-        }
-
-        MemberRecord record = CreateMemberRecord(string.Empty, name, accountId, team, phone, email, country, isCaptain, position, notes, socialFacebook, socialInstagram, socialX, socialTikTok, socialYouTube, socialTwitch,
-            player: player,
-            winLose: winLose);
-        IsBusy = false;
-        return await AddOrUpdateMemberAsync(record);
+        return await UpdateLadderAsync(accountId, accountId, name, team, phone, email, country, isCaptain, position, notes, checkLadder, refreshPlayer, checkWinLose, socialFacebook, socialInstagram, socialX, socialTikTok, socialYouTube, socialTwitch, notifications, null, messageDelayInMilliseconds);
     }
 
     public async Task<bool> EditMemberAsync(
@@ -231,6 +184,85 @@ public class CommunityService(
         return results;
     }
 
+    public async Task<bool> UpdateLadderAsync(
+        string id,
+        string accountId,
+        string? name = null,
+        string? team = null,
+        string? phone = null,
+        string? email = null,
+        string? country = null,
+        bool? isCaptain = false,
+        string? position = null,
+        string? notes = null,
+        bool checkLadder = true,
+        bool refreshPlayer = true,
+        bool checkWinLose = true,
+        string? socialFacebook = null,
+        string? socialInstagram = null,
+        string? socialX = null,
+        string? socialTikTok = null,
+        string? socialYouTube = null,
+        string? socialTwitch = null,
+        EventHandler<string>? notifications = null,
+        MemberRecord? previousRecord = null,
+        int messageDelayInMilliseconds = MessageDelayInMilliseconds)
+    {
+        IsBusy = true;
+        PlayerOpenDotaModel? player = null;
+        WinLoseOpenDotaModel? winLose = null;
+
+        if (checkLadder)
+        {
+            if (refreshPlayer)
+            {
+                notifications?.Invoke(this, Messages.ProgressRefreshPlayer);
+                await _ladderService.RefreshPlayerAsync(accountId);
+                await Task.Delay(messageDelayInMilliseconds);
+            }
+            notifications?.Invoke(this, Messages.ProgressCheckLadder);
+            var playerResult = await _ladderService.GetPlayerAsync(accountId);
+
+            await Task.Delay(messageDelayInMilliseconds);
+            if (!playerResult.Valid)
+            {
+                notifications?.Invoke(this, Messages.ProgressPlayerNotFound);
+                await Task.Delay(messageDelayInMilliseconds);
+            }
+            else
+            {
+                player = playerResult.Value;
+                if (checkWinLose)
+                {
+                    notifications?.Invoke(this, Messages.ProgressCheckWinLose);
+                    var winLoseResult = await _ladderService.GetPlayerWinLoseAsync(accountId);
+                    await Task.Delay(messageDelayInMilliseconds);
+                    if (!winLoseResult.Valid)
+                    {
+                        notifications?.Invoke(this, Messages.ProgressWinLoseNotFound);
+                        await Task.Delay(messageDelayInMilliseconds);
+                    }
+                    winLose = winLoseResult.Value;
+                }
+            }
+        }
+
+        notifications?.Invoke(this, Messages.ProgressAddToDb);
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            name = previousRecord?.DisplayName ?? player?.Profile?.PersonaName ?? Messages.DefaultPlayerName;
+        }
+
+        MemberRecord record = CreateMemberRecord(id, name, accountId, team, phone, email, country, isCaptain, position, notes, socialFacebook, socialInstagram, socialX, socialTikTok, socialYouTube, socialTwitch,
+            player: player,
+            winLose: winLose,
+            previousRecord);
+
+        var addResult = await AddOrUpdateMemberAsync(record);
+        IsBusy = false;
+        return addResult;
+    }
+
     public async Task<int> UpdatePlayersAsync(bool incudeWL = true, EventHandler<string>? notifications = null, int minutesUpdateThreshold = 0, CancellationToken? cancellationToken = null)
     {
         CoreTelemetry.WriteLine(Messages.RefreshingMembers);
@@ -243,7 +275,7 @@ public class CommunityService(
             .Where(m => minutesUpdateThreshold <= 0 || m.LastUpdated?.AddMinutes(minutesUpdateThreshold) <= DateTimeOffset.UtcNow.DateTime)
             //.Where(m => m.AccountId == "190234148")
             .OrderBy(m => m.LastUpdated)
-            //.Take(2)
+            .Take(2)
             .ToList();
 
         if (minutesUpdateThreshold > 0)
@@ -398,11 +430,13 @@ public class CommunityService(
         int rankTier = player?.RankTier ?? previousRecord?.RankTier ?? 0;
         DateTime? lastUpdated = previousRecord?.LastUpdated ?? DateTimeOffset.UtcNow.DateTime;
         if (player != null
-            && previousRecord != null
-            && (leaderboardRank != previousRecord.LeaderboardRank || rankTier != previousRecord.RankTier))
+            && previousRecord != null)
         {
             previousLeaderboardRank = leaderboardRank;
             previousRankTier = rankTier;
+        }
+        if (player != null)
+        {
             lastUpdated = DateTimeOffset.UtcNow.DateTime;
         }
 
@@ -410,8 +444,12 @@ public class CommunityService(
         var profileUrl = player?.Profile?.ProfileUrl ?? previousRecord?.ProfileUrl ?? string.Empty;
         var win = winLose?.Win ?? previousRecord?.Win ?? 0;
         var lose = winLose?.Lose ?? previousRecord?.Lose ?? 0;
-        var mmr = previousRecord?.MMR ?? 0; ///TODO: Fix this
+        var mmr = player?.ComputerMMR ?? previousRecord?.MMR ?? 0d; ///TODO: Fix this
         var isEnabled = previousRecord?.IsEnabled ?? true;
+        if (string.IsNullOrEmpty(position))
+        {
+            position = previousRecord?.Position ?? 0.ToString();
+        }
 
         return new MemberRecord(id)
         {

@@ -228,4 +228,10 @@
   <data name="Members-AddTikTokBox.Header" xml:space="preserve">
     <value>TikTok</value>
   </data>
+  <data name="Members-UpdatingMembers" xml:space="preserve">
+    <value>Obteniendo información actualizada de perfiles...</value>
+  </data>
+  <data name="Members-UpdatingMemberFormat" xml:space="preserve">
+    <value>Actualizando ladder de {0}.</value>
+  </data>
 </root>

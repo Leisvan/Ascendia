@@ -23,7 +23,6 @@ namespace AscendiaApp.ViewModels;
 public partial class MembersViewModel : ObservableObject
 {
     private readonly CommunityService _communityService;
-    private readonly CancellationTokenSource _cts = new();
     private readonly DialogService _dialogService;
     private readonly ILogger<object> _logger;
     private readonly ObservableCollection<MemberObservable> _members = [];
@@ -39,16 +38,11 @@ public partial class MembersViewModel : ObservableObject
         _telemetryService.Log(message: "MembersViewModel created");
     }
 
-    public bool CancelEnabled => _cts != null && !_cts.IsCancellationRequested;
-
-    public bool CancelVisibile => !string.IsNullOrWhiteSpace(LoadingNotification);
-
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(NotLoading))]
     public partial bool IsLoading { get; set; }
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(CancelVisibile))]
     public partial string? LoadingNotification { get; set; }
 
     public ObservableCollection<MemberObservable> Members => _members;
@@ -95,17 +89,6 @@ public partial class MembersViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private Task Cancel()
-    {
-        if (_cts != null && !_cts.IsCancellationRequested)
-        {
-            _cts.Cancel();
-            OnPropertyChanged(nameof(CancelEnabled));
-        }
-        return Task.CompletedTask;
-    }
-
-    [RelayCommand]
     private async Task EditMemberAsync(MemberObservable member)
     {
         var dialog = new EditMemberContentDialog();
@@ -147,7 +130,10 @@ public partial class MembersViewModel : ObservableObject
     {
         await Task.Delay(120);
 
-        LoadingNotification = null;
+        if (forceRefresh)
+        {
+            LoadingNotification = "Members-UpdatingMembers".GetTextLocalized();
+        }
         IsLoading = true;
 
         IEnumerable<MemberRecord> members = await _communityService.GetAllMembersAsync(forceRefresh);
@@ -166,6 +152,7 @@ public partial class MembersViewModel : ObservableObject
             }
         }
 
+        LoadingNotification = string.Empty;
         IsLoading = false;
     }
 
@@ -190,6 +177,30 @@ public partial class MembersViewModel : ObservableObject
         {
             _members.Remove(member);
         }
+        IsLoading = false;
+    }
+
+    [RelayCommand]
+    private async Task UpdateMemberAsync(MemberObservable member)
+    {
+        IsLoading = true;
+
+        if (string.IsNullOrWhiteSpace(member.Record.AccountId))
+        {
+            return;
+        }
+
+        LoadingNotification = string.Format("Members-UpdatingMemberFormat".GetTextLocalized(), member.DisplayName);
+        var results = await _communityService.UpdateLadderAsync(
+            member.Record.Id,
+            member.Record.AccountId,
+            notifications: (s, e) =>
+        {
+            LoadingNotification = e;
+        },
+            previousRecord: member.Record);
+
+        await RefreshInternalAsync(true);
         IsLoading = false;
     }
 }
