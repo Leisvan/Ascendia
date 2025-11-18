@@ -23,11 +23,11 @@ namespace AscendiaApp.ViewModels;
 public partial class MembersViewModel : ObservableObject
 {
     private readonly CommunityService _communityService;
+    private readonly CancellationTokenSource _cts = new();
     private readonly DialogService _dialogService;
     private readonly ILogger<object> _logger;
     private readonly ObservableCollection<MemberObservable> _members = [];
     private readonly ITelemetryService _telemetryService;
-    private CancellationTokenSource _cts = new();
     private string? _searchTerm = string.Empty;
 
     public MembersViewModel(CommunityService communityService, DialogService dialogService, ITelemetryService telemetryService, ILogger<object> logger)

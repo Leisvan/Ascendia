@@ -210,4 +210,22 @@
   <data name="ShellPivotItem-About.Header" xml:space="preserve">
     <value>Info</value>
   </data>
+  <data name="Members-AddFacebookBox.Header" xml:space="preserve">
+    <value>Facebook</value>
+  </data>
+  <data name="Members-AddInstagramBox.Header" xml:space="preserve">
+    <value>Instagram</value>
+  </data>
+  <data name="Members-AddXBox.Header" xml:space="preserve">
+    <value>X (Twitter)</value>
+  </data>
+  <data name="Members-AddYouTubeBox.Header" xml:space="preserve">
+    <value>Youtube</value>
+  </data>
+  <data name="Members-AddTwitchBox.Header" xml:space="preserve">
+    <value>Twitch</value>
+  </data>
+  <data name="Members-AddTikTokBox.Header" xml:space="preserve">
+    <value>TikTok</value>
+  </data>
 </root>

@@ -41,6 +41,12 @@ public class CommunityService(
         bool checkLadder = true,
         bool refreshPlayer = true,
         bool checkWinLose = true,
+        string? socialFacebook = null,
+        string? socialInstagram = null,
+        string? socialX = null,
+        string? socialTikTok = null,
+        string? socialYouTube = null,
+        string? socialTwitch = null,
         EventHandler<string>? notifications = null,
         int messageDelayInMilliseconds = MessageDelayInMilliseconds)
     {
@@ -98,7 +104,9 @@ public class CommunityService(
             name = player?.Profile?.PersonaName ?? Messages.DefaultPlayerName;
         }
 
-        MemberRecord record = CreateMemberRecord("", name, accountId, team, phone, email, country, isCaptain, position, notes, player, winLose);
+        MemberRecord record = CreateMemberRecord(string.Empty, name, accountId, team, phone, email, country, isCaptain, position, notes, socialFacebook, socialInstagram, socialX, socialTikTok, socialYouTube, socialTwitch,
+            player: player,
+            winLose: winLose);
         IsBusy = false;
         return await AddOrUpdateMemberAsync(record);
     }
@@ -114,6 +122,12 @@ public class CommunityService(
         bool? isCaptain = false,
         string? position = null,
         string? notes = null,
+        string? socialFacebook = null,
+        string? socialInstagram = null,
+        string? socialX = null,
+        string? socialTikTok = null,
+        string? socialYouTube = null,
+        string? socialTwitch = null,
         EventHandler<string>? notifications = null)
     {
         if (IsBusy)
@@ -122,9 +136,14 @@ public class CommunityService(
         }
         IsBusy = true;
 
+        notifications?.Invoke(this, Messages.RefreshingMembers);
+
+        var members = await GetAllMembersAsync(true);
+        var containedMember = members.FirstOrDefault(x => x.Id == id);
+
         notifications?.Invoke(this, Messages.ProgressAddToDb);
 
-        MemberRecord record = CreateMemberRecord(id, name, accountId, team, phone, email, country, isCaptain, position, notes);
+        MemberRecord record = CreateMemberRecord(id, name, accountId, team, phone, email, country, isCaptain, position, notes, socialFacebook, socialInstagram, socialX, socialTikTok, socialYouTube, socialTwitch, previousRecord: containedMember);
         IsBusy = false;
         return await AddOrUpdateMemberAsync(record);
     }
@@ -342,7 +361,7 @@ public class CommunityService(
 
                 if (!retry)
                 {
-                    var record = CreateMemberRecord(member.Id, member.DisplayName, member.AccountId, member.Team, member.Phone, member.Email, member.Country, member.IsCaptain, member.Position, member.Notes, playerData, winLoseData, member);
+                    var record = CreateMemberRecord(member.Id, member.DisplayName, member.AccountId, member.Team, member.Phone, member.Email, member.Country, member.IsCaptain, member.Position, member.Notes, player: playerData, winLose: winLoseData, previousRecord: member);
                     updatedRecords.Add(record);
                 }
             }
@@ -363,31 +382,44 @@ public class CommunityService(
         bool? isCaptain = null,
         string? position = null,
         string? notes = null,
+        string? socialFacebook = null,
+        string? socialInstagram = null,
+        string? socialX = null,
+        string? socialTikTok = null,
+        string? socialYouTube = null,
+        string? socialTwitch = null,
         PlayerOpenDotaModel? player = null,
         WinLoseOpenDotaModel? winLose = null,
         MemberRecord? previousRecord = null)
     {
         int previousLeaderboardRank = previousRecord?.PreviousLeaderboardRank ?? 0;
         int previousRankTier = previousRecord?.PreviousRankTier ?? 0;
-        int leaderboardRank = player?.LeaderboardRank ?? 0;
-        int rankTier = player?.RankTier ?? 0;
-        DateTime? lastChange = previousRecord?.LastChange ?? DateTimeOffset.Now.DateTime;
+        int leaderboardRank = player?.LeaderboardRank ?? previousRecord?.LeaderboardRank ?? 0;
+        int rankTier = player?.RankTier ?? previousRecord?.RankTier ?? 0;
+        DateTime? lastUpdated = previousRecord?.LastUpdated ?? DateTimeOffset.UtcNow.DateTime;
         if (player != null
             && previousRecord != null
             && (leaderboardRank != previousRecord.LeaderboardRank || rankTier != previousRecord.RankTier))
         {
             previousLeaderboardRank = leaderboardRank;
             previousRankTier = rankTier;
-            lastChange = DateTimeOffset.Now.DateTime;
+            lastUpdated = DateTimeOffset.UtcNow.DateTime;
         }
+
+        var avatarUrl = player?.Profile?.Avatar ?? previousRecord?.AvatarUrl ?? string.Empty;
+        var profileUrl = player?.Profile?.ProfileUrl ?? previousRecord?.ProfileUrl ?? string.Empty;
+        var win = winLose?.Win ?? previousRecord?.Win ?? 0;
+        var lose = winLose?.Lose ?? previousRecord?.Lose ?? 0;
+        var mmr = previousRecord?.MMR ?? 0; ///TODO: Fix this
+        var isEnabled = previousRecord?.IsEnabled ?? true;
 
         return new MemberRecord(id)
         {
             AccountId = accountId,
             DisplayName = name,
             AccountName = player?.Profile?.PersonaName ?? name,
-            AvatarUrl = player?.Profile?.Avatar ?? string.Empty,
-            ProfileUrl = player?.Profile?.ProfileUrl ?? string.Empty,
+            AvatarUrl = avatarUrl,
+            ProfileUrl = profileUrl,
             LeaderboardRank = leaderboardRank,
             RankTier = rankTier,
             PreviousLeaderboardRank = previousLeaderboardRank,
@@ -397,13 +429,20 @@ public class CommunityService(
             Country = country ?? string.Empty,
             IsCaptain = isCaptain,
             Position = position ?? 0.ToString(),
-            Win = winLose?.Win ?? 0,
-            Lose = winLose?.Lose ?? 0,
-            LastUpdated = DateTimeOffset.UtcNow.DateTime,
-            LastChange = lastChange,
-            IsEnabled = true,
+            Win = win,
+            Lose = lose,
+            MMR = mmr,
+            LastUpdated = lastUpdated,
+            LastChange = DateTimeOffset.UtcNow.DateTime,
+            IsEnabled = isEnabled,
             Team = team ?? string.Empty,
             Notes = notes ?? string.Empty,
+            SocialFacebook = socialFacebook ?? string.Empty,
+            SocialInstagram = socialInstagram ?? string.Empty,
+            SocialX = socialX ?? string.Empty,
+            SocialTikTok = socialTikTok ?? string.Empty,
+            SocialYouTube = socialYouTube ?? string.Empty,
+            SocialTwitch = socialTwitch ?? string.Empty
         };
     }
 

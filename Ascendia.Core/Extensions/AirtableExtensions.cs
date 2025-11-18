@@ -29,10 +29,17 @@ public static class AirtableExtensions
                 { nameof(MemberRecord.PreviousRankTier), record.PreviousRankTier },
                 { nameof(MemberRecord.Win), record.Win },
                 { nameof(MemberRecord.Lose), record.Lose },
+                { nameof(MemberRecord.MMR), record.MMR },
                 { nameof(MemberRecord.Notes), record.Notes },
                 { nameof(MemberRecord.LastUpdated), record.LastUpdated },
                 { nameof(MemberRecord.LastChange), record.LastChange },
-                { nameof(MemberRecord.Team), record.Team }
+                { nameof(MemberRecord.Team), record.Team },
+                { nameof(MemberRecord.SocialFacebook), record.SocialFacebook },
+                { nameof(MemberRecord.SocialInstagram), record.SocialInstagram },
+                { nameof(MemberRecord.SocialX), record.SocialX },
+                { nameof(MemberRecord.SocialTikTok), record.SocialTikTok },
+                { nameof(MemberRecord.SocialYouTube), record.SocialYouTube },
+                { nameof(MemberRecord.SocialTwitch), record.SocialTwitch },
             }
         };
         var fieldsToList = newRecord.Fields.ToList();
@@ -57,7 +64,7 @@ public static class AirtableExtensions
            Description: record.GetField<string>(nameof(DiscordBotGuildSettingsRecord.Description)));
 
     public static MemberRecord ToMemberRecord(this AirtableRecord record)
-                => new(
+            => new(
             record.Id,
             Number: record.GetField<int>(nameof(MemberRecord.Number)),
             DisplayName: record.GetField<string?>(nameof(MemberRecord.DisplayName)),
@@ -77,8 +84,15 @@ public static class AirtableExtensions
             PreviousRankTier: record.GetField<int?>(nameof(MemberRecord.PreviousRankTier)),
             Win: record.GetField<int?>(nameof(MemberRecord.Win)),
             Lose: record.GetField<int?>(nameof(MemberRecord.Lose)),
-            Notes: record.GetField<string?>(nameof(MemberRecord.Notes)),
+            MMR: record.GetField<double?>(nameof(MemberRecord.MMR)),
             LastUpdated: record.GetField<DateTime?>(nameof(MemberRecord.LastUpdated)),
             LastChange: record.GetField<DateTime?>(nameof(MemberRecord.LastChange)),
-            Team: record.GetField<string?>(nameof(MemberRecord.Team)));
+            Team: record.GetField<string?>(nameof(MemberRecord.Team)),
+            Notes: record.GetField<string?>(nameof(MemberRecord.Notes)),
+            SocialFacebook: record.GetField<string?>(nameof(MemberRecord.SocialFacebook)),
+            SocialInstagram: record.GetField<string?>(nameof(MemberRecord.SocialInstagram)),
+            SocialX: record.GetField<string?>(nameof(MemberRecord.SocialX)),
+            SocialTikTok: record.GetField<string?>(nameof(MemberRecord.SocialTikTok)),
+            SocialYouTube: record.GetField<string?>(nameof(MemberRecord.SocialYouTube)),
+            SocialTwitch: record.GetField<string?>(nameof(MemberRecord.SocialTwitch)));
 }

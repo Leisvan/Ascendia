@@ -45,8 +45,7 @@
                            HorizontalAlignment="Stretch"
                            SelectedIndex="{x:Bind ViewModel.HeaderSelectedIndex, Mode=TwoWay}">
                 <tkc:SegmentedItem Content="Perfil" />
-                <tkc:SegmentedItem Content="Social"
-                                   IsEnabled="False" />
+                <tkc:SegmentedItem Content="Social" />
             </tkc:Segmented>
         </StackPanel>
         <ScrollViewer Grid.Row="1"
@@ -125,13 +124,13 @@
                       HorizontalScrollMode="Disabled"
                       IsVerticalScrollChainingEnabled="False"
                       Visibility="{x:Bind ViewModel.IsSocialTabSelected, Mode=OneWay}">
-            <Grid ColumnSpacing="8"
+            <Grid ColumnSpacing="16"
                   RowSpacing="4">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
@@ -139,18 +138,28 @@
                 </Grid.RowDefinitions>
 
                 <TextBox x:Uid="Members-AddPhoneBox"
-                         Grid.ColumnSpan="2"
                          Text="{x:Bind ViewModel.Phone, Mode=TwoWay}" />
                 <TextBox x:Uid="Members-AddEmailBox"
                          Grid.Row="1"
-                         Grid.ColumnSpan="2"
                          Text="{x:Bind ViewModel.EMail, Mode=TwoWay}" />
-                <TextBox x:Uid="Members-AddCountryBox"
+                <TextBox x:Uid="Members-AddFacebookBox"
                          Grid.Row="2"
-                         Grid.ColumnSpan="2"
-                         Text="{x:Bind ViewModel.Country, Mode=TwoWay}" />
-                <TextBlock FontFamily="{StaticResource FontAwesomeBrandsFontFamily}"
-                           Text="facebook" />
+                         Text="{x:Bind ViewModel.SocialFacebook, Mode=TwoWay}" />
+                <TextBox x:Uid="Members-AddInstagramBox"
+                         Grid.Row="3"
+                         Text="{x:Bind ViewModel.SocialInstagram, Mode=TwoWay}" />
+                <TextBox x:Uid="Members-AddXBox"
+                         Grid.Row="4"
+                         Text="{x:Bind ViewModel.SocialX, Mode=TwoWay}" />
+                <TextBox x:Uid="Members-AddTikTokBox"
+                         Grid.Row="5"
+                         Text="{x:Bind ViewModel.SocialTikTok, Mode=TwoWay}" />
+                <TextBox x:Uid="Members-AddTwitchBox"
+                         Grid.Row="6"
+                         Text="{x:Bind ViewModel.SocialTwitch, Mode=TwoWay}" />
+                <TextBox x:Uid="Members-AddYouTubeBox"
+                         Grid.Row="7"
+                         Text="{x:Bind ViewModel.SocialYouTube, Mode=TwoWay}" />
             </Grid>
         </ScrollViewer>
 

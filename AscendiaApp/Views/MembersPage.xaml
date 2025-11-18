@@ -245,6 +245,7 @@
 
             <Border VerticalAlignment="Stretch"
                     Background="{StaticResource AppColor3}"
+                    Opacity=".4"
                     Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay}">
                 <StackPanel VerticalAlignment="Center"
                             Orientation="Vertical"

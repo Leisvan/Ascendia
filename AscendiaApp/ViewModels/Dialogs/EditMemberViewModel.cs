@@ -95,6 +95,24 @@ public partial class EditMemberViewModel(CommunityService communityService) : Ob
     public partial string? ProgressNotificationMessage { get; set; }
 
     [ObservableProperty]
+    public partial string? SocialFacebook { get; set; }
+
+    [ObservableProperty]
+    public partial string? SocialInstagram { get; set; }
+
+    [ObservableProperty]
+    public partial string? SocialTikTok { get; set; }
+
+    [ObservableProperty]
+    public partial string? SocialTwitch { get; set; }
+
+    [ObservableProperty]
+    public partial string? SocialX { get; set; }
+
+    [ObservableProperty]
+    public partial string? SocialYouTube { get; set; }
+
+    [ObservableProperty]
     public partial string? Team { get; set; }
 
     [ObservableProperty]
@@ -127,6 +145,12 @@ public partial class EditMemberViewModel(CommunityService communityService) : Ob
         IsCaptain = member.Record.IsCaptain ?? false;
         Position = member.Record.Position;
         Notes = member.Record.Notes;
+        SocialFacebook = member.Record.SocialFacebook;
+        SocialInstagram = member.Record.SocialInstagram;
+        SocialX = member.Record.SocialX;
+        SocialTikTok = member.Record.SocialTikTok;
+        SocialYouTube = member.Record.SocialYouTube;
+        SocialTwitch = member.Record.SocialTwitch;
     }
 
     [RelayCommand]
@@ -179,14 +203,39 @@ public partial class EditMemberViewModel(CommunityService communityService) : Ob
                 {
                     Name = EditMember!.Record.DisplayName ?? string.Empty;
                 }
-                success = await _communityService.EditMemberAsync(EditMember!.Record.Id, Name, idStr, Team, Phone, EMail, Country, IsCaptain, Position, Notes, (s, e) =>
+                success = await _communityService.EditMemberAsync(EditMember!.Record.Id,
+                    Name,
+                    idStr,
+                    Team,
+                    Phone,
+                    EMail,
+                    Country,
+                    IsCaptain,
+                    Position,
+                    Notes,
+                    SocialFacebook, SocialInstagram, SocialX, SocialTikTok, SocialYouTube, SocialTwitch,
+                    (s, e) =>
                 {
                     ProgressNotificationMessage = e;
                 });
             }
             else
             {
-                success = await _communityService.AddNewMemberAsync(Name, idStr, Team, Phone, EMail, Country, IsCaptain, Position, Notes, CheckLadder, UpdateBeforeChecking, CheckWinLose ?? false, (s, e) =>
+                success = await _communityService.AddNewMemberAsync(
+                    Name,
+                    idStr,
+                    Team,
+                    Phone,
+                    EMail,
+                    Country,
+                    IsCaptain,
+                    Position,
+                    Notes,
+                    CheckLadder,
+                    UpdateBeforeChecking,
+                    CheckWinLose ?? false,
+                    SocialFacebook, SocialInstagram, SocialX, SocialTikTok, SocialYouTube, SocialTwitch,
+                    (s, e) =>
                 {
                     ProgressNotificationMessage = e;
                 });

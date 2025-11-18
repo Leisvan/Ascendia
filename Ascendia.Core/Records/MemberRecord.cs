@@ -20,7 +20,14 @@ public record class MemberRecord(
     int? PreviousRankTier = null,
     int? Win = null,
     int? Lose = null,
+    double? MMR = null,
     DateTime? LastUpdated = null,
     DateTime? LastChange = null,
     string? Team = null,
-    string? Notes = null);
+    string? Notes = null,
+    string? SocialFacebook = null,
+    string? SocialInstagram = null,
+    string? SocialX = null,
+    string? SocialTikTok = null,
+    string? SocialYouTube = null,
+    string? SocialTwitch = null);
