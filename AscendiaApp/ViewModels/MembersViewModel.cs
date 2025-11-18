@@ -9,13 +9,13 @@ using CommunityToolkit.Mvvm.Input;
 using LCTWorks.Telemetry;
 using LCTWorks.WinUI.Dialogs;
 using LCTWorks.WinUI.Extensions;
+using LCTWorks.WinUI.Helpers;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace AscendiaApp.ViewModels;
@@ -61,9 +61,6 @@ public partial class MembersViewModel : ObservableObject
         }
     }
 
-    [ObservableProperty]
-    public partial MemberObservable? SelectedMember { get; set; }
-
     [RelayCommand]
     public async Task Initialize()
     {
@@ -86,6 +83,16 @@ public partial class MembersViewModel : ObservableObject
             dialog.ViewModel.Finished += EditMemberDialogFinished;
             await _dialogService.ShowDialogAsync(dialog, true, App.MainWindow?.Content?.XamlRoot);
         }
+    }
+
+    [RelayCommand]
+    private void CopyId(MemberObservable member)
+    {
+        if (string.IsNullOrWhiteSpace(member.Record.AccountId))
+        {
+            return;
+        }
+        ClipboardHelper.CopyText(member.Record.AccountId);
     }
 
     [RelayCommand]
@@ -113,6 +120,41 @@ public partial class MembersViewModel : ObservableObject
                 RefreshInternal(true);
             }
             viewModel.Finished -= EditMemberDialogFinished;
+        }
+    }
+
+    [RelayCommand]
+    private void OpenDotaBuffProfile(MemberObservable member)
+    {
+        if (string.IsNullOrWhiteSpace(member.Record.AccountId))
+        {
+            return;
+        }
+
+        var url = $"https://www.dotabuff.com/players/{member.Record.AccountId}";
+        OpenUrl(url);
+    }
+
+    [RelayCommand]
+    private void OpenODotaProfile(MemberObservable member)
+    {
+        if (string.IsNullOrWhiteSpace(member.Record.AccountId))
+        {
+            return;
+        }
+        var url = $"https://www.opendota.com/players/{member.Record.AccountId}";
+        OpenUrl(url);
+    }
+
+    private async void OpenUrl(string url)
+    {
+        try
+        {
+            await Windows.System.Launcher.LaunchUriAsync(new Uri(url));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to open URL: {Url}", url);
         }
     }
 

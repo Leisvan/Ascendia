@@ -26,6 +26,12 @@
                        Command="{x:Bind ViewModel.RemoveMemberCommand}" />
         <XamlUICommand x:Key="UpdateMemberXamlUICommand"
                        Command="{x:Bind ViewModel.UpdateMemberCommand}" />
+        <XamlUICommand x:Key="CopyIdXamlUICommand"
+                       Command="{x:Bind ViewModel.CopyIdCommand}" />
+        <XamlUICommand x:Key="OpenODotaXamlUICommand"
+                       Command="{x:Bind ViewModel.OpenODotaProfileCommand}" />
+        <XamlUICommand x:Key="OpenDotaBuffXamlUICommand"
+                       Command="{x:Bind ViewModel.OpenDotaBuffProfileCommand}" />
     </Page.Resources>
     <i:Interaction.Behaviors>
         <core:EventTriggerBehavior EventName="Loaded">
@@ -78,7 +84,6 @@
                       IsEnabled="{x:Bind ViewModel.NotLoading, Mode=OneWay}"
                       IsItemClickEnabled="True"
                       ItemsSource="{x:Bind ViewModel.Members, Mode=OneWay}"
-                      SelectedItem="{x:Bind ViewModel.SelectedMember, Mode=TwoWay}"
                       SelectionMode="None">
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="observable:MemberObservable">
@@ -104,21 +109,23 @@
                                             <FontIcon Glyph="&#xE895;" />
                                         </MenuFlyoutItem.Icon>
                                     </MenuFlyoutItem>
-                                    <MenuFlyoutItem CommandParameter="{x:Bind}"
-                                                    IsEnabled="False"
+                                    <MenuFlyoutItem Command="{StaticResource CopyIdXamlUICommand}"
+                                                    CommandParameter="{x:Bind}"
                                                     Text="Copiar Id">
                                         <MenuFlyoutItem.Icon>
                                             <FontIcon Glyph="&#xE8C8;" />
                                         </MenuFlyoutItem.Icon>
                                     </MenuFlyoutItem>
 
-                                    <MenuFlyoutSubItem IsEnabled="False"
-                                                       Text="Abrir...">
-                                        <MenuFlyoutSubItem.Icon>
-                                            <FontIcon Glyph="&#xE8A7;" />
-                                        </MenuFlyoutSubItem.Icon>
+                                    <MenuFlyoutSubItem Text="Abrir...">
                                         <MenuFlyoutItem MinWidth="160"
+                                                        Command="{StaticResource OpenODotaXamlUICommand}"
+                                                        CommandParameter="{x:Bind}"
                                                         Text="Perfil de OpenDota" />
+                                        <MenuFlyoutItem MinWidth="160"
+                                                        Command="{StaticResource OpenDotaBuffXamlUICommand}"
+                                                        CommandParameter="{x:Bind}"
+                                                        Text="Perfil de DotaBuff" />
                                     </MenuFlyoutSubItem>
                                     <MenuFlyoutSeparator />
                                     <MenuFlyoutItem Command="{StaticResource RemoveMemberXamlUICommand}"
@@ -230,29 +237,37 @@
                                                TextAlignment="Center" />
                                 </StackPanel>
                             </Border>
-                            <StackPanel Grid.Column="5"
-                                        Margin="0,0,8,0"
-                                        HorizontalAlignment="Right"
-                                        VerticalAlignment="Center"
-                                        Orientation="Horizontal"
-                                        Spacing="8">
+                            <Grid Grid.Column="5"
+                                  Margin="0,0,8,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
                                 <TextBlock VerticalAlignment="Center"
                                            Opacity=".4"
                                            Text="{x:Bind LastUpdated, Mode=OneWay}"
-                                           TextLineBounds="Tight" />
-                                <TextBlock FontSize="18"
-                                           Foreground="{StaticResource WarningColor}"
-                                           Style="{StaticResource FluentIconsTextBlockStyle}"
-                                           Text="&#xE823;"
                                            TextLineBounds="Tight"
-                                           Visibility="{x:Bind IsOutDated, Mode=OneWay}" />
-                                <TextBlock FontSize="18"
-                                           Foreground="{StaticResource SuccessColor}"
-                                           Style="{StaticResource FluentIconsTextBlockStyle}"
-                                           Text="&#xEC61;"
-                                           TextLineBounds="Tight"
-                                           Visibility="{x:Bind IsUpToDate, Mode=OneWay}" />
-                            </StackPanel>
+                                           Visibility="{x:Bind helpers:AppHelper.IsDebug}" />
+                                <StackPanel Grid.Row="1"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Center"
+                                            Orientation="Horizontal"
+                                            Spacing="8">
+
+                                    <TextBlock FontSize="18"
+                                               Foreground="{StaticResource WarningColor}"
+                                               Style="{StaticResource FluentIconsTextBlockStyle}"
+                                               Text="&#xE823;"
+                                               TextLineBounds="Tight"
+                                               Visibility="{x:Bind IsOutDated, Mode=OneWay}" />
+                                    <TextBlock FontSize="18"
+                                               Foreground="{StaticResource SuccessColor}"
+                                               Style="{StaticResource FluentIconsTextBlockStyle}"
+                                               Text="&#xEC61;"
+                                               TextLineBounds="Tight"
+                                               Visibility="{x:Bind IsUpToDate, Mode=OneWay}" />
+                                </StackPanel>
+                            </Grid>
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>

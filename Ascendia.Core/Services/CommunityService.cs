@@ -444,7 +444,7 @@ public class CommunityService(
         var profileUrl = player?.Profile?.ProfileUrl ?? previousRecord?.ProfileUrl ?? string.Empty;
         var win = winLose?.Win ?? previousRecord?.Win ?? 0;
         var lose = winLose?.Lose ?? previousRecord?.Lose ?? 0;
-        var mmr = player?.ComputerMMR ?? previousRecord?.MMR ?? 0d; ///TODO: Fix this
+        var mmr = player?.ComputerMMR ?? previousRecord?.MMR ?? 0d;
         var isEnabled = previousRecord?.IsEnabled ?? true;
         if (string.IsNullOrEmpty(position))
         {
