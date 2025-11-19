@@ -275,7 +275,7 @@ public class CommunityService(
             .Where(m => minutesUpdateThreshold <= 0 || m.LastUpdated?.AddMinutes(minutesUpdateThreshold) <= DateTimeOffset.UtcNow.DateTime)
             //.Where(m => m.AccountId == "190234148")
             .OrderBy(m => m.LastUpdated)
-            .Take(2)
+            //.Take(2)
             .ToList();
 
         if (minutesUpdateThreshold > 0)
@@ -300,7 +300,6 @@ public class CommunityService(
 
             var progressMessage = string.Format(Messages.UpdateMemberProgressFormat, ++index, count, displayName);
             notifications?.Invoke(this, progressMessage);
-            CoreTelemetry.WriteLine(progressMessage);
 
             if (member.DisplayName == null || member.AccountId == null)
             {
