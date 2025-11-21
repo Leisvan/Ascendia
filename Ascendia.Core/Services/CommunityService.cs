@@ -428,11 +428,21 @@ public class CommunityService(
         int leaderboardRank = player?.LeaderboardRank ?? previousRecord?.LeaderboardRank ?? 0;
         int rankTier = player?.RankTier ?? previousRecord?.RankTier ?? 0;
         DateTime? lastUpdated = previousRecord?.LastUpdated ?? DateTimeOffset.UtcNow.DateTime;
-        if (player != null
-            && previousRecord != null)
+
+        if (player != null && player.LeaderboardRank != null && player.LeaderboardRank != previousLeaderboardRank)
         {
-            previousLeaderboardRank = leaderboardRank;
-            previousRankTier = rankTier;
+        }
+
+        if (player != null && previousRecord != null)
+        {
+            if (previousLeaderboardRank != player.LeaderboardRank)
+            {
+                previousLeaderboardRank = previousRecord.LeaderboardRank ?? 0;
+            }
+            if (previousRankTier != player.RankTier)
+            {
+                previousRankTier = previousRecord.RankTier ?? 0;
+            }
         }
         if (player != null)
         {

@@ -85,6 +85,7 @@ internal class GuildActionsService(
             var allLines = stringBuilder.ToString();
             await SendMessageAsync(channel, allLines);
         }
+
         if (lines.Count > RankingMessageChunkSize * RankingLeadersChunkCount)
         {
             await SendMessageAsync(channel, Messages.FullRankingCaption);
@@ -233,9 +234,6 @@ internal class GuildActionsService(
             positionEmoji = await EmojisHelper.GetPositionEmojiStringAsync(_botService.Client, positionValue);
         }
 
-        //var isNewPlayer = member.PreviousLeaderboardRank == null;
-
-        // Correctly handle nullable Win/Lose, avoid integer division and handle zero-total.
         var total = (member.Win ?? 0) + (member.Lose ?? 0);
         int? winratePercent = total == 0
             ? null
@@ -245,8 +243,23 @@ internal class GuildActionsService(
             ? "  --"
             : $"{StringLengthCapTool.InvertedThreeSpaces.GetString(winratePercent.Value)}%";
 
+        int rankChange = 0;
+        if (member.PreviousLeaderboardRank != member.LeaderboardRank || member.PreviousRankTier != member.RankTier)
+        {
+            rankChange = member.PreviousRankTier - member.RankTier ?? 0;
+            if (rankChange == 0)
+            {
+                rankChange = member.PreviousLeaderboardRank - member.LeaderboardRank ?? 0;
+            }
+        }
+        var changeGlyph = rankChange > 0
+            ? '↑'
+            : rankChange < 0
+                ? '↓'
+                : '-';
+
         builder.Append($"{rankEmoji} ");
-        builder.Append($"`{StringLengthCapTool.InvertedFourSpaces.GetString(member.LeaderboardRank ?? 0)}` ");
+        builder.Append($"`{changeGlyph}{StringLengthCapTool.InvertedFourSpaces.GetString(member.LeaderboardRank ?? 0)}` ");
         builder.Append($"|{positionEmoji} ");
         builder.Append($"`{StringLengthCapTool.Default.GetString(member.DisplayName)}` ");
         builder.Append($"`{winrateString}` ");
