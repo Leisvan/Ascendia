@@ -40,6 +40,8 @@ public partial class MemberObservable(MemberRecord record) : ObservableObject
 
     public MemberRecord Record => _record;
 
+    public string? Region => _record.Region;
+
     public string Team => _record.Team ?? string.Empty;
 
     public string GetWinRate()

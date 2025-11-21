@@ -234,4 +234,7 @@
   <data name="Members-UpdatingMemberFormat" xml:space="preserve">
     <value>Actualizando ladder de {0}.</value>
   </data>
+  <data name="Members-RegionHeader.Header" xml:space="preserve">
+    <value>Región</value>
+  </data>
 </root>

@@ -184,7 +184,6 @@
                                     <ColumnDefinition />
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Grid.ColumnSpan="2"
-                                           Margin="0,0,0,4"
                                            HorizontalTextAlignment="Left"
                                            Style="{StaticResource AppItemTitleTextBlockStyle}"
                                            Text="{x:Bind DisplayName, Mode=OneWay}" />
@@ -194,21 +193,6 @@
                                            Opacity=".6"
                                            Style="{StaticResource SmoothItemCaptionTextBlockStyle}"
                                            Text="{x:Bind AccountName, Mode=OneWay}" />
-                                <!--<TextBlock Grid.Row="2"
-                                           Margin="0,4,4,0"
-                                           FontFamily="{StaticResource MaterialSymbolsFontFamily}"
-                                           Foreground="{StaticResource HighlightColor}"
-                                           Style="{StaticResource SmoothItemCaptionTextBlockStyle}"
-                                           Text="crown"
-                                           Visibility="{x:Bind IsCaptain}" />
-                                <TextBlock Grid.Row="2"
-                                           Grid.Column="1"
-                                           Margin="0,4,4,0"
-                                           VerticalAlignment="Center"
-                                           HorizontalTextAlignment="Left"
-                                           Style="{StaticResource SmoothItemCaptionTextBlockStyle}"
-                                           Text="{x:Bind Team, Mode=OneWay}"
-                                           TextLineBounds="Tight" />-->
                             </Grid>
                             <Border Grid.Column="2"
                                     Width="120"
@@ -253,6 +237,8 @@
                                             VerticalAlignment="Center"
                                             Orientation="Horizontal"
                                             Spacing="8">
+
+                                    <TextBlock Text="{x:Bind Region, Mode=OneWay}" />
 
                                     <TextBlock FontSize="18"
                                                Foreground="{StaticResource WarningColor}"

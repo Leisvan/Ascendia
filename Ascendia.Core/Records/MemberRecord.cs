@@ -12,6 +12,7 @@ public record class MemberRecord(
     string? Country = null,
     bool? IsCaptain = null,
     string? Position = null,
+    string? Region = null,
     string? AvatarUrl = null,
     string? ProfileUrl = null,
     int? LeaderboardRank = null,

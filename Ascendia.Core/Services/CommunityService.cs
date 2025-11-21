@@ -40,6 +40,7 @@ public class CommunityService(
         string? country = null,
         bool? isCaptain = false,
         string? position = null,
+        string? region = null,
         string? notes = null,
         bool checkLadder = true,
         bool refreshPlayer = true,
@@ -61,7 +62,7 @@ public class CommunityService(
         {
             throw new DuplicateWaitObjectException(accountId, Messages.ErrorPlayerDuplicated);
         }
-        return await UpdateLadderAsync(accountId, accountId, name, team, phone, email, country, isCaptain, position, notes, checkLadder, refreshPlayer, checkWinLose, socialFacebook, socialInstagram, socialX, socialTikTok, socialYouTube, socialTwitch, notifications, null, messageDelayInMilliseconds);
+        return await UpdateLadderAsync(accountId, accountId, name, team, phone, email, country, isCaptain, position, region, notes, checkLadder, refreshPlayer, checkWinLose, socialFacebook, socialInstagram, socialX, socialTikTok, socialYouTube, socialTwitch, notifications, null, messageDelayInMilliseconds);
     }
 
     public async Task<bool> EditMemberAsync(
@@ -74,6 +75,7 @@ public class CommunityService(
         string? country = null,
         bool? isCaptain = false,
         string? position = null,
+        string? region = null,
         string? notes = null,
         string? socialFacebook = null,
         string? socialInstagram = null,
@@ -96,7 +98,7 @@ public class CommunityService(
 
         notifications?.Invoke(this, Messages.ProgressAddToDb);
 
-        MemberRecord record = CreateMemberRecord(id, name, accountId, team, phone, email, country, isCaptain, position, notes, socialFacebook, socialInstagram, socialX, socialTikTok, socialYouTube, socialTwitch, previousRecord: containedMember);
+        MemberRecord record = CreateMemberRecord(id, name, accountId, team, phone, email, country, isCaptain, position, region, notes, socialFacebook, socialInstagram, socialX, socialTikTok, socialYouTube, socialTwitch, previousRecord: containedMember);
         IsBusy = false;
         return await AddOrUpdateMemberAsync(record);
     }
@@ -194,6 +196,7 @@ public class CommunityService(
         string? country = null,
         bool? isCaptain = false,
         string? position = null,
+        string? region = null,
         string? notes = null,
         bool checkLadder = true,
         bool refreshPlayer = true,
@@ -253,7 +256,7 @@ public class CommunityService(
             name = previousRecord?.DisplayName ?? player?.Profile?.PersonaName ?? Messages.DefaultPlayerName;
         }
 
-        MemberRecord record = CreateMemberRecord(id, name, accountId, team, phone, email, country, isCaptain, position, notes, socialFacebook, socialInstagram, socialX, socialTikTok, socialYouTube, socialTwitch,
+        MemberRecord record = CreateMemberRecord(id, name, accountId, team, phone, email, country, isCaptain, position, region, notes, socialFacebook, socialInstagram, socialX, socialTikTok, socialYouTube, socialTwitch,
             player: player,
             winLose: winLose,
             previousRecord);
@@ -412,6 +415,7 @@ public class CommunityService(
         string? country = null,
         bool? isCaptain = null,
         string? position = null,
+        string? region = null,
         string? notes = null,
         string? socialFacebook = null,
         string? socialInstagram = null,
@@ -428,10 +432,6 @@ public class CommunityService(
         int leaderboardRank = player?.LeaderboardRank ?? previousRecord?.LeaderboardRank ?? 0;
         int rankTier = player?.RankTier ?? previousRecord?.RankTier ?? 0;
         DateTime? lastUpdated = previousRecord?.LastUpdated ?? DateTimeOffset.UtcNow.DateTime;
-
-        if (player != null && player.LeaderboardRank != null && player.LeaderboardRank != previousLeaderboardRank)
-        {
-        }
 
         if (player != null && previousRecord != null)
         {
@@ -479,6 +479,7 @@ public class CommunityService(
             Win = win,
             Lose = lose,
             MMR = mmr,
+            Region = region ?? previousRecord?.Region ?? "Americas",
             LastUpdated = lastUpdated,
             LastChange = DateTimeOffset.UtcNow.DateTime,
             IsEnabled = isEnabled,

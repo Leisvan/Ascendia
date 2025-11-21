@@ -6,9 +6,66 @@ namespace Ascendia.Core.Services;
 public class LadderService
 {
     private const string OpenDotaBaseUrl = "https://api.opendota.com/api";
+
     private const string OpenDotaPlayerUrl = OpenDotaBaseUrl + "/players/{0}";
+
     private const string OpenDotaRefreshPlayerUrl = OpenDotaBaseUrl + "/players/{0}/refresh";
+
     private const string OpenDotaWinLoseUrl = OpenDotaBaseUrl + "/players/{0}/wl";
+
+    public static string GetRegionGroup(int regionId)
+    {
+        switch (regionId)
+        {
+            // 🌍 Europe
+            case 2:  // Europe West (Luxembourg)
+            case 3:  // Europe East (Vienna)
+            case 8:  // Stockholm
+            case 37: // Austria
+            case 38: // UK
+            case 40: // Italy
+            case 41: // Spain
+            case 42: // Poland
+            case 43: // Greece
+            case 44: // Romania
+            case 45: // Turkey
+            case 47: // Russia
+                return "Europe";
+
+            // 🌎 America
+            case 0:  // US West
+            case 1:  // US East
+            case 9:  // Brazil
+            case 13: // Chile
+            case 14: // Peru
+            case 25: // Argentina
+                return "America";
+
+            // 🌏 Asia
+            case 5:  // Singapore
+            case 6:  // Dubai
+            case 7:  // Australia
+            case 10: // South Africa
+            case 15: // India
+            case 16: // Japan
+            case 17: // Taiwan
+            case 46: // UAE
+            case 48: // Hong Kong
+            case 49: // South Korea
+                return "Asia";
+
+            // 🇨🇳 China (Perfect World clusters)
+            case 11: // Perfect World Telecom
+            case 12: // Perfect World Unicom
+            case 18: // Perfect World Telecom 2
+            case 19: // Perfect World Unicom 2
+                return "China";
+
+            // ❓ Unknown / not mapped
+            default:
+                return "Unknown";
+        }
+    }
 
     public async Task<OpenDotaResponse<PlayerOpenDotaModel?>> GetPlayerAsync(string? accountId)
     {

@@ -95,6 +95,9 @@ public partial class EditMemberViewModel(CommunityService communityService) : Ob
     public partial string? ProgressNotificationMessage { get; set; }
 
     [ObservableProperty]
+    public partial string? Region { get; set; } = "Americas";
+
+    [ObservableProperty]
     public partial string? SocialFacebook { get; set; }
 
     [ObservableProperty]
@@ -144,6 +147,7 @@ public partial class EditMemberViewModel(CommunityService communityService) : Ob
         Country = member.Record.Country;
         IsCaptain = member.Record.IsCaptain ?? false;
         Position = member.Record.Position;
+        Region = member.Record.Region;
         Notes = member.Record.Notes;
         SocialFacebook = member.Record.SocialFacebook;
         SocialInstagram = member.Record.SocialInstagram;
@@ -212,6 +216,7 @@ public partial class EditMemberViewModel(CommunityService communityService) : Ob
                     Country,
                     IsCaptain,
                     Position,
+                    Region,
                     Notes,
                     SocialFacebook, SocialInstagram, SocialX, SocialTikTok, SocialYouTube, SocialTwitch,
                     (s, e) =>
@@ -230,6 +235,7 @@ public partial class EditMemberViewModel(CommunityService communityService) : Ob
                     Country,
                     IsCaptain,
                     Position,
+                    Region,
                     Notes,
                     CheckLadder,
                     UpdateBeforeChecking,

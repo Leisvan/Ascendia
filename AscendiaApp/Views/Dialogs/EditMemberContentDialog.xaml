@@ -89,6 +89,18 @@
                         <x:String>5</x:String>
                     </tkc:Segmented>
                 </tkc:HeaderedContentControl>
+                <tkc:HeaderedContentControl x:Uid="Members-RegionHeader"
+                                            HorizontalContentAlignment="Stretch"
+                                            VerticalContentAlignment="Stretch">
+                    <tkc:Segmented Margin="0,8"
+                                   HorizontalAlignment="Stretch"
+                                   SelectedItem="{x:Bind ViewModel.Region, Mode=TwoWay}">
+                        <x:String>Americas</x:String>
+                        <x:String>Europe</x:String>
+                        <x:String>SE Asia</x:String>
+                        <x:String>China</x:String>
+                    </tkc:Segmented>
+                </tkc:HeaderedContentControl>
 
                 <TextBox x:Uid="Members-AddCountryBox"
                          Text="{x:Bind ViewModel.Country, Mode=TwoWay}" />
