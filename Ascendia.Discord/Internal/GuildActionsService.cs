@@ -2,6 +2,7 @@
 using Ascendia.Core.Records;
 using Ascendia.Core.Services;
 using Ascendia.Discord.Strings;
+using CommunityToolkit.HighPerformance;
 using DSharpPlus.Commands;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity;
@@ -41,6 +42,12 @@ internal class GuildActionsService(
             ulong channelId = 0,
             CommandContext? context = null)
     {
+        if (_cts != null)
+        {
+            return Messages.OperationAlredyInProgress;
+        }
+        _cts = new CancellationTokenSource();
+
         var rankComparer = new MemberRecordRankingComparer();
 
         CoreTelemetry.WriteLine(Messages.RefreshingMembers);
@@ -76,6 +83,12 @@ internal class GuildActionsService(
 
         foreach (var chunk in leadersChunks)
         {
+            if (_cts?.Token.IsCancellationRequested == true)
+            {
+                await SendMessageAsync(channel, Messages.OperationCancelled);
+                _cts = null;
+                return Messages.OperationCancelled;
+            }
             var stringBuilder = new StringBuilder();
             foreach (var line in chunk)
             {
@@ -100,6 +113,13 @@ internal class GuildActionsService(
             int seqx = 1;
             foreach (var chunk in chunks)
             {
+                if (_cts?.Token.IsCancellationRequested == true)
+                {
+                    await SendMessageAsync(threadChannel, Messages.OperationCancelled);
+                    await SendMessageAsync(channel, Messages.OperationCancelled);
+                    _cts = null;
+                    return Messages.OperationCancelled;
+                }
                 var stringBuilder = new StringBuilder();
 
                 foreach (var line in chunk)
@@ -206,7 +226,7 @@ internal class GuildActionsService(
         }
         catch (Exception ex)
         {
-            CoreTelemetry.WriteLine($"{Messages.ThreadCreationFailed}: {ex.Message}", ConsoleColor.Red);
+            CoreTelemetry.WriteWarningLine($"{Messages.ThreadCreationFailed}: {ex.Message}");
             return channel;
         }
     }
@@ -220,6 +240,19 @@ internal class GuildActionsService(
             + $"`{StringLengthCapTool.Default.GetString("NICK")}`" + BlankSpace // Nick
             + "`  WR`" + BlankSpace
             + "`TOTAL`";
+    }
+
+    private static async Task SendMessageAsync(DiscordChannel channel, string content)
+    {
+        try
+        {
+            await channel.SendMessageAsync(content);
+            CoreTelemetry.WriteLine(content, ConsoleColor.White);
+        }
+        catch (Exception e)
+        {
+            CoreTelemetry.WriteWarningLine(e.Message);
+        }
     }
 
     private async Task<string> GetMemberLineAsync(MemberRecord member)
@@ -252,6 +285,7 @@ internal class GuildActionsService(
                 rankChange = member.PreviousLeaderboardRank - member.LeaderboardRank ?? 0;
             }
         }
+
         var changeGlyph = rankChange > 0
             ? '↑'
             : rankChange < 0
@@ -268,22 +302,6 @@ internal class GuildActionsService(
         return builder.ToString();
     }
 
-    private async Task SendMessageAsync(DiscordChannel channel, string content, bool writeTelemetry = false)
-    {
-        try
-        {
-            if (writeTelemetry)
-            {
-                CoreTelemetry.WriteLine(content);
-            }
-            await channel.SendMessageAsync(content);
-        }
-        catch (Exception e)
-        {
-            LogNotifier.NotifyError(e.Message);
-        }
-    }
-
     private async Task<DiscordMessage?> UpdateMessageAsync(string content, ulong channelId, DiscordMessage? message = null, bool removeComponents = false)
     {
         try
@@ -291,20 +309,26 @@ internal class GuildActionsService(
             if (message == null)
             {
                 var channel = await _botService.Client.GetChannelAsync(channelId);
-                return await channel.SendMessageAsync(content);
+                var results = await channel.SendMessageAsync(content);
+                CoreTelemetry.WriteLine(content, ConsoleColor.White);
+                return results;
             }
             if (removeComponents)
             {
                 var builder = new DiscordMessageBuilder()
                     .WithContent(content); // No components added => existing components cleared
-                return await message.ModifyAsync(builder);
+                var results = await message.ModifyAsync(builder);
+                CoreTelemetry.WriteLine(content, ConsoleColor.White);
+                return results;
             }
 
-            return await message.ModifyAsync(content);
+            var mResults = await message.ModifyAsync(content);
+            CoreTelemetry.WriteLine(content, ConsoleColor.White);
+            return mResults;
         }
         catch (Exception e)
         {
-            LogNotifier.Notify(e.Message);
+            CoreTelemetry.WriteWarningLine(e.Message);
             return null;
         }
     }

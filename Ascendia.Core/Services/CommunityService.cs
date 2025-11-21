@@ -283,7 +283,7 @@ public class CommunityService(
             int skipped = members.Count - membersToUpdate.Count;
             if (skipped > 0)
             {
-                CoreTelemetry.WriteLine(Messages.UpToDateMembersSkippedFormat);
+                CoreTelemetry.WriteLine(string.Format(Messages.UpToDateMembersSkippedFormat, skipped));
             }
         }
 

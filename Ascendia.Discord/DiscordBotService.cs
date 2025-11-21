@@ -35,7 +35,7 @@ public class DiscordBotService
         try
         {
             await _client.ConnectAsync();
-            CoreTelemetry.WriteLine(Messages.BotConnected, ConsoleColor.Green);
+            CoreTelemetry.WriteSuccessLine(Messages.BotConnected);
             return true;
         }
         catch (Exception e)
@@ -50,7 +50,7 @@ public class DiscordBotService
         try
         {
             await _client.DisconnectAsync();
-            CoreTelemetry.WriteLine(Messages.BotDisconnected, ConsoleColor.Green);
+            CoreTelemetry.WriteSuccessLine(Messages.BotDisconnected);
         }
         catch (Exception e)
         {
@@ -64,7 +64,7 @@ public class DiscordBotService
         if (guildSettings == null || !ulong.TryParse(guildSettings.RankingChannelId, out ulong channelId) || channelId == 0)
         {
             var errorMessage = Messages.ChannelIdNotFoundError;
-            LogNotifier.NotifyError(errorMessage);
+            CoreTelemetry.WriteErrorLine(errorMessage);
             return;
         }
         await _guildActions.DisplayRankingAsync(includeBanned, channelId);
@@ -86,7 +86,7 @@ public class DiscordBotService
         if (guildSettings == null || !ulong.TryParse(guildSettings.RankingChannelId, out ulong channelId) || channelId == 0)
         {
             var errorMessage = Messages.ChannelIdNotFoundError;
-            LogNotifier.NotifyError(errorMessage);
+            CoreTelemetry.WriteErrorLine(errorMessage);
             return false;
         }
         var errorResult = await _guildActions.UpdateMembersLadderAsync(forceUpdate, includeWL, notify, guildId, channelId);

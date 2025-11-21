@@ -57,4 +57,16 @@ public static class CoreTelemetry
         ResetForegroundColor();
         _telemetryService?.Log(message);
     }
+
+    public static void WriteSuccessLine(string message)
+    {
+        WriteLine(message, ConsoleColor.Green);
+        _telemetryService?.Log(message, Microsoft.Extensions.Logging.LogLevel.Information);
+    }
+
+    public static void WriteWarningLine(string message)
+    {
+        WriteLine(message, ConsoleColor.Yellow);
+        _telemetryService?.Log(message, Microsoft.Extensions.Logging.LogLevel.Warning);
+    }
 }
