@@ -143,6 +143,65 @@
                                         IsEnabled="{x:Bind ViewModel.IsRankingIdle, Mode=OneWay}" />
                             </StackPanel>
                         </controls:SettingsCard>
+                        <controls:SettingsCard HorizontalContentAlignment="Stretch"
+                                               Description="Actualice la region de los jugadores basado en su historial de partidas."
+                                               Header="Regiones">
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="8">
+
+                                <DropDownButton Content="Actualizar regiones"
+                                                IsEnabled="{x:Bind ViewModel.IsRankingIdle, Mode=OneWay}">
+                                    <DropDownButton.Flyout>
+                                        <Flyout Placement="Bottom">
+                                            <Grid MinWidth="240">
+                                                <StackPanel Spacing="4">
+
+                                                    <CheckBox Content="Forzar para todos"
+                                                              IsChecked="{x:Bind ViewModel.ForceRegionsUpdate, Mode=TwoWay}" />
+                                                    <Rectangle Margin="0,8,0,4"
+                                                               Style="{StaticResource SmoothHorizontalSeparatorRectangleStyle}" />
+                                                    <Button HorizontalAlignment="Right"
+                                                            Command="{x:Bind ViewModel.UpdateMatchRegionsCommand}"
+                                                            Content="Actualizar regiones"
+                                                            IsEnabled="{x:Bind ViewModel.IsRankingIdle, Mode=OneWay}"
+                                                            Style="{StaticResource AccentButtonStyle}" />
+                                                </StackPanel>
+                                            </Grid>
+                                        </Flyout>
+                                    </DropDownButton.Flyout>
+                                </DropDownButton>
+                            </StackPanel>
+                        </controls:SettingsCard>
+                    </controls:SettingsExpander.Items>
+                </controls:SettingsExpander>
+                <controls:SettingsExpander Grid.Row="2"
+                                           Description="Info sobre variables (API)"
+                                           Header="OpenDota API"
+                                           HeaderIcon="{ui:FontIcon Glyph=&#xE753;}"
+                                           IsEnabled="{x:Bind ViewModel.IsConnected, Mode=OneWay}">
+                    <controls:SettingsExpander.Items>
+                        <controls:SettingsCard HorizontalContentAlignment="Left"
+                                               ContentAlignment="Left"
+                                               Visibility="{x:Bind ViewModel.IsConnected, Mode=OneWay}">
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock Text="Pedidos restantes:" />
+                                <TextBlock Margin="12,0"
+                                           Opacity=".7">
+                                    <Run Text="Minuto: " />
+                                    <Run Text="{x:Bind ViewModel.RemainingRequestMinute, Mode=OneWay}" />
+                                </TextBlock>
+                                <TextBlock Margin="12,0"
+                                           Opacity=".7">
+                                    <Run Text="Hoy: " />
+                                    <Run Text="{x:Bind ViewModel.RemainingRequestDay, Mode=OneWay}" />
+                                </TextBlock>
+                                <TextBlock Margin="12,0"
+                                           Opacity=".7">
+                                    <Run Text="IP: " />
+                                    <Run Text="{x:Bind ViewModel.Ip, Mode=OneWay}" />
+                                </TextBlock>
+                            </StackPanel>
+                        </controls:SettingsCard>
                     </controls:SettingsExpander.Items>
                 </controls:SettingsExpander>
             </Grid>

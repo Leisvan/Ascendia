@@ -8,20 +8,34 @@ using Microsoft.UI.Dispatching;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace AscendiaApp.ViewModels;
 
-public partial class BotViewModel(DiscordBotService botService, CommunityService communityService) : ObservableObject
+public partial class BotViewModel : ObservableObject
 {
-    private readonly DiscordBotService _botService = botService;
-    private readonly CommunityService _communityService = communityService;
+    private readonly DiscordBotService _botService;
+    private readonly CommunityService _communityService;
     private readonly DispatcherQueue _dispatcher = DispatcherQueue.GetForCurrentThread();
+    private CancellationTokenSource? _regionsCts;
+
+    public BotViewModel(DiscordBotService botService, CommunityService communityService)
+    {
+        _botService = botService;
+        _communityService = communityService;
+        _communityService.RequestLimitsChanged += RequestLimitsChanged;
+    }
+
+    [ObservableProperty]
+    public partial bool? ForceRegionsUpdate { get; set; } = false;
 
     [ObservableProperty]
     public partial bool? ForceUpdate { get; set; } = false;
 
     public ObservableCollection<GuildSettingsModel> Guilds { get; } = [];
+
+    public string? Ip => _communityService.Ip;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsDisconnected))]
@@ -38,6 +52,10 @@ public partial class BotViewModel(DiscordBotService botService, CommunityService
     [ObservableProperty]
     public partial bool? NotifyGuild { get; set; } = true;
 
+    public int RemainingRequestDay => _communityService.RemainingRequestDay;
+
+    public int RemainingRequestMinute => _communityService.RemainingRequestMinute;
+
     [ObservableProperty]
     public partial GuildSettingsModel? SelectedGuild { get; set; }
 
@@ -46,7 +64,11 @@ public partial class BotViewModel(DiscordBotService botService, CommunityService
 
     [RelayCommand]
     public void CancelUpdateRank()
-        => _botService.CancelOperation();
+    {
+        _botService.CancelOperation();
+        _regionsCts?.Cancel();
+        _regionsCts = null;
+    }
 
     [RelayCommand]
     private async Task ConnectBot()
@@ -55,6 +77,7 @@ public partial class BotViewModel(DiscordBotService botService, CommunityService
         {
             IsConnected = true;
             await LoadAsync();
+            await _communityService.RefreshRequestLimitsAsync();
         }
     }
 
@@ -124,6 +147,13 @@ public partial class BotViewModel(DiscordBotService botService, CommunityService
         return Task.CompletedTask;
     }
 
+    private void RequestLimitsChanged(object? sender, EventArgs e)
+    {
+        OnPropertyChanged(nameof(RemainingRequestDay));
+        OnPropertyChanged(nameof(RemainingRequestMinute));
+        OnPropertyChanged(nameof(Ip));
+    }
+
     private async Task UIDispatchAsync(Action action)
     {
         _dispatcher.TryEnqueue(() =>
@@ -135,4 +165,21 @@ public partial class BotViewModel(DiscordBotService botService, CommunityService
     [RelayCommand]
     private Task UpdateAllMembersAsync()
         => ExecuteRankingActionAsync(true, false);
+
+    [RelayCommand]
+    private async Task UpdateMatchRegionsAsync()
+    {
+        if (SelectedGuild == null)
+        {
+            return;
+        }
+        if (_regionsCts != null)
+        {
+            return;
+        }
+        _regionsCts = new CancellationTokenSource();
+        await UIDispatchAsync(() => IsRankingBusy = true);
+        await _communityService.UpdateAllRegionsAsync(ForceRegionsUpdate ?? false, _regionsCts.Token);
+        await UIDispatchAsync(() => IsRankingBusy = false);
+    }
 }

@@ -1,16 +1,16 @@
 ﻿using Ascendia.Core.Models;
 using LCTWorks.Core.Helpers;
+using System;
+using static System.Net.WebRequestMethods;
 
 namespace Ascendia.Core.Services;
 
 public class LadderService
 {
     private const string OpenDotaBaseUrl = "https://api.opendota.com/api";
-
+    private const string OpenDotaDistributionsUrl = OpenDotaBaseUrl + "/distributions";
     private const string OpenDotaPlayerUrl = OpenDotaBaseUrl + "/players/{0}";
-
     private const string OpenDotaRefreshPlayerUrl = OpenDotaBaseUrl + "/players/{0}/refresh";
-
     private const string OpenDotaWinLoseUrl = OpenDotaBaseUrl + "/players/{0}/wl";
 
     public static string GetRegionGroup(int regionId)
@@ -67,6 +67,9 @@ public class LadderService
         }
     }
 
+    public async Task<OpenDotaResponse<DistributionsOpenDotaModel?>> GetDistributionsAsync()
+        => await GetAsync<DistributionsOpenDotaModel?>(OpenDotaDistributionsUrl);
+
     public async Task<OpenDotaResponse<PlayerOpenDotaModel?>> GetPlayerAsync(string? accountId)
     {
         if (string.IsNullOrWhiteSpace(accountId))
@@ -109,6 +112,9 @@ public class LadderService
         var limitReached = response.StatusCode == System.Net.HttpStatusCode.TooManyRequests;
         var valid = response.StatusCode == System.Net.HttpStatusCode.OK;
         T? value = default;
+        int remainingLastMinutes = 0;
+        int remainingToday = 0;
+        string? ip = null;
         if (valid)
         {
             if (response.Content == null)
@@ -121,6 +127,19 @@ public class LadderService
                 try
                 {
                     value = Json.ToObject<T>(content);
+
+                    if (response.Headers.Contains("X-Rate-Limit-Remaining-Minute"))
+                    {
+                        remainingLastMinutes = int.Parse(response.Headers.GetValues("X-Rate-Limit-Remaining-Minute").First());
+                    }
+                    if (response.Headers.Contains("X-Rate-Limit-Remaining-Day"))
+                    {
+                        remainingToday = int.Parse(response.Headers.GetValues("X-Rate-Limit-Remaining-Day").First());
+                    }
+                    if (response.Headers.Contains("X-IP-Address"))
+                    {
+                        ip = response.Headers.GetValues("X-IP-Address").First();
+                    }
                 }
                 catch (Exception)
                 {
@@ -128,7 +147,12 @@ public class LadderService
                 }
             }
         }
-        return new OpenDotaResponse<T>(value, valid, limitReached);
+        return new OpenDotaResponse<T>(value, valid, limitReached)
+        {
+            RemainingLastMinutes = remainingLastMinutes,
+            RemainingToday = remainingToday,
+            Ip = ip,
+        };
     }
 
     private static async Task<OpenDotaResponse<object>> PostAsync(string url)

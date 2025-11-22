@@ -166,7 +166,7 @@ internal class GuildActionsService(
             message = await context.EditResponseAsync(builder);
         }
 
-        var result = await _communityDataService.UpdatePlayersAsync(
+        var result = await _communityDataService.UpdateAllLaddersAsync(
             includeWL,
             async (s, e) =>
             {
