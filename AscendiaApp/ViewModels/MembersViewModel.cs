@@ -71,6 +71,9 @@ public partial class MembersViewModel : ObservableObject
         IsLoading = true;
         await _communityService.InitializeFromCacheAsync();
         RefreshInternal(false);
+
+        _communityService.Refreshed += CommunityServiceRefreshed;
+
         IsLoading = false;
     }
 
@@ -84,6 +87,9 @@ public partial class MembersViewModel : ObservableObject
             await _dialogService.ShowDialogAsync(dialog, true, App.MainWindow?.Content?.XamlRoot);
         }
     }
+
+    private void CommunityServiceRefreshed(object? sender, EventArgs e)
+        => RefreshInternal(false);
 
     [RelayCommand]
     private void CopyId(MemberObservable member)

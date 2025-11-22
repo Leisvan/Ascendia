@@ -1,11 +1,12 @@
-﻿using Ascendia.Core.Services;
+﻿using Ascendia.Core;
+using Ascendia.Core.Services;
 using AscendiaApp.Models;
 using AscendiaApp.Observable;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LCTWorks.WinUI.Extensions;
 using System;
-
+using System.Reflection.Metadata;
 using System.Threading.Tasks;
 
 namespace AscendiaApp.ViewModels.Dialogs;
@@ -95,7 +96,7 @@ public partial class EditMemberViewModel(CommunityService communityService) : Ob
     public partial string? ProgressNotificationMessage { get; set; }
 
     [ObservableProperty]
-    public partial string? Region { get; set; } = "Americas";
+    public partial string? Region { get; set; } = Constants.DefaultRegion;
 
     [ObservableProperty]
     public partial string? SocialFacebook { get; set; }

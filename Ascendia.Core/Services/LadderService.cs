@@ -1,7 +1,5 @@
 ﻿using Ascendia.Core.Models;
 using LCTWorks.Core.Helpers;
-using System;
-using static System.Net.WebRequestMethods;
 
 namespace Ascendia.Core.Services;
 
@@ -25,14 +23,14 @@ public class LadderService
             case 8:  // Stockholm
             case 37: // Austria
             case 38: // UK
-            case 40: // Italy
+            case 40: // Italyd
             case 41: // Spain
             case 42: // Poland
             case 43: // Greece
             case 44: // Romania
             case 45: // Turkey
             case 47: // Russia
-                return "Europe";
+                return Constants.EURegion;
 
             // 🌎 America
             case 0:  // US West
@@ -41,7 +39,7 @@ public class LadderService
             case 13: // Chile
             case 14: // Peru
             case 25: // Argentina
-                return "Americas";
+                return Constants.NARegion;
 
             // 🌏 Asia
             case 5:  // Singapore
@@ -54,14 +52,14 @@ public class LadderService
             case 46: // UAE
             case 48: // Hong Kong
             case 49: // South Korea
-                return "SE Asia";
+                return Constants.ASRegion;
 
             // 🇨🇳 China (Perfect World clusters)
             case 11: // Perfect World Telecom
             case 12: // Perfect World Unicom
             case 18: // Perfect World Telecom 2
             case 19: // Perfect World Unicom 2
-                return "China";
+                return Constants.CNRegion;
 
             // ❓ Unknown / not mapped
             default:

@@ -155,7 +155,7 @@
     <value>Obteniendo perfiles. {0} de {1}. `{2}`</value>
   </data>
   <data name="UpToDateMembersSkippedFormat" xml:space="preserve">
-    <value>{0} pefiles omitidos dado que ya están actualizados.</value>
+    <value>{0} perfiles omitidos dado que ya están actualizados.</value>
   </data>
   <data name="DefaultPlayerName" xml:space="preserve">
     <value>Jugador sin nombre</value>
@@ -171,5 +171,11 @@
   </data>
   <data name="RetrievingMatchesDetailsFormat" xml:space="preserve">
     <value>Accediendo a {0} partidas.</value>
+  </data>
+  <data name="MatchesRegionResultFormat" xml:space="preserve">
+    <value>Región determinada para {0}: {1}</value>
+  </data>
+  <data name="MatchesRegionFinalResultsCountFormat" xml:space="preserve">
+    <value>Región calculada para {0} perfiles.</value>
   </data>
 </root>

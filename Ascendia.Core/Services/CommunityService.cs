@@ -26,6 +26,8 @@ public class CommunityService(
     private readonly List<MemberRecord> _members = [];
     private readonly ITelemetryService _telemetryService = telemetryService;
 
+    public event EventHandler? Refreshed;
+
     public event EventHandler? RequestLimitsChanged;
 
     public string? Ip { get; private set; }
@@ -129,9 +131,10 @@ public class CommunityService(
         {
             return _members;
         }
-        IsBusy = true;
+
         if (_members.Count == 0 || forceRefresh)
         {
+            IsBusy = true;
             var records = await _airtableService.GetMemberRecordsAsync();
             if (records != null)
             {
@@ -139,9 +142,10 @@ public class CommunityService(
                 _members.AddRange(records.OrderBy(x => x.DisplayName));
                 await SaveToCacheAsync();
             }
+            IsBusy = false;
+            Refreshed?.Invoke(this, EventArgs.Empty);
         }
 
-        IsBusy = false;
         return _members;
     }
 
@@ -358,6 +362,7 @@ public class CommunityService(
         {
             if (cancellationToken?.IsCancellationRequested == true)
             {
+                CoreTelemetry.WriteLine(Messages.ProgressCancelling);
                 break;
             }
 
@@ -419,6 +424,7 @@ public class CommunityService(
                 {
                     var record = CreateMemberRecord(member.Id, member.DisplayName, member.AccountId, member.Team, member.Phone, member.Email, member.Country, member.IsCaptain, member.Position, region, member.Notes, previousRecord: member);
                     updatedRecords.Add(record);
+                    CoreTelemetry.WriteLine(string.Format(Messages.MatchesRegionResultFormat, member.DisplayName, region));
                 }
                 break;
             }
@@ -427,6 +433,7 @@ public class CommunityService(
 
         await _airtableService.UpdateMultipleMembersAsync([.. updatedRecords]);
         IsBusy = false;
+        CoreTelemetry.WriteLine(string.Format(Messages.MatchesRegionFinalResultsCountFormat, updatedRecords.Count));
         return updatedRecords.Count;
     }
 
@@ -586,7 +593,7 @@ public class CommunityService(
             Win = win,
             Lose = lose,
             MMR = mmr,
-            Region = region ?? previousRecord?.Region ?? "Americas",
+            Region = region ?? previousRecord?.Region ?? Constants.DefaultRegion,
             LastUpdated = lastUpdated,
             LastChange = DateTimeOffset.UtcNow.DateTime,
             IsEnabled = isEnabled,

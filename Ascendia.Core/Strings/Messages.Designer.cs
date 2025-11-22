@@ -97,6 +97,24 @@ namespace Ascendia.Core.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Región calculada para {0} perfiles..
+        /// </summary>
+        internal static string MatchesRegionFinalResultsCountFormat {
+            get {
+                return ResourceManager.GetString("MatchesRegionFinalResultsCountFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Región determinada para {0}: {1}.
+        /// </summary>
+        internal static string MatchesRegionResultFormat {
+            get {
+                return ResourceManager.GetString("MatchesRegionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Guardando nuevo perfil.
         /// </summary>
         internal static string ProgressAddToDb {
@@ -215,7 +233,7 @@ namespace Ascendia.Core.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} pefiles omitidos dado que ya están actualizados..
+        ///   Looks up a localized string similar to {0} perfiles omitidos dado que ya están actualizados..
         /// </summary>
         internal static string UpToDateMembersSkippedFormat {
             get {
