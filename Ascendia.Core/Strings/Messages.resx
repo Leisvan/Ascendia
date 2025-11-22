@@ -166,4 +166,10 @@
   <data name="ProgressWaitingFinished" xml:space="preserve">
     <value>Ha terminado la espera.</value>
   </data>
+  <data name="RetrievingPlayerMatchesFormat" xml:space="preserve">
+    <value>{0}/{1} - Obteniendo historial de partidas de {2}.</value>
+  </data>
+  <data name="RetrievingMatchesDetailsFormat" xml:space="preserve">
+    <value>Accediendo a {0} partidas.</value>
+  </data>
 </root>

@@ -188,6 +188,24 @@ namespace Ascendia.Core.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Accediendo a {0} partidas..
+        /// </summary>
+        internal static string RetrievingMatchesDetailsFormat {
+            get {
+                return ResourceManager.GetString("RetrievingMatchesDetailsFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}/{1} - Obteniendo historial de partidas de {2}..
+        /// </summary>
+        internal static string RetrievingPlayerMatchesFormat {
+            get {
+                return ResourceManager.GetString("RetrievingPlayerMatchesFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Obteniendo perfiles. {0} de {1}. `{2}`.
         /// </summary>
         internal static string UpdateMemberProgressFormat {

@@ -49,6 +49,8 @@ public partial class BotViewModel : ObservableObject
 
     public bool IsRankingIdle => !IsRankingBusy;
 
+    public int MatchesToCheckForRegionUpdate { get; set; } = 50;
+
     [ObservableProperty]
     public partial bool? NotifyGuild { get; set; } = true;
 
@@ -179,7 +181,7 @@ public partial class BotViewModel : ObservableObject
         }
         _regionsCts = new CancellationTokenSource();
         await UIDispatchAsync(() => IsRankingBusy = true);
-        await _communityService.UpdateAllRegionsAsync(ForceRegionsUpdate ?? false, _regionsCts.Token);
+        await _communityService.UpdateAllRegionsAsync(ForceRegionsUpdate ?? false, MatchesToCheckForRegionUpdate, _regionsCts.Token);
         await UIDispatchAsync(() => IsRankingBusy = false);
     }
 }

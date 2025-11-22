@@ -155,7 +155,10 @@
                                         <Flyout Placement="Bottom">
                                             <Grid MinWidth="240">
                                                 <StackPanel Spacing="4">
-
+                                                    <NumberBox Header="Cantidad de partidas a revisar"
+                                                               Maximum="50"
+                                                               Minimum="10"
+                                                               Value="{x:Bind ViewModel.MatchesToCheckForRegionUpdate, Mode=TwoWay}" />
                                                     <CheckBox Content="Forzar para todos"
                                                               IsChecked="{x:Bind ViewModel.ForceRegionsUpdate, Mode=TwoWay}" />
                                                     <Rectangle Margin="0,8,0,4"

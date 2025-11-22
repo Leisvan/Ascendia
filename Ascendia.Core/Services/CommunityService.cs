@@ -339,12 +339,12 @@ public class CommunityService(
         return updatedRecords.Count;
     }
 
-    public async Task<int> UpdateAllRegionsAsync(bool forceUpdate = false, CancellationToken? cancellationToken = null)
+    public async Task<int> UpdateAllRegionsAsync(bool forceUpdate = false, int matchCount = 10, CancellationToken? cancellationToken = null)
     {
-        IsBusy = true;
-
         CoreTelemetry.WriteLine(Messages.RefreshingMembers);
         var members = await GetAllMembersAsync(true);
+
+        IsBusy = true;
 
         var membersToUpdate = members
           .Where(m => m.IsEnabled)
@@ -360,6 +360,69 @@ public class CommunityService(
             {
                 break;
             }
+
+            if (member.DisplayName == null || member.AccountId == null)
+            {
+                continue;
+            }
+
+            while (true)
+            {
+                CoreTelemetry.WriteLine(string.Format(Messages.RetrievingPlayerMatchesFormat, index, count, member.DisplayName));
+                var matchesResponse = await _ladderService.GetPlayerMatchesAsync(member.AccountId, matchCount);
+                UpdateRequestLimits(matchesResponse);
+                if (matchesResponse == null)
+                {
+                    break;
+                }
+                if (matchesResponse.LimitReached)
+                {
+                    var waitMessage = string.Format(Messages.ProgressRequestLimitReachedFormat, index, count);
+                    CoreTelemetry.WriteLine(waitMessage);
+                    if (cancellationToken == null)
+                    {
+                        await Task.Delay(RequestLimitWaitTimeInMilliseconds);
+                    }
+                    else
+                    {
+                        try
+                        {
+                            await Task.Delay(RequestLimitWaitTimeInMilliseconds, cancellationToken.Value);
+                        }
+                        catch (Exception e)
+                        {
+                            if (cancellationToken?.IsCancellationRequested == true)
+                            {
+                                CoreTelemetry.WriteLine(Messages.ProgressCancelling);
+                                break;
+                            }
+                            CoreTelemetry.WriteErrorLine(string.Format(Messages.ExceptionMessageFormat, e.Message));
+                        }
+                    }
+                    continue;
+                }
+
+                var matches = matchesResponse.Value;
+                if (matches == null)
+                {
+                    break;
+                }
+
+                CoreTelemetry.WriteLine(string.Format(Messages.RetrievingMatchesDetailsFormat, matches.Length));
+
+                var region = await GetRegionFromMatchesAsync(matches);
+                if (string.IsNullOrWhiteSpace(region))
+                {
+                    break;
+                }
+                if (member.Region != region)
+                {
+                    var record = CreateMemberRecord(member.Id, member.DisplayName, member.AccountId, member.Team, member.Phone, member.Email, member.Country, member.IsCaptain, member.Position, region, member.Notes, previousRecord: member);
+                    updatedRecords.Add(record);
+                }
+                break;
+            }
+            index++;
         }
 
         await _airtableService.UpdateMultipleMembersAsync([.. updatedRecords]);
@@ -540,6 +603,74 @@ public class CommunityService(
 
     private Task<bool> AddOrUpdateMemberAsync(MemberRecord? record)
         => _airtableService.CreateOrEditMemberAsync(record);
+
+    private async Task<string> GetRegionFromMatchesAsync(PlayerMatchOpenDotaModel[]? matches, CancellationToken? cancellationToken = null)
+    {
+        if (matches == null || matches.Length == 0)
+        {
+            return string.Empty;
+        }
+        int index = 0;
+        int count = matches.Length;
+        var regionCounts = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        foreach (var match in matches)
+        {
+            while (true)
+            {
+                var matchDetailsResults = await _ladderService.GetMatchDetailsAsync(match.MatchId);
+                UpdateRequestLimits(matchDetailsResults);
+                if (matchDetailsResults == null || matchDetailsResults.Value == null)
+                {
+                    break;
+                }
+                if (matchDetailsResults.LimitReached)
+                {
+                    var waitMessage = string.Format(Messages.ProgressRequestLimitReachedFormat, index, count);
+                    CoreTelemetry.WriteLine(waitMessage);
+                    if (cancellationToken == null)
+                    {
+                        await Task.Delay(RequestLimitWaitTimeInMilliseconds);
+                    }
+                    else
+                    {
+                        try
+                        {
+                            await Task.Delay(RequestLimitWaitTimeInMilliseconds, cancellationToken.Value);
+                        }
+                        catch (Exception e)
+                        {
+                            if (cancellationToken?.IsCancellationRequested == true)
+                            {
+                                CoreTelemetry.WriteLine(Messages.ProgressCancelling);
+                                break;
+                            }
+                            CoreTelemetry.WriteErrorLine(string.Format(Messages.ExceptionMessageFormat, e.Message));
+                        }
+                    }
+                    continue;
+                }
+
+                var region = LadderService.GetRegionGroup(matchDetailsResults.Value.Region);
+                if (regionCounts.TryGetValue(region, out int value))
+                {
+                    regionCounts[region] = ++value;
+                }
+                else
+                {
+                    regionCounts[region] = 1;
+                }
+                break;
+            }
+            index++;
+        }
+        if (regionCounts.Count > 0)
+        {
+            var topRegion = regionCounts.OrderByDescending(kv => kv.Value).First();
+            return topRegion.Key;
+        }
+
+        return string.Empty;
+    }
 
     private async Task SaveToCacheAsync(bool saveMembers = true, bool saveSettings = false)
     {

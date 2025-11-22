@@ -9,6 +9,8 @@ public class LadderService
 {
     private const string OpenDotaBaseUrl = "https://api.opendota.com/api";
     private const string OpenDotaDistributionsUrl = OpenDotaBaseUrl + "/distributions";
+    private const string OpenDotaMatchUrl = OpenDotaBaseUrl + "/matches/{0}";
+    private const string OpenDotaPlayerMatchesUrl = OpenDotaBaseUrl + "/players/{0}/matches?limit={1}";
     private const string OpenDotaPlayerUrl = OpenDotaBaseUrl + "/players/{0}";
     private const string OpenDotaRefreshPlayerUrl = OpenDotaBaseUrl + "/players/{0}/refresh";
     private const string OpenDotaWinLoseUrl = OpenDotaBaseUrl + "/players/{0}/wl";
@@ -39,7 +41,7 @@ public class LadderService
             case 13: // Chile
             case 14: // Peru
             case 25: // Argentina
-                return "America";
+                return "Americas";
 
             // 🌏 Asia
             case 5:  // Singapore
@@ -52,7 +54,7 @@ public class LadderService
             case 46: // UAE
             case 48: // Hong Kong
             case 49: // South Korea
-                return "Asia";
+                return "SE Asia";
 
             // 🇨🇳 China (Perfect World clusters)
             case 11: // Perfect World Telecom
@@ -63,12 +65,22 @@ public class LadderService
 
             // ❓ Unknown / not mapped
             default:
-                return "Unknown";
+                return string.Empty;
         }
     }
 
     public async Task<OpenDotaResponse<DistributionsOpenDotaModel?>> GetDistributionsAsync()
         => await GetAsync<DistributionsOpenDotaModel?>(OpenDotaDistributionsUrl);
+
+    public async Task<OpenDotaResponse<PlayerMatchExtendedOpenDotaModel?>> GetMatchDetailsAsync(long matchId)
+    {
+        if (matchId <= 0)
+        {
+            return OpenDotaResponse<PlayerMatchExtendedOpenDotaModel?>.Invalid;
+        }
+        var url = string.Format(OpenDotaMatchUrl, matchId);
+        return await GetAsync<PlayerMatchExtendedOpenDotaModel?>(url);
+    }
 
     public async Task<OpenDotaResponse<PlayerOpenDotaModel?>> GetPlayerAsync(string? accountId)
     {
@@ -78,6 +90,16 @@ public class LadderService
         }
         var url = string.Format(OpenDotaPlayerUrl, accountId);
         return await GetAsync<PlayerOpenDotaModel?>(url);
+    }
+
+    public async Task<OpenDotaResponse<PlayerMatchOpenDotaModel[]?>> GetPlayerMatchesAsync(string? accountId, int limit = 20)
+    {
+        if (string.IsNullOrWhiteSpace(accountId))
+        {
+            return OpenDotaResponse<PlayerMatchOpenDotaModel[]?>.Invalid;
+        }
+        var url = string.Format(OpenDotaPlayerMatchesUrl, accountId, limit);
+        return await GetAsync<PlayerMatchOpenDotaModel[]?>(url);
     }
 
     public async Task<OpenDotaResponse<WinLoseOpenDotaModel?>> GetPlayerWinLoseAsync(string? accountId)
