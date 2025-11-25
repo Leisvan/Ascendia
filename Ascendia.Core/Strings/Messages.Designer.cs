@@ -97,6 +97,60 @@ namespace Ascendia.Core.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Entradas creadas: {0}.
+        /// </summary>
+        internal static string HttpAirtableRecordsCreatedFormat {
+            get {
+                return ResourceManager.GetString("HttpAirtableRecordsCreatedFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Entradas obtenidas: {0}.
+        /// </summary>
+        internal static string HttpAirtableRecordsListFormat {
+            get {
+                return ResourceManager.GetString("HttpAirtableRecordsListFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Entradas actualizadas: {0}.
+        /// </summary>
+        internal static string HttpAirtableRecordsUpdatedFormat {
+            get {
+                return ResourceManager.GetString("HttpAirtableRecordsUpdatedFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error en solicitud a Airtable: {0}.
+        /// </summary>
+        internal static string HttpAirtableRequestErrorFormat {
+            get {
+                return ResourceManager.GetString("HttpAirtableRequestErrorFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Solicitud a Airtable: {0}.
+        /// </summary>
+        internal static string HttpAirtableRequestSuccessFormat {
+            get {
+                return ResourceManager.GetString("HttpAirtableRequestSuccessFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Solicitud a [{0}] {1}, con resultado {2}.
+        /// </summary>
+        internal static string HttpResponseLogFormat {
+            get {
+                return ResourceManager.GetString("HttpResponseLogFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Región calculada para {0} perfiles..
         /// </summary>
         internal static string MatchesRegionFinalResultsCountFormat {

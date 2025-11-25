@@ -1,4 +1,4 @@
-﻿using Ascendia.Core.Interactivity;
+﻿using Ascendia.Core;
 using CommunityToolkit.WinUI.Behaviors;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
@@ -13,8 +13,12 @@ namespace AscendiaApp.Behaviors
 {
     public class ConsoleMirrorBehavior : BehaviorBase<RichTextBlock>
     {
+        public static readonly DependencyProperty AutoScrollProperty =
+            DependencyProperty.Register(nameof(AutoScroll), typeof(bool), typeof(ConsoleMirrorBehavior),
+                new PropertyMetadata(true));
+
         public static readonly DependencyProperty ScrollViewerProperty =
-            DependencyProperty.Register(nameof(ScrollViewer), typeof(ScrollViewer), typeof(ConsoleMirrorBehavior),
+                    DependencyProperty.Register(nameof(ScrollViewer), typeof(ScrollViewer), typeof(ConsoleMirrorBehavior),
                 new PropertyMetadata(default));
 
         private readonly TextWriterNotifier _notifier;
@@ -28,6 +32,12 @@ namespace AscendiaApp.Behaviors
             _colorBrush = new SolidColorBrush(Colors.White);
             Console.SetOut(_notifier);
             CoreTelemetry.ClearConsoleRequested += OnConsoleClearRequested;
+        }
+
+        public bool AutoScroll
+        {
+            get => (bool)GetValue(AutoScrollProperty);
+            set => SetValue(AutoScrollProperty, value);
         }
 
         public ScrollViewer ScrollViewer
@@ -86,8 +96,11 @@ namespace AscendiaApp.Behaviors
                     var r = new Run { Text = e.Text, Foreground = _colorBrush };
                     p.Inlines.Add(r);
                     AssociatedObject.Blocks.Add(p);
-                    await Task.Delay(100);
-                    ScrollViewer?.ChangeView(null, double.MaxValue, null, true);
+                    if (AutoScroll)
+                    {
+                        await Task.Delay(100);
+                        ScrollViewer?.ChangeView(null, double.MaxValue, null, true);
+                    }
                 }
             }
             catch (Exception)

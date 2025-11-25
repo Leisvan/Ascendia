@@ -39,6 +39,14 @@
                 <StackPanel HorizontalAlignment="Right"
                             Orientation="Horizontal"
                             Spacing="4">
+                    <ToggleButton IsChecked="{x:Bind ViewModel.AutoScroll, Mode=TwoWay}"
+                                  ToolTipService.ToolTip="Autoscroll">
+                        <FontIcon Glyph="&#xECE7;" />
+                    </ToggleButton>
+                    <Rectangle Width="1"
+                               Margin="8,4"
+                               VerticalAlignment="Stretch"
+                               Fill="{StaticResource AppColor2}" />
                     <Button Command="{x:Bind ViewModel.ConnectBotCommand, Mode=OneWay}"
                             Style="{ThemeResource AccentButtonStyle}"
                             Visibility="{x:Bind ViewModel.IsDisconnected, Mode=OneWay}">
@@ -58,7 +66,8 @@
                                    VerticalAlignment="Stretch"
                                    FontFamily="Cascadia Mono">
                         <interactivity:Interaction.Behaviors>
-                            <appBehaviors:ConsoleMirrorBehavior ScrollViewer="{x:Bind TextScrollViewer}" />
+                            <appBehaviors:ConsoleMirrorBehavior AutoScroll="{x:Bind ViewModel.AutoScroll, Mode=OneWay}"
+                                                                ScrollViewer="{x:Bind TextScrollViewer}" />
                         </interactivity:Interaction.Behaviors>
                     </RichTextBlock>
                 </ScrollViewer>

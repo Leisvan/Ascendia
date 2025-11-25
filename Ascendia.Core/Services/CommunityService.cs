@@ -1,5 +1,4 @@
-﻿using Ascendia.Core.Interactivity;
-using Ascendia.Core.Models;
+﻿using Ascendia.Core.Models;
 using Ascendia.Core.Records;
 using Ascendia.Core.Strings;
 using LCTWorks.Core.Helpers;

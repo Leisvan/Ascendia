@@ -28,6 +28,9 @@ public partial class BotViewModel : ObservableObject
     }
 
     [ObservableProperty]
+    public partial bool AutoScroll { get; set; } = true;
+
+    [ObservableProperty]
     public partial bool? ForceRegionsUpdate { get; set; } = false;
 
     [ObservableProperty]

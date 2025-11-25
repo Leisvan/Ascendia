@@ -1,6 +1,6 @@
 ﻿using LCTWorks.Telemetry;
 
-namespace Ascendia.Core.Interactivity;
+namespace Ascendia.Core;
 
 public static class CoreTelemetry
 {

@@ -1,6 +1,9 @@
 ﻿using AirtableApiClient;
 using Ascendia.Core.Extensions;
 using Ascendia.Core.Records;
+using Ascendia.Core.Strings;
+using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace Ascendia.Core.Services;
 
@@ -78,6 +81,46 @@ public class AirtableHttpService(string? airtableToken, string? baseId)
         return await UpdateRecordsAsync(MembersTableName, airtableRecords) > 0;
     }
 
+    private static void LogResponse(AirtableApiResponse response, [CallerMemberName] string caller = "")
+    {
+        var logMessage = new StringBuilder();
+        if (!response.Success)
+        {
+            logMessage.AppendLine(string.Format(Messages.HttpAirtableRequestErrorFormat, caller));
+            if (response.AirtableApiError != null)
+            {
+                var error = response.AirtableApiError;
+                logMessage.AppendLine($"[{error.ErrorCode}] - {error.ErrorName} - {error.ErrorMessage}");
+            }
+        }
+        else
+        {
+            logMessage.AppendLine(string.Format(Messages.HttpAirtableRequestSuccessFormat, caller));
+            if (response is AirtableCreateUpdateReplaceMultipleRecordsResponse multiple)
+            {
+                logMessage.AppendLine(string.Format(Messages.HttpAirtableRecordsUpdatedFormat, multiple.UpdatedRecords?.Length ?? 0));
+                logMessage.AppendLine(string.Format(Messages.HttpAirtableRecordsCreatedFormat, multiple.CreatedRecords?.Length ?? 0));
+            }
+            else if (response is AirtableListRecordsResponse list)
+            {
+                logMessage.AppendLine(string.Format(Messages.HttpAirtableRecordsListFormat, list.Records?.Count() ?? 0));
+            }
+        }
+        var log = logMessage.ToString();
+
+        if (!string.IsNullOrEmpty(log))
+        {
+            if (response.Success)
+            {
+                CoreTelemetry.WriteLine(log);
+            }
+            else
+            {
+                CoreTelemetry.WriteErrorLine(log);
+            }
+        }
+    }
+
     private async Task<int> CreateRecordsAsync(string tableName, AirtableRecord[] airTableRecords)
     {
         if (!IsConfigured || airTableRecords == null)
@@ -98,6 +141,7 @@ public class AirtableHttpService(string? airtableToken, string? baseId)
             {
                 updatedCount += results.Records.Length;
             }
+            LogResponse(results);
         }
         return updatedCount;
     }
@@ -134,6 +178,9 @@ public class AirtableHttpService(string? airtableToken, string? baseId)
                 errorMessage = "Unknown error";
                 break;
             }
+
+            LogResponse(response);
+
             offset = response.Offset;
         } while (offset != null);
         return records;
@@ -177,6 +224,7 @@ public class AirtableHttpService(string? airtableToken, string? baseId)
         }
         using var airtableBase = new AirtableBase(_airtableToken, _baseId);
         var response = await airtableBase.DeleteRecord(tableName, id);
+        LogResponse(response);
         return response.Success;
     }
 
@@ -198,10 +246,13 @@ public class AirtableHttpService(string? airtableToken, string? baseId)
             try
             {
                 var results = await airtableBase.UpdateMultipleRecords(tableName, item);
+
                 if (results.Success)
                 {
                     updatedCount += results.Records.Length;
                 }
+
+                LogResponse(results);
             }
             catch (Exception)
             {

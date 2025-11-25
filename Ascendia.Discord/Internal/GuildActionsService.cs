@@ -1,4 +1,4 @@
-﻿using Ascendia.Core.Interactivity;
+﻿using Ascendia.Core;
 using Ascendia.Core.Records;
 using Ascendia.Core.Services;
 using Ascendia.Discord.Strings;

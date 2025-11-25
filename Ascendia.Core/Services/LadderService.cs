@@ -1,5 +1,8 @@
 ﻿using Ascendia.Core.Models;
+using Ascendia.Core.Strings;
 using LCTWorks.Core.Helpers;
+using System.Net;
+using System.Text;
 
 namespace Ascendia.Core.Services;
 
@@ -167,12 +170,34 @@ public class LadderService
                 }
             }
         }
+
+        LogResponse(response);
+
         return new OpenDotaResponse<T>(value, valid, limitReached)
         {
             RemainingLastMinutes = remainingLastMinutes,
             RemainingToday = remainingToday,
             Ip = ip,
         };
+    }
+
+    private static void LogResponse(HttpResponseMessage? response)
+    {
+        if (response == null)
+        {
+            return;
+        }
+        var method = response.RequestMessage?.Method?.Method ?? "Unknown method";
+        var url = response.RequestMessage?.RequestUri?.ToString() ?? "Unknown URL";
+        var statusCode = $"{(int)response.StatusCode} ({response.StatusCode})";
+        if (response.IsSuccessStatusCode)
+        {
+            CoreTelemetry.WriteLine(string.Format(Messages.HttpResponseLogFormat, method, url, statusCode));
+        }
+        else
+        {
+            CoreTelemetry.WriteErrorLine(string.Format(Messages.HttpResponseLogFormat, method, url, statusCode));
+        }
     }
 
     private static async Task<OpenDotaResponse<object>> PostAsync(string url)

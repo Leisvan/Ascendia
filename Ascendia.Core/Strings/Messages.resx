@@ -178,4 +178,22 @@
   <data name="MatchesRegionFinalResultsCountFormat" xml:space="preserve">
     <value>Región calculada para {0} perfiles.</value>
   </data>
+  <data name="HttpAirtableRequestErrorFormat" xml:space="preserve">
+    <value>Error en solicitud a Airtable: {0}</value>
+  </data>
+  <data name="HttpAirtableRequestSuccessFormat" xml:space="preserve">
+    <value>Solicitud a Airtable: {0}</value>
+  </data>
+  <data name="HttpAirtableRecordsUpdatedFormat" xml:space="preserve">
+    <value>Entradas actualizadas: {0}</value>
+  </data>
+  <data name="HttpAirtableRecordsCreatedFormat" xml:space="preserve">
+    <value>Entradas creadas: {0}</value>
+  </data>
+  <data name="HttpAirtableRecordsListFormat" xml:space="preserve">
+    <value>Entradas obtenidas: {0}</value>
+  </data>
+  <data name="HttpResponseLogFormat" xml:space="preserve">
+    <value>Solicitud a [{0}] {1}, con resultado {2}</value>
+  </data>
 </root>
