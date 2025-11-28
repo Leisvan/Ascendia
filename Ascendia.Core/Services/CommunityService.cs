@@ -68,7 +68,7 @@ public class CommunityService(
         {
             throw new DuplicateWaitObjectException(accountId, Messages.ErrorPlayerDuplicated);
         }
-        return await UpdateLadderAsync(accountId, accountId, name, team, phone, email, country, isCaptain, position, region, notes, checkLadder, refreshPlayer, checkWinLose, socialFacebook, socialInstagram, socialX, socialTikTok, socialYouTube, socialTwitch, notifications, null, messageDelayInMilliseconds);
+        return await UpdateLadderAsync(string.Empty, accountId, name, team, phone, email, country, isCaptain, position, region, notes, checkLadder, refreshPlayer, checkWinLose, socialFacebook, socialInstagram, socialX, socialTikTok, socialYouTube, socialTwitch, notifications, null, messageDelayInMilliseconds);
     }
 
     public async Task<bool> EditMemberAsync(
@@ -437,7 +437,7 @@ public class CommunityService(
     }
 
     public async Task<bool> UpdateLadderAsync(
-            string id,
+        string id,
         string accountId,
         string? name = null,
         string? team = null,
