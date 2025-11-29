@@ -55,7 +55,7 @@ internal class GuildActionsService(
         var membersList = await _communityDataService.GetAllMembersAsync(true);
         var filteredMembers = membersList
             .Where(x => includeBanned || x.IsEnabled)
-            .Where(x => x.LeaderboardRank > 0 || (x.RankTier != 80 && x.RankTier > 0))
+            .Where(x => x.RankTier > 0)
             .Order(rankComparer);
         var lines = new List<string>();
         foreach (var member in filteredMembers)
