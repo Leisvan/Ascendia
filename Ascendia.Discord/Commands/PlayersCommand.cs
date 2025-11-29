@@ -36,7 +36,7 @@ public class PlayersCommand(DiscordBotService service)
 
         await context.RespondAsync(Messages.StartingOperation);
 
-        var result = await _service.Actions.UpdateMembersLadderAsync(forceUpdate, incudeWL, true, guildId, context.Channel.Id, context);
+        var result = await _service.Actions.UpdateMembersLadderAsync(forceUpdate, incudeWL, true, true, guildId, context.Channel.Id, context);
         if (result != null)
         {
             await context.EditResponseAsync(result);

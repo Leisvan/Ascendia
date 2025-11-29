@@ -200,7 +200,7 @@ public class CommunityService(
         return results;
     }
 
-    public async Task<int> UpdateAllLaddersAsync(bool incudeWL = true, EventHandler<string>? notifications = null, int minutesUpdateThreshold = 0, CancellationToken? cancellationToken = null)
+    public async Task<int> UpdateAllLaddersAsync(bool incudeWL = true, bool nullAs80 = true, EventHandler<string>? notifications = null, int minutesUpdateThreshold = 0, CancellationToken? cancellationToken = null)
     {
         CoreTelemetry.WriteLine(Messages.RefreshingMembers);
         //Refresh so we have the latest data, including last updated timestamps.
@@ -287,7 +287,6 @@ public class CommunityService(
                     //previous attempt failed. Notify the user and wait before retrying
                     var waitMessage = string.Format(Messages.ProgressRequestLimitReachedFormat, index, count);
                     notifications?.Invoke(this, waitMessage);
-                    CoreTelemetry.WriteLine(waitMessage);
 
                     if (cancellationToken == null)
                     {
@@ -330,9 +329,11 @@ public class CommunityService(
                     }
                 }
 
+
+
                 if (!retry)
                 {
-                    var record = CreateMemberRecord(member.Id, member.DisplayName, member.AccountId, member.Team, member.Phone, member.Email, member.Country, member.IsCaptain, member.Position, member.Region, member.Notes, player: playerData, winLose: winLoseData, previousRecord: member);
+                    var record = CreateMemberRecord(member.Id, member.DisplayName, member.AccountId, member.Team, member.Phone, member.Email, member.Country, member.IsCaptain, member.Position, member.Region, member.Notes, player: playerData, winLose: winLoseData, nullAs80: nullAs80, previousRecord: member);
                     updatedRecords.Add(record);
                 }
             }
@@ -511,7 +512,7 @@ public class CommunityService(
         MemberRecord record = CreateMemberRecord(id, name, accountId, team, phone, email, country, isCaptain, position, region, notes, socialFacebook, socialInstagram, socialX, socialTikTok, socialYouTube, socialTwitch,
             player: player,
             winLose: winLose,
-            previousRecord);
+            previousRecord: previousRecord);
 
         var addResult = await AddOrUpdateMemberAsync(record);
         IsBusy = false;
@@ -538,12 +539,14 @@ public class CommunityService(
         string? socialTwitch = null,
         PlayerOpenDotaModel? player = null,
         WinLoseOpenDotaModel? winLose = null,
+        bool nullAs80 = true,
         MemberRecord? previousRecord = null)
     {
-        int previousLeaderboardRank = previousRecord?.PreviousLeaderboardRank ?? 0;
-        int previousRankTier = previousRecord?.PreviousRankTier ?? 0;
-        int leaderboardRank = player?.LeaderboardRank ?? previousRecord?.LeaderboardRank ?? 0;
-        int rankTier = player?.RankTier ?? previousRecord?.RankTier ?? 0;
+        var previousLeaderboardRank = previousRecord?.PreviousLeaderboardRank ?? 0;
+        var previousRankTier = previousRecord?.PreviousRankTier ?? 0;
+        var leaderboardRank = player?.LeaderboardRank ?? previousRecord?.LeaderboardRank ?? 0;
+        int? calculatedRankTier = (player?.RankTier == null || player?.RankTier == 0) ? (nullAs80 ? Constants.ImmortalRank : player?.RankTier) : player?.RankTier;
+        var rankTier = calculatedRankTier ?? previousRecord?.RankTier ?? 0;
         DateTime? lastUpdated = previousRecord?.LastUpdated ?? DateTimeOffset.UtcNow.DateTime;
 
         if (player != null && previousRecord != null)

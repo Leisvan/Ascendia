@@ -126,6 +126,8 @@
                                                               IsChecked="{x:Bind ViewModel.ForceUpdate, Mode=TwoWay}" />
                                                     <CheckBox Content="Actualizar W/L"
                                                               IsChecked="{x:Bind ViewModel.UpdateWL, Mode=TwoWay}" />
+                                                    <CheckBox Content="Null rank = Inmortal"
+                                                              IsChecked="{x:Bind ViewModel.NullAs80, Mode=TwoWay}" />
                                                     <CheckBox Content="Notificar en Discord"
                                                               IsChecked="{x:Bind ViewModel.NotifyGuild, Mode=TwoWay}" />
                                                     <Rectangle Margin="0,8,0,4"
@@ -154,7 +156,8 @@
                         </controls:SettingsCard>
                         <controls:SettingsCard HorizontalContentAlignment="Stretch"
                                                Description="Actualice la region de los jugadores basado en su historial de partidas."
-                                               Header="Regiones">
+                                               Header="Regiones"
+                                               Visibility="Collapsed">
                             <StackPanel Orientation="Horizontal"
                                         Spacing="8">
 

@@ -138,6 +138,7 @@ internal class GuildActionsService(
                     bool forceUpdate = false,
                     bool includeWL = true,
                     bool notify = true,
+                    bool nullAs80 = true,
                     ulong guildId = 0,
                     ulong channelId = 0,
                     CommandContext? context = null)
@@ -168,6 +169,7 @@ internal class GuildActionsService(
 
         var result = await _communityDataService.UpdateAllLaddersAsync(
             includeWL,
+            nullAs80,
             async (s, e) =>
             {
                 if (notify)
@@ -290,7 +292,7 @@ internal class GuildActionsService(
             ? '↑'
             : rankChange < 0
                 ? '↓'
-                : '-';
+                : ' ';
 
         builder.Append($"{rankEmoji} ");
         builder.Append($"`{changeGlyph}{StringLengthCapTool.InvertedFourSpaces.GetString(member.LeaderboardRank ?? 0)}` ");

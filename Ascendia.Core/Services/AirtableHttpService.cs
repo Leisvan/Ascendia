@@ -98,7 +98,7 @@ public class AirtableHttpService(string? airtableToken, string? baseId)
             logMessage.AppendLine(string.Format(Messages.HttpAirtableRequestSuccessFormat, caller));
             if (response is AirtableCreateUpdateReplaceMultipleRecordsResponse multiple)
             {
-                logMessage.AppendLine(string.Format(Messages.HttpAirtableRecordsUpdatedFormat, multiple.UpdatedRecords?.Length ?? 0));
+                logMessage.AppendLine(string.Format(Messages.HttpAirtableRecordsUpdatedFormat, multiple.UpdatedRecords?.Length ?? multiple.Records?.Length ?? 0));
                 logMessage.AppendLine(string.Format(Messages.HttpAirtableRecordsCreatedFormat, multiple.CreatedRecords?.Length ?? 0));
             }
             else if (response is AirtableListRecordsResponse list)

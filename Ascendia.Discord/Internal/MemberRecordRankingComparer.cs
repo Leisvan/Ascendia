@@ -15,17 +15,20 @@ namespace Ascendia.Discord.Internal
             if (x?.RankTier == null) return 1;
             if (y?.RankTier == null) return -1;
 
-            int rankPointsComparison = y.RankTier!.Value.CompareTo(x.RankTier);
+            int rankPointsComparison = y.RankTier.Value.CompareTo(x.RankTier);
             if (rankPointsComparison != 0)
             {
                 return rankPointsComparison;
             }
 
-            if (x.LeaderboardRank == null && y.LeaderboardRank == null) return 0;
-            if (x.LeaderboardRank == null) return 1;
-            if (y.LeaderboardRank == null) return -1;
+            var lx = x.LeaderboardRank == null || x.LeaderboardRank == 0 ? null : x.LeaderboardRank;
+            var ly = y.LeaderboardRank == null || y.LeaderboardRank == 0 ? null : y.LeaderboardRank;
 
-            return x.LeaderboardRank.Value.CompareTo(y.LeaderboardRank);
+            if (lx == null && ly == null) return 0;
+            if (lx == null) return 1;
+            if (ly == null) return -1;
+           
+            return lx.Value.CompareTo(ly);
         }
     }
 }

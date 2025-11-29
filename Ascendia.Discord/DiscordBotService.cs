@@ -80,7 +80,12 @@ public class DiscordBotService
         return members;
     }
 
-    public async Task<bool> UpdateMembersLadderAsync(bool forceUpdate = false, bool includeWL = true, bool notify = true, ulong guildId = 0)
+    public async Task<bool> UpdateMembersLadderAsync(
+        bool forceUpdate = false, 
+        bool includeWL = true, 
+        bool notify = true, 
+        bool nullAs80 = true,
+        ulong guildId = 0)
     {
         var guildSettings = _communityService.GetGuildSettings(guildId);
         if (guildSettings == null || !ulong.TryParse(guildSettings.RankingChannelId, out ulong channelId) || channelId == 0)
@@ -89,7 +94,7 @@ public class DiscordBotService
             CoreTelemetry.WriteErrorLine(errorMessage);
             return false;
         }
-        var errorResult = await _guildActions.UpdateMembersLadderAsync(forceUpdate, includeWL, notify, guildId, channelId);
+        var errorResult = await _guildActions.UpdateMembersLadderAsync(forceUpdate, includeWL, notify, nullAs80, guildId, channelId);
         return errorResult == null;
     }
 

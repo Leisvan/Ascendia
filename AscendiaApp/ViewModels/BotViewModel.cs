@@ -67,6 +67,10 @@ public partial class BotViewModel : ObservableObject
     [ObservableProperty]
     public partial bool? UpdateWL { get; set; } = true;
 
+
+    [ObservableProperty]
+    public partial bool? NullAs80 { get; set; } = true;
+
     [RelayCommand]
     public void CancelUpdateRank()
     {
@@ -109,7 +113,7 @@ public partial class BotViewModel : ObservableObject
         await UIDispatchAsync(() => IsRankingBusy = true);
         if (updateMembers)
         {
-            if (!await _botService.UpdateMembersLadderAsync(ForceUpdate ?? false, UpdateWL ?? true, NotifyGuild ?? true, SelectedGuild.GuildId))
+            if (!await _botService.UpdateMembersLadderAsync(ForceUpdate ?? false, UpdateWL ?? true, NotifyGuild ?? true, NullAs80 ?? true, SelectedGuild.GuildId))
             {
                 await UIDispatchAsync(() => IsRankingBusy = false);
                 return;

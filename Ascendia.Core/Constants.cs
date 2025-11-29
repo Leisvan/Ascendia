@@ -7,4 +7,5 @@ public static class Constants
     public const string DefaultRegion = NARegion;
     public const string EURegion = "Europe";
     public const string NARegion = "Americas";
+    public const int ImmortalRank = 80;
 }
